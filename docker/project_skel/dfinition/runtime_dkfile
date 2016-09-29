@@ -1,0 +1,13 @@
+FROM yanxiu_image_tomcat:latest
+MAINTAINER duanjuntao@yanxiu.com
+
+LABEL "PORT_PREFIX"="450"
+LABEL "NET_MODE"="host"
+
+ENV	JAVA_OPTS "-Xmx1024m -Xmx1024m -XX:PermSize=256M -XX:MaxPermSize=256M"
+
+COPY target/api.war             /opt/tomcat/webapps/
+COPY resource/app_hosts        	/opt/run/app_hosts
+COPY dfinition/runtime_launch   /opt/run/launch
+
+CMD ["/bin/bash", "/opt/run/launch"]

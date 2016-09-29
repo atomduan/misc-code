@@ -1,0 +1,166 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+#saltstack
+192.168.1.187 beiyuan.kvm.salt.master.top
+192.168.1.128 BJ.BY.H12.PHY.LST-A1.1.128
+
+#docker config 
+192.168.1.72    zk1
+192.168.1.125   zk2
+192.168.1.128   zk3
+192.168.1.72    registry.docker.yanxiu.com
+#docker config
+
+
+127.0.0.1   beiyuan.kvm.tomcat.mysql-m.redis-m.58
+127.0.0.1   www.zgjiaoyan.cn main.zgjiaoyan.cn static.zgjiaoyan.cn service.zgjiaoyan.cn service2.zgjiaoyan.cn userfile.zgjiaoyan.cn tool.zgjiaoyan.cn register.zgjiaoyan.cn activity.zgjiaoyan.cn api.zgjiaoyan.cn
+
+192.168.1.224 beiyuan.kvm.tomcat.mobile.proxy.224
+
+##yanxiu.com svn
+192.168.1.89 svn.yanxiu.net
+
+#mail server
+192.168.1.29 srt.teacherclub.com.cn
+192.168.1.29 mail.yanxiu.com
+
+#memcached
+192.168.1.233 memcached0.q.yanxiu.com
+
+#ttserver
+192.168.1.31  ttserver0.q.yanxiu.com
+192.168.1.31  ttserver1.q.yanxiu.com
+192.168.1.31  ttserverOld.q.yanxiu.com
+
+#httpsqs
+192.168.1.31  httpsqs.q.yanxiu.com
+
+#db
+192.168.1.51   db0.zgjiaoyan.com
+192.168.1.54   db0.slave.zgjiaoyan.com
+192.168.1.166  db0.q.yanxiu.com
+192.168.1.166  db1.q.yanxiu.com
+192.168.1.165  db0.post.yanxiu.com
+192.168.1.230  db1.post.yanxiu.com
+192.168.1.145  db0.slave.yanxiu.com
+
+#redis
+192.168.1.70 redis0.yanxiu.com
+192.168.1.42 redis1.yanxiu.com
+192.168.1.231 msgRedis.yanxiu.com
+
+#plserver
+192.168.1.232  pl0-service.q.yanxiu.com
+192.168.1.55   pl1-service.q.yanxiu.com
+
+#auth
+192.168.1.14  auth-service.q.yanxiu.com
+
+#barlogic
+192.168.1.232 barlogic-service.q.yanxiu.com
+192.168.1.5   barlogic-service1.q.yanxiu.com
+
+
+#online 
+192.168.1.232  online-service.q.yanxiu.com
+192.168.1.55   online-service1.q.yanxiu.com
+
+
+#user
+192.168.1.233  user-service.q.yanxiu.com
+192.168.1.5   user-service1.q.yanxiu.com
+
+#message
+192.168.1.233  message-service.q.yanxiu.com
+192.168.1.30   message-service1.q.yanxiu.com
+
+#q and i
+192.168.1.41 i.yanxiu.com pms.yanxiu.com yanxiu.com www.yanxiu.com pp.yanxiu.com  s1.jsyxw.cn s2.jsyxw.cn s3.jsyxw.cn s4.jsyxw.cn
+192.168.1.188 inginx.yanxiu.com
+192.168.1.103 q.yanxiu.com
+
+#upload
+192.168.1.236 resource.yanxiu.com 
+#192.168.1.41 upload.yanxiu.com 
+192.168.1.236 upload.yanxiu.com 
+
+#search
+#192.168.1.237 s.yanxiu.com
+#192.168.1.76  s1.yanxiu.com
+192.168.1.237 s.yanxiu.com s1.yanxiu.com
+#passport
+192.168.1.24 passport.yanxiu.com 
+#192.168.1.239 pp.yanxiu.com
+#p
+
+192.168.1.120  p.yanxiu.com
+#guanli
+192.168.1.40   guanli.yanxiu.com
+
+#quiz
+192.168.1.41 quiz.yanxiu.com
+
+#www.srxing.com
+192.168.1.130 www.3ren.cn
+
+#resource
+192.168.1.236 resource.yanxiu.com
+192.168.1.41 res.yanxiu.com
+192.168.1.163 tb.yanxiu.com
+192.168.1.164 tb.yanxiu.com
+192.168.1.163 tb0.yanxiu.com
+192.168.1.164 tb1.yanxiu.com
+
+
+192.168.1.60 rabbitmq0.yanxiu.com
+
+192.168.1.237 slave-01
+192.168.1.238 slave-02
+192.168.1.235 slave-03
+
+192.168.1.76 meeting.q.yanxiu.com
+192.168.1.43 counting.p.yanxiu.com
+
+192.168.1.41 api.yanxiu.com
+192.168.1.246 redis.club.yanxiu.com
+192.168.1.70 redis.user.yanxiu.com
+192.168.1.4   user-service2.q.yanxiu.com
+192.168.1.67   user-service3.q.yanxiu.com
+192.168.1.4   barlogic-service2.q.yanxiu.com
+192.168.1.24   barlogic-service3.q.yanxiu.com
+
+192.168.1.28   event.msgRedis.yanxiu.com
+192.168.1.91   notice.msgRedis.yanxiu.com
+192.168.1.37 dbm.slave.yanxiu.com
+192.168.1.32 dbm.master.yanxiu.com
+192.168.1.145 slave.db0.q.yanxiu.com
+192.168.1.41  ahdd.yanxiu.com
+192.168.1.41 api.yanxiu.com
+#192.168.1.41 reply.yanxiu.com
+192.168.1.114 reply.yanxiu.com
+192.168.1.41   testing.yanxiu.com
+
+192.168.1.41 service.zgjiaoyan.com
+192.168.1.41 service2.zgjiaoyan.com
+192.168.1.41 main.zgjiaoyan.com
+192.168.1.41 static.zgjiaoyan.com
+192.168.1.41 userfile.zgjiaoyan.com
+192.168.1.41 resconvert.zgjiaoyan.com
+192.168.1.197 beiyuan.ops.zabbix_server01.197
+192.168.1.104 nexus.yanxiu.com
+192.168.1.186 svn2.yanxiu.com
+
+#modified by duanjuntao
+#192.168.1.220  service.yanxiu.com
+127.0.0.1  service.yanxiu.com
+#duanjuntao: we make it point to service directly.
+192.168.1.220  u.yanxiu.com
+#127.0.0.1  u.yanxiu.com
+#modified by duanjuntao
+
+#192.168.1.41  appadmin.yanxiu.com
+192.168.1.204  appadmin.yanxiu.com
+
+#for MeiZi service catalog list
+192.168.1.56 api.rms.yanxiu.com

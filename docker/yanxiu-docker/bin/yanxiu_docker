@@ -1,0 +1,874 @@
+#!/bin/bash -
+#registry.docker.yanxiu.com
+if [ "x$DEBUG_MODE_ON" = "xyes" ]; then
+	set -x
+fi
+
+SCRIPT_PATH=$(cd `dirname $(which $0)`; pwd)
+YANXIU_DOCKER_HOME=$(cd $SCRIPT_PATH; cd ..; pwd)
+YANXIU_DOCKER_CONF_DIR=${YANXIU_DOCKER_HOME}/conf
+
+if [ -f "${YANXIU_DOCKER_CONF_DIR}/yanxiu_docker_env.sh" ]; then
+    source "${YANXIU_DOCKER_CONF_DIR}/yanxiu_docker_env.sh"
+fi
+
+source ${YANXIU_DOCKER_HOME}/sbin/registry
+CURR_CMD="$1"
+shift
+case "$CURR_CMD" in
+#################################################################################################
+    "-D"|"--d"|"--de"|"--deb"|"--debu"|"--debug")
+    	export DEBUG_MODE_ON="yes"
+    	echo "Enter debug mode......"
+    	$0 $@
+        ;;
+#################################################################################################
+    "dtag")
+        SERVICE_NAME="$1"
+        shift
+        TAG="$1"
+        shift
+
+        if [ -n "$SERVICE_NAME" ] && [ -n "$TAG" ]; then
+            del_tag $SERVICE_NAME $TAG 
+        else
+			list_registry_images
+            cat <<EOF
+
+USAGE: CMD SERVICE_NAME TAG
+
+EOF
+        fi
+        ;;
+#################################################################################################
+    "enter")
+        CONTAINER_NAME="$1"
+        shift
+        if [ -z "$CONTAINER_NAME" ];then
+            cat <<EOF 
+
+USAGE : CMD enter CONTAINER_NAME
+
+local RUNNING CONTAINER list are:
+
+EOF
+            docker ps
+            exit 1
+        fi
+        which nsenter > /dev/null
+        if [ "$?" -eq "0" ]; then
+            sudo -n ls > /dev/null
+            if [ "$?" -eq "0" ]; then
+                CPID=$(docker inspect --format "{{.State.Pid}}" $CONTAINER_NAME)
+                sudo nsenter --target $CPID --mount --uts --ipc --net --pid
+            else
+                echo "current user does not have sudo previllage."
+                exit 1
+            fi
+        else
+            echo "we can not find nsenter command. please install it first"
+            exit 1
+        fi
+        ;;
+
+#################################################################################################
+
+    "package")
+    	RES_TAG="$1"
+    	shift
+        PROJECT_DOCKER_CONTEXT=$PWD
+        
+        if ! [ -f "${PROJECT_DOCKER_CONTEXT}/config" ]; then
+        cat << EOF
+        
+        There must be a config file under PWD"
+        The Example dir structure is like this:
+        
+        PWD
+        ├── config
+        ├── dfinition
+        │   ├── package_dkfile
+        │   ├── package_launch
+        │   ├── runtime_dkfile
+        │   └── runtime_launch
+        ├── resource
+        └── target
+        
+        And the config MUST answer Where the source root is, throw interface source_root
+        
+EOF
+        	exit 1
+        fi
+        
+        source ${PROJECT_DOCKER_CONTEXT}/config
+        if [ -z "${SERVICE_NAME}" ]; then
+        	echo "SERVICE_NAME can not be empty, it must be export in"
+        	echo "${PROJECT_DOCKER_CONTEXT}/config"
+        	exit 1
+        fi
+        if [ -z "${SOURCE_ROOT}" ]; then
+        	echo "SOURCE_ROOT is Empty, SKIP_PACKAGE is ON"
+            export SKIP_PACKAGE="ON"
+        fi
+        if [ -z "${LIB_PATH}" ]; then
+            LIB_PATH="/tmp/dummy"
+        fi
+        
+        TAG="THIS_TAG_IS_USED_TO_NOTIFY_A_PACKAGE_ACTION"
+    	$YANXIU_DOCKER_HOME/sbin/build ${PROJECT_DOCKER_CONTEXT} ${SERVICE_NAME} ${TAG} ${LIB_PATH}
+
+    	#IF we have tag specify then save it
+    	if [ -n "$RES_TAG" ]; then
+			$0 rsave $RES_TAG
+		fi
+        ;;
+
+#################################################################################################
+    "rsave")
+    	RES_TAG="$1"
+    	shift
+        PROJECT_DOCKER_CONTEXT=$PWD
+        
+        if ! [ -f "${PROJECT_DOCKER_CONTEXT}/config" ]; then
+      		cat << EOF
+
+These command must be exec under docker dir -- docker build context
+
+EOF
+        	exit 1
+        fi
+        source ${PROJECT_DOCKER_CONTEXT}/config
+    	if [ -n "$RES_TAG" ] && [ -n $SERVICE_NAME ]; then
+    		if [ -d "$PROJECT_DOCKER_CONTEXT/target" ]; then
+    			res_path="${DOCKER_RES_CACHE}/${SERVICE_NAME}/${RES_TAG}";
+    			latest_link="${DOCKER_RES_CACHE}/${SERVICE_NAME}/latest";
+				if ! [ -d "${res_path}" ]; then
+					mkdir -p "${res_path}"
+				fi
+				if [ -n "${res_path}" ] && [ -d "${res_path}" ]; then
+					clist=$(ls "${PROJECT_DOCKER_CONTEXT}/target" 2>/dev/null)
+					if [ -n "${clist}" ]; then
+						rm -rf ${res_path}/*
+						cp -Pr ${PROJECT_DOCKER_CONTEXT}/target/* ${res_path}/
+						if [ -L "${latest_link}" ]; then
+							rm ${latest_link}
+						fi
+						ln -s ${res_path} ${latest_link}
+						cat << EOF
+rsave success:
+
+$SERVICE_NAME $RES_TAG
+
+EOF
+					else
+						cat << EOF
+
+rsave info: The target dir is empty
+
+EOF
+					fi
+				fi
+			else
+				mkdir -p "$PROJECT_DOCKER_CONTEXT/target"
+				cat << EOF
+
+rsave warn: The target dir does not exsit, create it and exit.
+
+EOF
+    		fi
+    	else
+      		cat << EOF
+
+rsave error: The RES_TAG and SERVICE_NAME must not empty
+
+EOF
+		fi
+    	;;
+
+#################################################################################################
+    "rlist")
+		RES_NAME="$1"
+		shift
+		if ! [ -n "$RES_NAME" ]; then
+			ls -l ${DOCKER_RES_CACHE}
+		else
+			ls -l ${DOCKER_RES_CACHE}/${RES_NAME}
+		fi
+    	;;
+#################################################################################################
+    "rload")
+    	RES_NAME="$1"
+    	shift
+    	RES_TAG="$1"
+    	shift
+        PROJECT_DOCKER_CONTEXT=$PWD
+        
+    	if [ -n "$RES_NAME" ]; then
+    		if [ -d "$PROJECT_DOCKER_CONTEXT/target" ]; then
+    			if ! [ -n "$RES_TAG" ]; then
+    				cat << EOF
+rload info: No RES_TAG specified, user the latest tag.
+EOF
+    				RES_TAG="latest"
+    			fi
+    			res_path="${DOCKER_RES_CACHE}/${RES_NAME}/${RES_TAG}";
+				if ! [ -d "${res_path}" ]; then
+					echo "rload error: the ${res_path} does not exit!"
+					exit 1
+				fi
+				if [ -n "${res_path}" ] && [ -d "${res_path}" ]; then
+					cp -Pr  ${res_path}/* ${PROJECT_DOCKER_CONTEXT}/target/
+				fi
+			else
+				cat << EOF
+
+rload warn: The target dir does not exsit, are you under docker building context?
+
+EOF
+				exit 1
+    		fi
+    	else
+      		cat << EOF
+
+rload error: The RES_NAME must not empty
+
+EOF
+			exit 1
+		fi
+    	;;
+
+#################################################################################################
+    "gendk")
+        if [ -z "$DOCKER_CTX_ROOT" ]; then
+            echo "Abort: DOCKER_CTX_ROOT is empty, plz check yanxiu_docker_env.sh"
+            exit 1
+        fi
+        PROJECT_BASE=$PWD
+        docker_path="$PROJECT_BASE/docker-proto"
+        if [ -d "$docker_path" ]; then
+            echo "Abort: dir $docker_path already exsit"
+            exit 1
+        else
+            mkdir -p $docker_path
+            if ! [ "$?" = "0" ]; then
+                echo "Abort: fail to create dir $docker_path"
+                exit 1
+            fi
+            #make dir
+            mkdir -p $docker_path/dfinition
+            mkdir -p $docker_path/resource
+            mkdir -p $docker_path/target
+            #copy resource
+            cp $YANXIU_DOCKER_HOME/resource/gendk/app_hosts.proto \
+                $docker_path/resource/app_hosts
+            cp $YANXIU_DOCKER_HOME/resource/gendk/mvn_settings.xml.proto \
+                $docker_path/resource/mvn_settings.xml
+            #gen files
+            cat > $docker_path/config << EOF
+#!/bin/bash -
+#The current script will be "sourced" in the building routine.
+
+#Compute the souce path, in this building context, 
+#we always assume the curr working dir is the
+#dir that contain this current script.
+
+export SOURCE_ROOT=\$(cd ..; pwd)
+
+#point to the repo/lib you want to use. 
+export LIB_PATH="$DOCKER_CTX_ROOT/.dockerm2"
+
+#do not modify these below
+export PACKAGE_DKFILE="dfinition/package_dkfile"
+export RUNTIME_DKFILE="dfinition/runtime_dkfile"
+export ROUTINE_CLEANUP="dfinition/routine_cleanup"
+
+#your service name
+export SERVICE_NAME="yanxiu_your_service_name"
+EOF
+            cat > $docker_path/dfinition/package_dkfile << EOF
+FROM yanxiu_image_maven:latest
+MAINTAINER duanjuntao@yanxiu.com
+
+#
+#docker file write here.......
+COPY resource/app_hosts             /opt/run/app_hosts
+COPY resource/mvn_settings.xml      /opt/maven/conf/settings.xml
+#
+
+#The entry point of package routine
+COPY dfinition/package_launch      /opt/run/launch
+CMD ["/bin/bash", "/opt/run/launch"]
+EOF
+
+            cat > $docker_path/dfinition/package_launch << EOF
+#!/bin/bash -
+#The current script will be executed in docker container.
+
+export JAVA_OPTS="\${JAVA_OPTS} -Dfile.encoding=utf-8"
+
+#overwrite /etc/hosts,since the config maven sett.xml need it
+if [ -f /opt/run/app_hosts ]; then
+    cat /opt/run/app_hosts >> /etc/hosts
+fi
+
+#enter source dir, point to source dir you spec in var SOURCE_ROOT
+cd /opt/src;
+mvn clean package -Dmaven.test.skip=true
+
+
+#The content in /opt/target can be viewed both inside and outside of current docker.
+#THe mount point of /opt/target in outside host is /your-project/docker-proto/target dir.
+#clean it
+rm -rf /opt/target/*
+
+
+#move our result to this dir so as to make the outside control can use them for other routine.
+mv /opt/src/target/* /opt/target/
+
+
+#clean this maven generated target dir.
+rm -rf /opt/src/target
+EOF
+
+            cat > $docker_path/dfinition/runtime_dkfile << EOF
+FROM yanxiu_image_tomcat:latest
+MAINTAINER duanjuntao@yanxiu.com
+
+LABEL "PORT_PREFIX"="480"
+
+#Tune it
+ENV JAVA_OPTS "-Xmx1024m -Xmx1024m -XX:PermSize=256M -XX:MaxPermSize=256M"
+
+COPY target/your_war_package.war    /opt/tomcat/webapps/
+
+#This host will override the docker container's /etc/hosts at runtime
+COPY resource/app_hosts             /opt/run/app_hosts
+
+#The entry point of the producted images
+COPY dfinition/runtime_launch   /opt/run/launch
+CMD ["/bin/bash", "/opt/run/launch"]
+EOF
+
+            cat > $docker_path/dfinition/runtime_launch << EOF
+#!/bin/bash -
+#The current script will be executed in docker container.
+#When this container is startup
+
+export JAVA_OPTS="\${JAVA_OPTS} -Dfile.encoding=utf-8"
+if [ -f /opt/run/app_hosts ]; then
+    #override docker's /etc/hosts
+    cat /opt/run/app_hosts >> /etc/hosts
+    /opt/tomcat/bin/catalina.sh run 
+else
+    echo "/opt/tomcat/app_hosts not exsit......" 
+    exit 1
+fi
+EOF
+            cat > $docker_path/dfinition/routine_cleanup << EOF
+#!/bin/bash -
+#The current script will be executed in the building routine.
+#Executing point: 
+#   1. before the whole routine begin. 
+#   2. after the while routine end.
+#Clean target: docker-proto/target/*
+
+CURR_PATH=\$(cd \`dirname \$(which \$0)\`; pwd)
+DK_CTX_PATH=\$(cd \${CURR_PATH}/..; pwd )
+
+if ! [ -z "\$DK_CTX_PATH" ]; then
+    if [ -d "\$DK_CTX_PATH/target" ]; then
+        echo "routine_cleanup need sudo previlege"
+        sudo rm -rf \$DK_CTX_PATH/target/*
+        if [ "\$?" = "0" ]; then
+            echo "routine_cleanup success......"
+        fi
+    fi  
+fi
+EOF
+        fi
+        ;;
+
+#################################################################################################
+
+    "build")
+        TAG="$1"
+        shift
+
+        PROJECT_DOCKER_CONTEXT=$PWD
+        
+        if ! [ -f "${PROJECT_DOCKER_CONTEXT}/config" ]; then
+        cat << EOF
+        
+        There must be a config file under PWD"
+        The Example dir structure is like this:
+        
+        PWD
+        ├── config
+        ├── dfinition
+        │   ├── package_dkfile
+        │   ├── package_launch
+        │   ├── runtime_dkfile
+        │   ├── routine_cleanup
+        │   └── runtime_launch
+        ├── resource
+        └── target
+        
+        And the config MUST answer Where the source root is, throw interface source_root
+        
+EOF
+        	exit 1
+        fi
+        
+        source ${PROJECT_DOCKER_CONTEXT}/config
+        if [ -z "${SERVICE_NAME}" ]; then
+        	echo "SERVICE_NAME can not be empty, it must be export in"
+        	echo "${PROJECT_DOCKER_CONTEXT}/config"
+        	exit 1
+        fi
+        if [ -z "${SOURCE_ROOT}" ]; then
+        	echo "SOURCE_ROOT is Empty, SKIP_PACKAGE is ON"
+            export SKIP_PACKAGE="ON"
+        fi
+        if [ -z "${LIB_PATH}" ]; then
+            LIB_PATH="/tmp/dummy"
+        fi
+        
+    	if [ -z "$TAG" ]; then
+        	cat << EOF
+CURRENT SERVICE NAME: $SERVICE_NAME
+
+USAGE: CMD: build TAG
+
+DESCRIPTION:
+    PROJECT_DOCKER_CONTEXT: project related docker context
+    TAG: the build image tag
+
+RELATED_IMGS_ARE:
+---------------------------------------------------------------
+LOCAL_IMAGES:
+
+EOF
+			list_local_images | grep ${SERVICE_NAME}
+			cat <<EOF
+
+---------------------------------------------------------------
+REGISTRY_IMAGES:
+
+EOF
+			list_registry_images | grep ${SERVICE_NAME}
+        	exit 1
+    	fi
+
+    	cat << EOF
+The PROJECT_DOCKER_CONTEXT  -->  "$PROJECT_DOCKER_CONTEXT"
+The SERVICE_NAME  -->  "$SERVICE_NAME"
+The TAG  -->  "$TAG"
+EOF
+    	$YANXIU_DOCKER_HOME/sbin/build ${PROJECT_DOCKER_CONTEXT} ${SERVICE_NAME} ${TAG} ${LIB_PATH}
+    	#IF we have tag specify then save it
+    	if [ -n "$TAG" ]; then
+			$0 rsave $TAG
+		fi
+		eval "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP}"
+        ;;
+
+#################################################################################################
+
+    "ship")
+        PROJECT_DOCKER_CONTEXT=$PWD
+        
+        if ! [ -f "${PROJECT_DOCKER_CONTEXT}/config" ]; then
+            echo "There is no config in current working dir. Treat OP as -->PUSH<-- !"
+    	    $0 push $@
+            exit $?
+        fi
+
+        # enter current dir building style
+        if [ "$#" = "2" ]; then
+            shift
+            TAG="$1"; shift
+        else
+            TAG="$1"; shift
+        fi
+        
+        source ${PROJECT_DOCKER_CONTEXT}/config
+        if [ -z "${SERVICE_NAME}" ]; then
+        	echo "SERVICE_NAME can not be empty, it must be export in"
+        	echo "${PROJECT_DOCKER_CONTEXT}/config"
+        	exit 1
+        fi
+        if [ -z "${SOURCE_ROOT}" ]; then
+        	echo "SOURCE_ROOT is Empty, SKIP_PACKAGE is ON"
+            export SKIP_PACKAGE="ON"
+        fi
+        if [ -z "${LIB_PATH}" ]; then
+            LIB_PATH="/tmp/dummy"
+        fi
+        
+    	if [ -z "$TAG" ]; then
+        	cat << EOF
+CURRENT SERVICE NAME: $SERVICE_NAME
+
+USAGE: CMD: ship TAG
+
+DESCRIPTION:
+    PROJECT_DOCKER_CONTEXT: project related docker context
+    TAG: the image tag
+
+RELATED_IMGS_ARE:
+---------------------------------------------------------------
+LOCAL_IMAGES:
+
+EOF
+            if [ -n "$SERVICE_NAME" ]; then
+			    list_local_images | grep ${SERVICE_NAME}
+            else
+			    list_local_images
+            fi
+			cat <<EOF
+
+---------------------------------------------------------------
+REGISTRY_IMAGES:
+
+EOF
+            if [ -n "$SERVICE_NAME" ]; then
+			    list_registry_images | grep ${SERVICE_NAME}
+            else
+			    list_registry_images
+            fi
+        	exit 1
+    	fi
+
+    	cat << EOF
+The PROJECT_DOCKER_CONTEXT  -->  "$PROJECT_DOCKER_CONTEXT"
+The SERVICE_NAME  -->  "$SERVICE_NAME"
+The TAG  -->  "$TAG"
+EOF
+        if ! docker images | awk '{print $1":"$2}' | grep "${SERVICE_NAME}:${TAG}" > /dev/null; then
+    	    $YANXIU_DOCKER_HOME/sbin/build ${PROJECT_DOCKER_CONTEXT} ${SERVICE_NAME} ${TAG} ${LIB_PATH}
+    		#IF we have tag specify then save it
+    		if [ -n "$TAG" ]; then
+				$0 rsave $TAG
+			fi
+			eval "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP}"
+        else
+            echo "Skip building, ${SERVICE_NAME}:${TAG} already exsit"
+        fi
+    	$0 push $SERVICE_NAME $TAG
+        if [ "$?" = "0" ]; then
+            cat << EOF
+---------------------------------------------------------------
+
+INFO: SHIP SUCCESS
+
+$SERVICE_NAME $TAG
+
+EOF
+        fi
+        ;;
+
+#################################################################################################
+    "run")
+    	$0 deploy $@
+        ;;
+#################################################################################################
+
+    "deploy")
+    	SERVICE_NAME="$1"
+    	shift
+        TAG="$1"
+        shift
+        CONTAINER_NUM="$1"
+        shift
+        OPT="$1"
+        shift
+        while [ -n "$OPT" ];
+        do
+            case "$OPT" in 
+                "--restart")
+                    export CONTAINER_RESTART_FLAG="TRUE"
+                    ;;
+                "--gray")
+                    export CONTAINER_GRAY_DEPLOY_FLAG="TRUE"
+                    ;;
+                "--skip-rm")
+                    export CONTAINER_SKIP_RM_FLAG="TRUE"
+                    ;;
+                *)
+                    echo "Illegal options $OPT......"
+                    ;;
+            esac
+            OPT="$1"
+            shift
+        done
+
+        IS_NUM=`echo $CONTAINER_NUM | sed 's/[0-9]//g'`
+    	if [ -z "$SERVICE_NAME" ] || [ -z "$TAG" ] || [ -z "$CONTAINER_NUM" ] || [ -n "$IS_NUM" ]; then
+        	cat <<EOF
+RELATED_IMGS_ARE:
+---------------------------------------------------------------
+LOCAL_IMAGES:
+
+EOF
+            if [ -n "$SERVICE_NAME" ]; then
+			    list_local_images | grep $SERVICE_NAME --color
+            else
+                list_local_images
+            fi
+			cat <<EOF
+
+---------------------------------------------------------------
+REGISTRY_IMAGES:
+
+EOF
+            if [ -n "$SERVICE_NAME" ]; then
+			    list_registry_images | grep $SERVICE_NAME --color
+            else
+                list_registry_images
+            fi
+        	cat <<EOF
+
+CURRENT SERVICE NAME: $SERVICE_NAME
+
+CMD: run SERVICE_NAME TAG CONTAINER_NUMBER [--restart | --gray | --skip-rm]
+
+DESCRIPTION:
+	SERVICE_NAME: repo name with tag
+	TAG: the build image tag
+	CONTAINER_NUMBER: the targed container number
+
+
+EOF
+        	exit 1
+    	fi
+        
+        $0 pull ${SERVICE_NAME} ${TAG}
+        if ! [ "$?" = "0" ]; then
+            echo "Abort: FAIL to pull image  ${SERVICE_NAME}:${TAG} from repo AND local"
+            exit 1
+        fi
+
+        PORT_PREFIX=$(docker inspect ${SERVICE_NAME}:${TAG} \
+        	| grep "PORT_PREFIX" | sed 's/[ "]//g' | sed 's/,//g' | awk -F':' '{print $2}' | head -1)
+        if [ -n "$PORT_PREFIX" ]; then 
+            if [ "$PORT_PREFIX" -lt "300" ] || [ "$PORT_PREFIX" -gt "999" ]; then
+        	    echo "Illegal PORT_PREFIX: [${PORT_PREFIX}]"
+        	    exit 1
+            fi
+        else
+            #give a mock port tell deploy to ignore it
+            PORT_PREFIX=999 
+        fi
+
+        PORT_EXPOSE=$(docker inspect ${SERVICE_NAME}:${TAG} \
+        	| grep "PORT_EXPOSE" | sed 's/[ "]//g' | sed 's/,//g' | awk -F':' '{print $2}' | head -1)
+        if ! [ -z "$PORT_EXPOSE" ]; then 
+            IS_NUM=`echo $PORT_EXPOSE | sed 's/[0-9]//g'`
+            if ! [ -z "$IS_NUM" ]; then
+                echo "Illegal PORT_EXPOSE config must be a number: [${PORT_EXPOSE}]"
+                exit 1 
+            fi
+            export PORT_EXPOSE
+        fi
+
+		if [ -z "$NET_MODE" ]; then
+        	NET_MODE=$(docker inspect ${SERVICE_NAME}:${TAG} \
+        		| grep "NET_MODE" | sed 's/[ "]//g' | sed 's/,//g' | awk -F':' '{print $2}' | head -1)
+        	if ! [ -z "$NET_MODE" ]; then 
+        	    export NET_MODE
+        	else
+        		cat << EOF
+-----------------------------
+Can not find LABEL NET_MODE defined in docker/dfinition/runtime_dkfile
+If "LABEL "NET_MODE"="host"" are not set in runtime_dkfile, the container will run in DEFAULT net bridge mode.
+UPDATE REQUIREMENT: 
+yanxiu_image_tomcat:latest MUST newer than 20151227_02 with image id:55e553719aca. 
+If this requirement can not be meet, please ignore the whole info above, everything we be OK like old time. 
+-----------------------------
+EOF
+        	fi
+        else
+        	echo "INFO: NET_MODE is not empty [$NET_MODE], SKIP config it from image's LABEL->NET_MODE"
+    	fi
+
+        export LOG_ROOT="${DOCKER_CTN_LOG}/${SERVICE_NAME}"
+        export DATA_ROOT="${DOCKER_DATA_ROOT}"
+
+	    IMG_NAME=${SERVICE_NAME}
+	    CONTAINER_NAME=${SERVICE_NAME}
+	    if [ -n "${TAG}" ] && [ -n "$CONTAINER_NUM" ] && [ "$CONTAINER_NUM" -gt "-1" ]; 
+	    then 
+	            ${YANXIU_DOCKER_HOME}/sbin/deploy  \
+	                 ${IMG_NAME}:${TAG} \
+	                 ${CONTAINER_NAME}   \
+	                 ${PORT_PREFIX}  \
+	                 ${CONTAINER_NUM} \
+	                 ${LOG_ROOT} \
+	                 ${DATA_ROOT}
+	            exit 0
+	    fi
+        ;;
+
+#################################################################################################
+
+    "pull")
+        if ! [ "$#" -eq "2" ]; then
+            cat << EOF 
+
+USAGE: CMD pull SERVICE_NAME TAG"
+IMAGE LIST BELOW:
+
+EOF
+			list_registry_images
+            exit 1
+        fi
+        SERVICE_NAME="$1"
+        shift
+        TAG="$1"
+        shift
+
+        if [ -z ${SERVICE_NAME} ]; then
+            echo "need a IMAGE params"
+            exit 1
+        fi
+
+        if [ -z "$TAG" ]; then
+            TAG="latest"
+        fi
+
+        if list_local_images | awk '{print $1":"$2}' | grep "${SERVICE_NAME}:${TAG}" > /dev/null; then
+        	echo "We already have ${SERVICE_NAME} ${TAG} in our local repo"
+        	exit 0
+        else
+        	echo "Try to download ${SERVICE_NAME}:${TAG} from ${DOCKER_REGISTRY}"
+        fi
+
+        IMG_NAME=${SERVICE_NAME}:${TAG}
+        docker pull ${DOCKER_REGISTRY}/${IMG_NAME}
+        pull_ret="$?"
+        if [ $pull_ret = "0" ]; then
+       	    docker tag -f ${DOCKER_REGISTRY}/${IMG_NAME} ${IMG_NAME} 
+            docker rmi ${DOCKER_REGISTRY}/${IMG_NAME}
+        fi
+        exit $pull_ret
+        ;;
+
+#################################################################################################
+
+    "push")
+        if ! [ "$#" -eq "2" ]; then
+            echo "USAGE: CMD push SERVICE_NAME TAG"
+            if ! [ -z $@ ]; then
+			    list_local_images | grep "$@" --color
+            else
+			    list_local_images
+            fi
+            exit 1
+        fi
+        SERVICE_NAME="$1"
+        shift
+        TAG="$1"
+        shift
+
+        if [ -z ${SERVICE_NAME} ]; then
+            echo "need a IMAGE params"
+            exit 1
+        fi
+
+        if [ -z "$TAG" ]; then
+            TAG="latest"
+        fi
+
+        IMG_NAME=${SERVICE_NAME}:${TAG}
+        #push this version to repo
+        docker tag -f ${IMG_NAME} ${DOCKER_REGISTRY}/${IMG_NAME}
+        docker push ${DOCKER_REGISTRY}/${IMG_NAME}
+    	docker rmi ${DOCKER_REGISTRY}/${IMG_NAME}
+        ;;
+
+################################################################################################
+	"list")
+        curr_opts="$1"
+        shift
+        case $curr_opts in
+            "--local"|"--l"|"--lo"|"--loc"|"--loca"|"-l")
+			    cat << EOF
+
+---------------------------------------------------------------
+LOCAL_IMAGES:
+
+EOF
+			    list_local_images
+                ;;
+            "--repo"|"--r"|"--re"|"--rep"|"--repo"|"-r")
+			    cat << EOF
+
+---------------------------------------------------------------
+REGISTRY_IMAGES:
+
+EOF
+			    list_registry_images
+                ;;
+            "--all"|"--al"|"--a"|"-a")
+			    cat << EOF
+
+---------------------------------------------------------------
+LOCAL_IMAGES:
+
+EOF
+			    list_local_images
+			    cat << EOF
+
+---------------------------------------------------------------
+REGISTRY_IMAGES:
+
+EOF
+			    list_registry_images
+                ;;
+            *)
+                cat << EOF
+Usage: yanxiu_docker list [OPTIONS]
+
+List images
+
+Options:
+  -a, --all     Show all images (local and remote repo images)
+  -r, --repo    Show all images in remote repo
+  -l, --local   Show all images in local repo
+EOF
+                ;;
+        esac
+		;;
+################################################################################################
+
+    "-"|"--"|"-h"|"-he"|"-hel"|"-help"|"--h"|"--he"|"--hel"|"--help")
+        docker --help
+        cat << EOF
+
+---------------------------------------------------------------
+
+NOTICE: The commands listed below are overrided by yanxiu_docker.
+        Please use docker if you want to use the original.
+
+USAGE: $(basename $0)[OPTIONS] COMMANDS [args....] 
+
+OPTIONS:
+	-D, --debug		Show Debug Info.
+
+COMMANDS:
+
+	LIFE CYCLE COMMAND: package | build | ship | push | pull | run
+
+	OTHER UTILS: list | enter | dtag | gendk | rsave | rload | rlist
+
+EOF
+        ;;
+################################################################################################
+    *)
+        if [ -z "$CURR_CMD" ]; then
+        	$0 --help 
+        else
+            docker $CURR_CMD $@
+        fi
+        ;;
+esac

@@ -1,0 +1,6 @@
+#!/bin/bash -
+CURR_PATH=$(cd `dirname $(which $0)`; pwd)
+TARGET_PATH=$(cd ${CURR_PATH}/../target; pwd )
+if [ -n "${TARGET_PATH}" ]; then
+	sudo rm -rf ${TARGET_PATH}/*
+fi

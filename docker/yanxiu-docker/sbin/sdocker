@@ -1,0 +1,191 @@
+#!/bin/bash -
+SCRIPT_PATH=$(cd `dirname $0`; pwd)
+YANXIU_DOCKER_HOME=$(cd $SCRIPT_PATH; cd ..; pwd)
+
+source $YANXIU_DOCKER_HOME/lib/class_yanxiu_base
+
+source /etc/profile
+REPO_IP="192.168.1.72"
+REPO_PORT="5000"
+DK_CMD="/usr/bin/docker"
+
+function docker_push()
+{
+    local IMAGE_VER=$1
+    local NEW_VER=$2
+    local IMGAGE=$(echo $IMAGE_VER|awk -F':'  '{print $1}'|awk -F'/' '{print $NF}')
+    local VER=$(echo $IMAGE_VER|awk -F':' '{print $2}')
+    local DK_ID=$($DK_CMD images |egrep -i ^$IMGAGE|egrep -i $VER|awk '{print $3}')
+    local IP_PORT_IMAGE_VER="$REPO_IP:$REPO_PORT/$IMGAGE:$NEW_VER" &&\
+    $DK_CMD tag  "$DK_ID" "$IP_PORT_IMAGE_VER" &&\
+    $DK_CMD push "$IP_PORT_IMAGE_VER"
+
+}
+
+function docker_pull()
+{
+    local IMAGE_VER=$1
+    $DK_CMD pull "$REPO_IP:$REPO_PORT/$IMAGE_VER"
+}
+
+function docker_images()
+{
+    $DK_CMD images
+}
+
+function docker_ps()
+{
+    local PARAM=$1
+    $DK_CMD ps "$PARAM"
+}
+
+
+function docker_run_background()
+{
+    local STR=$@
+    $DK_CMD run -d $STR
+    actionHandler "Docker Container" "Run"
+}
+
+function docker_rmi()
+{
+    local IMAGE_NAME=$1
+    $DK_CMD rmi "$IMAGE_NAME"
+}
+
+function docker_rm()
+{
+    local DOCKER_ID=$1
+    $DK_CMD rm "$DOCKER_ID"
+}
+
+
+function docker_build()
+{
+    local STR="$@"
+    $DK_CMD build -t $STR
+}
+
+function docker_in()
+{
+    local CNAME=$1                                         
+    local CPID=$(docker inspect --format "{{.State.Pid}}" $CNAME)
+    nsenter --target $CPID --mount --uts --ipc --net --pid
+}
+
+function docker_registry_query()
+{
+    local QUERY_RESULT=$(curl -s http://$REPO_IP:$REPO_PORT/v1/search && echo )
+    echo $QUERY_RESULT | grep -oP '(?<=: ")[^"]*(?=")'
+}
+
+function docker_registry_repos_tags()
+{
+    local REPO=$1
+    curl -sX GET "http://$REPO_IP:$REPO_PORT/v1/repositories/$REPO/tags"|python -m json.tool
+}
+
+function docker_registry_repos_del()
+{
+    local REPO=$1
+    curl -sX DELETE "http://$REPO_IP:$REPO_PORT/v1/repositories/$REPO/" && echo &&\
+    actionHandler "$REPO" "DELETE"
+}
+
+function docker_registry_repos_tag_del()
+{
+    local REPO=$1
+    local VER=$2
+    curl -sX DELETE "http://$REPO_IP:$REPO_PORT/v1/repositories/$REPO/tags/$VER" && echo
+}
+
+function docker_registry_repos_ver_imageID()
+{
+    local REPO=$1
+    local VER=$2
+    local RESULT=$(curl -sX GET "http://$REPO_IP:$REPO_PORT/v1/repositories/$REPO/tags/$VER"|python -m json.tool)
+    echo $RESULT |sed -rn -e 's&"$&&' -e 's&^"&&p'
+}
+
+function docker_status()
+{
+    curl -sX GET "http://$REPO_IP:$REPO_PORT/v1/_ping"| python -m json.tool
+}
+
+function etcd_cmd()
+{
+    local ETCD_PARAM_STR="$@"
+    local ETCD_SERVICE_IP_PORT="192.168.1.214:4001"
+    local ETCDCTL_CMD="$SCRIPT_PATH/etcd/etcdctl -C http://$ETCD_SERVICE_IP_PORT"
+    eval "$ETCDCTL_CMD" "$ETCD_PARAM_STR"
+}
+
+function etcd_ls_all()
+{
+    local ETCD_ROOT="/services"
+    local ETCD_SERVICE_IP_PORT="192.168.1.214:4001"
+    local ETCDCTL_CMD="$SCRIPT_PATH/etcd/etcdctl -C http://$ETCD_SERVICE_IP_PORT ls --recursive --sort $ETCD_ROOT"
+    eval "$ETCDCTL_CMD"
+}
+
+case $1 in
+push)
+docker_push $2 $3
+;;
+pull)
+docker_pull $2
+;;
+"")
+docker_images
+;;
+"a")
+docker_ps "-a"
+;;
+"l")
+docker_ps "-l"
+;;
+"q")
+docker_registry_query
+;;
+"tags")
+docker_registry_repos_tags $2
+;;
+"del")
+docker_registry_repos_del $2
+;;
+"tdel")
+docker_registry_repos_tag_del $2 $3
+;;
+"img")
+docker_registry_repos_ver_imageID $2 $3
+;;
+"rmi")
+docker_rmi $2
+;;
+"rm")
+docker_rm $2
+;;
+"bd")
+docker_build $2 $3 $4 $5
+;;
+"in")
+docker_in $2
+;;
+"status")
+docker_status
+;;
+"runb")
+docker_run_background $2 $3 $4 $5
+;;
+"etcd")
+shift 1
+etcd_cmd $@
+;;
+"ls")
+etcd_ls_all
+;;
+*)
+echo "Usage: $0 {push|a|l|q|rmi|rm|in}"
+;;
+esac
+

@@ -1,0 +1,31 @@
+#!/bin/bash -
+function list_registry_images() {
+    curl -X GET http://${DOCKER_REGISTRY}/v1/search 2>/dev/null \
+    	| python -mjson.tool | sed 's/["]//g' | grep name | tr -s " " \
+    	| awk -F':' '{print $2}' | sed 's/library\///g' \
+    	|	while read service_name; do
+				url="http://${DOCKER_REGISTRY}/v1/repositories/$service_name/tags"
+				curl -X GET $url 2>/dev/null | python -mjson.tool \
+					| sed 's/[ "]//g' | grep -E '[0-9a-z]+'| awk -F':' '{print $1}' \
+					| xargs -I{} echo "$service_name	{}"
+			done
+}
+
+function list_local_images() {
+	docker images | grep -v "${DOCKER_REGISTRY}" | grep -E '[0-9a-z]+' \
+		| tr -s " " | awk '{print $1 "	" $2}'
+}
+
+function del_tag() {
+    local REPO=$1
+    shift
+    local TAG=$1
+    shift
+    if [ -n "$DOCKER_REGISTRY" ] && [ -n "$REPO" ] && [ -n "$TAG" ]; then
+        cmd="curl -sX DELETE \"http://$DOCKER_REGISTRY/v1/repositories/$REPO/tags/$TAG\""
+        eval $cmd
+    else
+        echo "Error, one of these is empty: DOCKER_REGISTRY:$DOCKER_REGISTRY REPO:$REPO VER:$TAG"
+        exit 1
+    fi
+}

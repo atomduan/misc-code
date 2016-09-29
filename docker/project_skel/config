@@ -1,0 +1,7 @@
+#!/bin/bash -
+export SOURCE_ROOT=$(cd ../..; pwd)
+export LIB_PATH="/var/yanxiu/.dockerm2"
+export PACKAGE_DKFILE="dfinition/package_dkfile"
+export RUNTIME_DKFILE="dfinition/runtime_dkfile"
+export ROUTINE_CLEANUP="dfinition/routine_cleanup"
+export SERVICE_NAME="yanxiu_mserver_frontend_v17"

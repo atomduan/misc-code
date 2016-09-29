@@ -1,0 +1,10 @@
+#!/bin/bash -
+export JAVA_OPTS="-Ddocker.container=${CONTAINER_NAME} ${JAVA_OPTS} -Dfile.encoding=utf-8"
+
+if [ -f /opt/run/app_hosts ]; then
+    cat /opt/run/app_hosts > /etc/hosts
+    /opt/tomcat/bin/catalina.sh run
+else
+    echo "/opt/tomcat/app_hosts not exsit......" 
+    exit 1
+fi

@@ -1,0 +1,43 @@
+#!/bin/bash -
+#registry.docker.yanxiu.com
+
+SCRIPT_PATH=$(cd `dirname $(which $0)`; pwd)
+YANXIU_DOCKER_HOME=$(cd $SCRIPT_PATH; cd ..; pwd)
+YANXIU_DOCKER_CONF_DIR=${YANXIU_DOCKER_HOME}/conf
+
+if [ -f "${YANXIU_DOCKER_CONF_DIR}/yanxiu_docker_env.sh" ]; then
+    source "${YANXIU_DOCKER_CONF_DIR}/yanxiu_docker_env.sh"
+fi
+
+function clean_docker_service() {
+    cmd="sudo iptables -t nat -F"
+    echo $cmd; eval $cmd
+    cmd="sudo ifconfig docker0 down"
+    echo $cmd; eval $cmd
+    cmd="sudo brctl delbr docker0"
+    echo $cmd; eval $cmd
+}
+
+cmd="$@"
+case "$cmd" in
+    "start")
+		clean_docker_service
+        sudo service docker start
+        ;;
+    "restart")
+        sudo service docker stop
+		clean_docker_service
+        sudo service docker start
+        ;;
+    "stop")
+        sudo service docker stop
+		clean_docker_service
+        ;;
+    *)
+    cat << EOF
+
+    USAGE : `basename $0` < start | restart | stop >
+
+EOF
+        ;;
+esac

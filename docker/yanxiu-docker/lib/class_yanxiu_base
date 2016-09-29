@@ -1,0 +1,170 @@
+#!/bin/sh
+
+. /var/yanxiu/cluster/yanxiu-docker/lib/functions 
+
+#if cat /proc/version | grep -i 'centos' > /dev/null; then
+#	source $YANXIU_DOCKER_HOME/lib/functions
+#fi
+
+CC_USER='yanxiu'
+CC_ABCD='vE{]bPEfJ0'
+
+function checkJavaProccessHandler()
+{
+	local PRC=$1
+	local CHKTYPE=$2
+
+    local PCOUNT=$(jps -m|grep "$PRC"|wc -l)
+	echo pcount=$PCOUNT
+	
+	case $CHKTYPE in
+	start)
+		[ $PCOUNT -ne 0 ] && return 0 || return 1
+	;;
+	stop)
+		[ $PCOUNT -eq 0 ] && return 0 || return 1
+	;;
+	*)
+		echo ""Usage:$FUNCANME '$1'{proccess} '$2' {start|stop} 
+	esac
+}
+
+
+
+
+function checkProccessHandler()
+{
+	local PRC=$1
+	local CHKTYPE=$2
+
+    local PCOUNT=$(eval ps -ef|grep "$PRC"|grep -v "grep"|wc -l)
+	echo pcount=$PCOUNT
+	
+	case $CHKTYPE in
+	start)
+		[ $PCOUNT -ne 0 ] && return 0 || return 1
+	;;
+	stop)
+		[ $PCOUNT -eq 0 ] && return 0 || return 1
+	;;
+	*)
+		echo ""Usage:$FUNCANME '$1'{proccessName or pid} '$2' {start|stop} 
+	esac
+}
+
+function commandHandler()
+{
+	#redirect output to logfile 
+    CMDS=$1
+    DATETIME=$(date +%F_%H:%M)
+    SRVS_LOG=/opt/log/srvs_action.log
+    echo '###'$DATETIME'###' >> $SRVS_LOG
+    echo $CMDS | awk 'BEGIN{RS="";FS="&&"}{for(i=1;i<=NF;i++)print $i}'|\
+    while read line 
+    do
+		echo -n "$FUNCNAME==>" >> $SRVS_LOG &&\
+        $line >> $SRVS_LOG 2>&1 || return 1
+    done 
+}
+
+function command2Handler()
+{
+	# do have output on stdout
+	declare local _RETVAL
+    local CMDS=$1
+    DATETIME=$(date +%F_%H:%M)
+    SRVS_LOG=/opt/log/srvs_action.log
+    TMP_OUTPUT_LOG=/tmp/output_tmp.log
+
+    echo '###'$DATETIME'###' >> $SRVS_LOG
+    echo "$CMDS" | awk 'BEGIN{RS="";FS="&&"}{for(i=1;i<=NF;i++)print $i}'|\
+    while read line 
+    do
+        $line  > $TMP_OUTPUT_LOG 2>&1;_RETVAL=$? &&\
+        LOG_STRING="$FUNCNAME=> $(awk '{print $0}' $TMP_OUTPUT_LOG)" &&\
+        echo $LOG_STRING >> $SRVS_LOG && echo $LOG_STRING
+        [ $_RETVAL -ne 0 ] && return 1
+    done 
+
+}
+
+function actionHandler()
+{
+	local RETVAL=$?
+    local MODULE_NAME=$1
+    local ACTION_TYPE=$2
+
+    if [ $RETVAL -eq 0 ];then
+        action "$MODULE_NAME $ACTION_TYPE" /bin/true
+		sleep 2
+		return 0
+    else
+        action "$MODULE_NAME $ACTION_TYPE" /bin/false
+		sleep 2
+		return 1
+    fi
+}
+
+function colorHandler()
+{
+    local COLOR="$1"
+    local STR="$2"
+
+    case $COLOR in
+    white)
+    echo -ne "\033[30;1m$STR\033[0m"
+    ;;
+    red)
+    echo -ne "\033[31;1m$STR\033[0m"
+    ;;
+    green)
+    echo -ne "\033[32;1m$STR\033[0m"
+    ;;
+    yellow)
+    echo -ne "\033[33;1m$STR\033[0m"
+    ;;
+    dblue)
+    echo -ne "\033[34;1m$STR\033[0m"
+    ;;
+    purpl)
+    echo -ne "\033[35;1m$STR\033[0m"
+    ;;
+    lblue)
+    echo -ne "\033[36;1m$STR\033[0m"
+    ;;
+    black)
+    echo -ne "\033[37;1m$STR\033[0m"
+    ;;
+    *)
+    echo "Usage: {green|yellow|dblue|purpl|lblue|black},{String}"
+    ;;
+    esac
+}
+
+
+function cancelHandler()
+{
+   local PARAMSTR=$@
+   local CANCEL_FILEPATH=$(echo $PARAMSTR|awk '{print $NF}')
+   local CANCEL_Target="${PARAMSTR% *}"
+   CANCEL_FILEPATH="$CANCEL_FILEPATH"
+   sed -i 's&'"$CANCEL_Target"'&#'"$CANCEL_Target"'&g' $CANCEL_FILEPATH
+}
+
+function charsetHandler()
+{
+    local CHARSET="$1"
+
+    case $CHARSET in
+    utf8)
+    export LANG="zh_CN.UTF-8"
+    export LC_ALL="zh_CN.UTF-8"
+    ;;
+    gbk)
+    export LANG="zh_CN.GBK"
+    export LC_ALL="zh_CN.GBK"
+    ;;
+    *)
+    ;;
+    esac
+}

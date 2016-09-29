@@ -1,0 +1,7 @@
+FROM yanxiu_image_maven:latest
+MAINTAINER duanjuntao@yanxiu.com
+
+COPY dfinition/package_launch      /opt/run/launch
+COPY resource/app_hosts        	   /opt/run/app_hosts
+COPY resource/mvn_settings.xml     /opt/maven/conf/settings.xml
+CMD ["/bin/bash", "/opt/run/launch"]

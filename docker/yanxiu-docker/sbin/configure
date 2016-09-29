@@ -1,0 +1,16 @@
+#!/bin/bash -
+#http://svn2.yanxiu.com/yanxiu/yanxiu-docker/trunk
+
+#sudo yum update
+#curl -sSL https://get.docker.com/ | sh
+#sudo service docker start
+#useradd docker 
+#useradd yxadmin
+
+#sudo usermod -aG docker yxadmin #MUST RELOGIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+##yxadmin config sudo
+
+function refresh_share_images() {
+    #TODO......
+}

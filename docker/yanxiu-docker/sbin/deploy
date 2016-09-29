@@ -1,0 +1,203 @@
+#!/bin/bash -
+CURR_PATH=$(cd `dirname $(which $0)`; pwd)
+CURR_HOST_IP=$(ifconfig | sed -n '/inet addr:192/s/.*inet addr:\(.*\)  Bcast.*/\1/gp')
+
+# HARD CODED PATH , BAD PATH FORM 
+#. /var/yanxiu/cluster/yanxiu-docker/sbin/etcd/etcd_docker
+
+if ! [ "$#" -eq "6" ]; then
+cat << EOF
+
+USAGE:
+    $0 IMG_NAME CONTAINER_NAME PORT_PREFIX CONTAINER_NUMBER LOG_ROOT DATA_ROOT
+
+DESCRIPTION:
+    the map rule is:
+	1. service port : OUTER outter_port -->  CONTAINER 8080 
+
+EOF
+    exit 1
+fi
+
+img_name="$1"
+shift
+container_name="$1"
+shift
+port_prefix="$1"
+shift
+container_num="$1"
+shift
+LOG_ROOT="$1"
+shift
+LOG_ROOT=`echo ${LOG_ROOT} | sed 's/\/$//g'`
+if [ -z "$LOG_ROOT" ]; then
+	echo "LOG_ROOT can not be empty"
+	exit 1
+fi
+
+DATA_ROOT="$1"
+shift
+
+
+#add default version to the images name
+if ! echo $img_name | grep ':' > /dev/null; then
+    img_name="${img_name}:latest"
+fi
+
+function get_host_lan_ip(){
+	hostname -I 2>/dev/null | grep -oE '192\.168\.[0-9]{1,3}\.[0-9]{1,3}'
+}
+
+function start_one_container() {
+    local img_name="$1"
+    shift
+    local container_name="$1"
+    shift
+    local port="$1"
+    shift
+    container_host_ip=`get_host_lan_ip`
+    if [ -n "${container_host_ip}" ]; then
+		cmd="docker run \
+			-e \"HOST_ADDR=${container_host_ip}\" \
+			-e \"HOST_BIND_PORT=$port\" \
+			-e \"CONTAINER_NAME=$container_name\" \
+			-e \"NET_MODE=$NET_MODE\" \
+			-i"
+		if [ "x$CONTAINER_SKIP_RM_FLAG" = "xTRUE" ]; then
+    		echo "INFO:  CONTAINER_SKIP_RM_FLAG is ${CONTAINER_SKIP_RM_FLAG} skip --rm"
+			cmd="${cmd} -d"
+		else
+			cmd="${cmd} --rm"
+		fi
+
+		if ! [ "$NET_MODE" = "host" ]; then
+    		if [ "$port" -lt "99900" ]; then
+    		    if [ -z "$PORT_EXPOSE" ]; then
+    		        echo "INFO: PORT_EXPOSE not set use default-> 80 port"
+    		        cmd="${cmd} -p $port:80"
+    		    else
+    		        echo "INFO: PORT_EXPOSE is set to $PORT_EXPOSE"
+    		        cmd="${cmd} -p $port:$PORT_EXPOSE"
+    		    fi
+    		fi
+    	else
+    		echo "INFO: NET_MODE is [$NET_MODE], SKIP net bridge $port:$PORT_EXPOSE config"
+			cmd="${cmd} --net=host"
+    	fi
+		cmd="${cmd} \
+    	    -v ${LOG_ROOT}/$container_name:/opt/logs \
+		    -v ${DATA_ROOT}:/opt/data \
+    		--name=$container_name $img_name"
+    	echo $cmd
+    	eval $cmd > /dev/null 2>&1
+	else
+		echo "WARN!!!!!!!: FAIL to start container, \
+			we can not get correct host ip,curr is [${container_host_ip}]"
+	fi
+}
+
+function start_container() {
+    local img_name="$1"
+    local container_name="$2"
+    local expose_port="$3"
+    #To ensure that the older container is discarded......
+    if docker ps -a 2>/dev/null | grep -v 'CONTAINER ID' \
+        | sed 's/[ ]*$//g' | grep -E "${container_name}$" > /dev/null; then
+        cmd="docker rm -f ${container_name}"
+        echo $cmd
+        eval $cmd > /dev/null 2>&1 
+    fi
+	#Start new container......
+    cmd="start_one_container $img_name $container_name ${expose_port}"
+    echo $cmd
+    eval $cmd &
+}
+
+function stop_container() {
+    local container_name="$1"
+    cmd="docker stop ${container_name}"
+    echo $cmd
+    eval $cmd
+}
+
+function restart_container() {
+    local img_name="$1"
+    local container_name="$2"
+    local expose_port="$3"
+    #check wether the image version is the same
+    if [ -n "$CONTAINER_RESTART_FLAG" ]; then
+            #stop current container
+            stop_container ${container_name}
+            #start new container for new image
+            start_container $img_name $container_name $expose_port
+    else
+        if ! docker ps 2>/dev/null | sed 's/[ ]*$//g' | \
+            grep -E "${container_name}$" | tr -s " " | grep " $img_name " > /dev/null; then
+            #stop current container
+            stop_container ${container_name}
+            #start new container for new image
+            start_container $img_name $container_name $expose_port
+        else
+            echo "Skip restart: the runing container $container_name's \
+            img version already match the target version: $img_name"
+        fi
+    fi
+}
+
+function deploy_container_group() {
+    local img_name="$1"
+    local container_name="$2"
+    local port_prefix="$3"
+    local container_num="$4"
+    #build curr_containers list
+    curr_containers="/tmp/docker_ps_curr"
+    docker ps -a 2>/dev/null | grep -v 'CONTAINER ID' | sed 's/[ ]*$//g' \
+        | grep -oE "${container_name}_[0-9]+$" > ${curr_containers}
+    #build plan_containers list
+    plan_containers="/tmp/docker_ps_plan"
+    seq 1 $container_num | xargs -I{} echo "${container_name}_"{} > ${plan_containers}
+
+    #stop redundancy containers, for gray deploy, this step is skiped
+    if [ -z "$CONTAINER_GRAY_DEPLOY_FLAG" ]; then
+        stop_containers="/tmp/docker_ps_stop"
+        cat ${curr_containers} ${curr_containers} ${plan_containers} \
+            | sort | uniq -c | awk '{if($1==2) print $2}' > ${stop_containers} 
+        for ctn in $(cat ${stop_containers});
+        do
+            if [ -n "$ctn" ]; then
+                stop_container $ctn 
+            fi
+        done
+    fi
+
+    #start new created containers
+    start_containers="/tmp/docker_ps_start"
+    cat ${curr_containers} ${curr_containers} ${plan_containers} \
+        | sort | uniq -c | awk '{if($1==1) print $2}' > ${start_containers} 
+    for ctn in $(cat ${start_containers});
+    do
+        if [ -n "$ctn" ]; then
+            index=$(echo "$ctn" | awk -F'_' '{print $NF}' | head -1 | xargs printf '%02d')
+            expose_port="${port_prefix}${index}"
+            start_container $img_name $ctn $expose_port 
+        fi
+    done
+
+    #restart exsited containers
+    restart_containers="/tmp/docker_ps_restart"
+    cat ${curr_containers} ${curr_containers} ${plan_containers} \
+        | sort | uniq -c | awk '{if($1==3) print $2}' > ${restart_containers} 
+    for ctn in $(cat ${restart_containers});
+    do
+        if [ -n "$ctn" ]; then
+           index=$(echo "$ctn" | awk -F'_' '{print $NF}' | head -1 | xargs printf '%02d')
+           expose_port="${port_prefix}${index}"
+           restart_container $img_name $ctn $expose_port
+        fi
+    done
+    #HAVE BUG, FIX IT IN TEST ENV FIRST
+    ##auto_join_one_project_to_cluster_handler "${img_name%%:*}" &
+    sleep 1
+}
+
+deploy_container_group ${img_name} ${container_name} ${port_prefix} ${container_num}

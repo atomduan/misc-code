@@ -1,0 +1,27 @@
+#!/bin/bash
+
+PWD=$(cd $(dirname $0);pwd)
+. /var/yanxiu/cluster/yanxiu-docker/sbin/class/class_yanxiu_base
+
+ETCDCTL_CMD=$PWD/etcdctl
+
+function regist_one_host()
+{
+    local SERVER_HOSTNAME="$1"
+    local ETCD_PREFIX="/hosts"
+    local ETCD_KEY="$ETCD_PREFIX/$SERVER_HOSTNAME"
+    local ETCD_VALUE="$2"
+}
+
+
+function delete_one_host()
+{
+
+
+}
+
+function join_one_host_to_hostgroup()
+{
+
+
+}

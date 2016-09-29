@@ -1,0 +1,143 @@
+#!/bin/bash
+
+PWD=$(cd $(dirname $0);pwd)
+. /var/yanxiu/cluster/yanxiu-docker/lib/class_yanxiu_base
+
+ETCD_SERVICE_IP_PORT="192.168.1.214:4001"
+ETCDCTL_BASE_CMD="/var/yanxiu/cluster/yanxiu-docker/sbin/etcd/etcdctl -C http://$ETCD_SERVICE_IP_PORT"
+
+function regist_one_file()
+{
+   local ETCD_KEY="$1"
+   local ETCD_VALUE="$2"
+   eval "$ETCDCTL_BASE_CMD set $ETCD_KEY $ETCD_VALUE > /dev/null 2>&1"
+   #actionHandler "ETCD Set File $ETCD_KEY" 
+}
+
+function regist_one_dir()
+{
+   local ETCD_KEY="$1"
+   eval "$ETCDCTL_BASE_CMD setdir $ETCD_KEY > /dev/null 2>&1"
+   #actionHandler "ETCD Set Dir $ETCD_KEY" 
+}
+
+function update_one_file()
+{
+   local ETCD_KEY="$1"
+   local ETCD_VALUE="$2"
+   regist_one_file "$ETCD_KEY" "$ETCD_VALUE"
+}
+
+
+function update_one_dir()
+{
+   local ETCD_KEY="$1"
+   regist_one_dir "$ETCD_KEY"
+}
+
+function delete_one_file()
+{
+   local ETCD_KEY="$1"
+   eval "$ETCDCTL_BASE_CMD rm $ETCD_KEY"
+   #actionHandler "ETCD Remove File $ETCD_KEY" 
+}
+
+function delete_one_dir()
+{
+   local ETCD_KEY="$1"
+   eval "$ETCDCTL_BASE_CMD rmdir $ETCD_KEY"
+   #actionHandler "ETCD Remove Dir $ETCD_KEY" 
+}
+
+function recursive_delete_one_dir()
+{
+    local ETCD_KEY="$1"
+    eval "curl -s -L http://$ETCD_SERVICE_IP_PORT/v2/keys/$ETCD_KEY?dir=true\\&recursive=true -XDELETE" 
+    #actionHandler "ETCD Recursive Remove dir"
+}
+
+function check_one_file()
+{
+    local ETCD_KEY="$1"
+    eval "$ETCDCTL_BASE_CMD get $ETCD_KEY" > /dev/null 2>&1 
+    if [ $? -eq 0 ];then
+        return 0 
+    else
+        return 1
+    fi
+}
+
+function check_one_dir()
+{
+    local ETCD_KEY="$1"
+    eval "$ETCDCTL_BASE_CMD ls $ETCD_KEY" > /dev/null 2>&1
+    if [ $? -eq 0 ];then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function query_one_file()
+{
+   local ETCD_KEY="$1"
+   eval "$ETCDCTL_BASE_CMD get $ETCD_KEY"
+}
+
+
+function query_one_dir()
+{
+   local ETCD_KEY="$1"
+   eval "$ETCDCTL_BASE_CMD ls $ETCD_KEY --sort"
+}
+
+function query_all_dir()
+{
+   local ETCD_KEY="$1"
+   eval "$ETCDCTL_BASE_CMD ls $ETCD_KEY --sort --recursive 2>&1" |grep -v 'Error'
+}
+
+function query_all_without_prefix()
+{
+    local ETCD_KEY="$1"
+    local ETCD_PREFIX="$2"
+    eval "$ETCDCTL_BASE_CMD ls $ETCD_KEY --sort --recursive" 2>&1 | awk -F$ETCD_PREFIX '{print $2}'  |grep -Ewv '(directory|Error|ip)'
+}
+
+
+function query_without_prefix()
+{
+    local ETCD_KEY="$1"
+    local ETCD_PREFIX="$2"
+    eval "$ETCDCTL_BASE_CMD ls $ETCD_KEY --sort" 2>&1 | awk -F$ETCD_PREFIX '{print $2}'  |grep -Ev '(directory|Error)'
+}
+
+function get_values_of_one_dir()
+{
+    local ETCD_DIR_KEY="$1"
+    for key in $(query_one_dir $ETCD_DIR_KEY)
+    do
+        echo "$key: $(query_one_file "$key")"
+    done
+}
+
+function recursive_join_objects_to_dir()
+{
+    local ETCD_DEST_KEY=$1
+    local ETCD_SRC_KEY=$2
+    local ETCD_SRC_PREFIX=$3
+
+    for key in $(query_all_dir "$ETCD_SRC_KEY")
+    do
+        local ETCD_VALUE=$(query_one_file "$key" 2>&1 |grep -Ev '(directory|Error)') 
+        if [ "x$ETCD_VALUE" = "x" ];then
+            local ETCD_SRC_SUB_KEY=$(echo $key | awk -F$ETCD_SRC_PREFIX '{print $2}')
+            local ETCD_KEY="$ETCD_DEST_KEY/$ETCD_SRC_SUB_KEY"
+            regist_one_dir "$ETCD_KEY"
+        else
+            local ETCD_SRC_SUB_KEY=$(echo $key | awk -F$ETCD_SRC_PREFIX '{print $2}')
+            local ETCD_KEY="$ETCD_DEST_KEY/$ETCD_SRC_SUB_KEY"
+            regist_one_file "$ETCD_KEY" "$ETCD_VALUE"
+        fi
+    done
+}

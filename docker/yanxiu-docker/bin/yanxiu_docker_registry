@@ -1,0 +1,45 @@
+#!/bin/bash -
+#registry.docker.yanxiu.com
+
+SCRIPT_PATH=$(cd `dirname $(which $0)`; pwd)
+YANXIU_DOCKER_HOME=$(cd $SCRIPT_PATH; cd ..; pwd)
+YANXIU_DOCKER_CONF_DIR=${YANXIU_DOCKER_HOME}/conf
+
+if [ -f "${YANXIU_DOCKER_CONF_DIR}/yanxiu_docker_env.sh" ]; then
+    source "${YANXIU_DOCKER_CONF_DIR}/yanxiu_docker_env.sh"
+fi
+
+CONTAINER_NAME="YANXIU_DOCKER_REGISTRY"
+LOCAL_STORE_PATH="${DOCKER_CTX_ROOT}/data/docker/registry"
+
+function docker_registry_start() {
+    docker run -d -i -t \
+        -p $DOCKER_REGISTRY_PORT:$DOCKER_REGISTRY_PORT \
+        --restart=always --name registry \
+        -v $LOCAL_STORE_PATH:/var/lib/registry \
+        --name $CONTAINER_NAME registry:latest
+}
+
+function docker_registry_stop() {
+    docker stop $CONTAINER_NAME
+}
+
+cmd="$1"
+shift
+case "$cmd" in
+    "start")
+        docker_registry_start
+        ;;
+    "restart")
+        docker_registry_stop
+        docker_registry_start
+        ;;
+    "stop")
+        docker_registry_stop
+        ;;
+    *)
+    cat << EOF
+    USAGE :  < start | restart | stop>
+EOF
+        ;;
+esac

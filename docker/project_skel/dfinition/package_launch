@@ -1,0 +1,15 @@
+#!/bin/bash -
+export JAVA_OPTS="${JAVA_OPTS} -Dfile.encoding=utf-8"
+
+if [ -f /opt/run/app_hosts ]; then
+    cat /opt/run/app_hosts >> /etc/hosts
+else
+    echo "/opt/tomcat/app_hosts not exsit......" 
+    exit 1
+fi
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+cd /opt/src/frontend;
+mvn clean package
+mv /opt/src/frontend/target/* /opt/target/
+rm -rf /opt/src/frontend/target

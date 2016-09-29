@@ -1,0 +1,120 @@
+#!/bin/bash
+
+TODAY=$(date +%F)
+LOG_PATH_PREFIX="/var/yanxiu/logs/docker"
+DATA_PATH_PREFIX="/var/yanxiu/data/docker"
+LOGFILE_MERGE_PATH="$DATA_PATH_PREFIX/merge_logs"
+DOCKER_HOST_ARRARY=('192.168.1.128' '192.168.1.184')
+#DOCKER_HOST_ARRARY=('192.168.12.9')
+RSYNC_CMD="/usr/bin/rsync -av --block-size=512 --protocol=29 --bwlimit=10000"
+SSH_CMD="/usr/bin/ssh"
+
+function docker_logfile_collection_handler()
+{
+    local SRC_SERVER=$1
+    local SRC_PATH=$2
+    local DEST_PATH=$3
+    local RSYNC_PARAM=$4
+    
+    [ ! -d "$DEST_PATH" ] && mkdir -p "$DEST_PATH"  
+    [ -d "$DEST_PATH" ] && mkdir -p "$DEST_PATH/$SRC_SERVER"
+    
+    #echo OBJ_INDEX=$OBJ_INDEX
+    #echo obj=$obj
+    #echo is_dir=$IS_DIR
+    #echo LOGFILE_DATE=$LOGFILE_DATE
+    #echo host_ip=$SRC_SERVER
+
+    local IS_EXIST=$($SSH_CMD $SRC_SERVER "test -d $SRC_PATH && echo 1" )
+    
+    [ "x$IS_EXIST" = "x1" ] && $RSYNC_CMD $RSYNC_PARAM $SRC_SERVER:$SRC_PATH/ $DEST_PATH/$SRC_SERVER/ #> /dev/null 2>&1
+}
+
+function docker_filling_logfiles()
+{
+    local SERVER="$1"
+    local SRC_PATH="$2"
+    local RSYNC_PARAM="--exclude=*$TODAY* $3 --exclude=*.log"
+    local DEST_PATH="/data/recycle_bin/$SERVER"
+    local RSYNC_CMD="$RSYNC_CMD --remove-source-files"
+
+    $SSH_CMD $SERVER -t "sudo $RSYNC_CMD $RSYNC_PARAM $SRC_PATH/ $DEST_PATH/"
+}
+
+function docker_collect_logfiles_by_project()
+{
+    local SRC_SERVER="$1"
+    local PROJ_NAME="$2"
+    local LOGFILE_DATE="$3"
+    local LOG_TYPE="$4" 
+
+    [ "x$LOGFILE_DATE" = "x" ] && echo "Cann't get LOGFILE_DATE paramter" && exit 4
+    
+    if [ "x$LOG_TYPE" = "xbusiness" ];then
+        if [ "x$LOGFILE_DATE" = x$TODAY ];then
+            local RSYNC_PARAM="--exclude=*catalina* --exclude=*manager* --exclude=*localhost* --include=*/ --include=*.log --exclude=*"
+        elif [ "x$LOGFILE_DATE" = "xall"  ];then
+            local RSYNC_PARAM="--exclude=*catalina* --exclude=*manager* --exclude=*localhost*"
+        else
+            local RSYNC_PARAM="--exclude=*catalina* --exclude=*manager* --exclude=*localhost* --include=*/ --include=*$LOGFILE_DATE* --exclude=*"
+        fi
+    elif [ "x$LOG_TYPE" = "xservice" ];then
+        if [ "x$LOGFILE_DATE" = "xall" ];then
+            local RSYNC_PARAM="--include=$PROJ_NAME*/ --include=*catalina* --include=*manager* --include=*localhost* --exclude=*"
+        else
+            local RSYNC_PARAM="--include=$PROJ_NAME*/ --include=*catalina*$LOGFILE_DATE* --include=*manager*$LOGFILE_DATE* --include=*localhost*$LOGFILE_DATE* --exclude=*"
+        fi
+    else
+        echo "Cann't find such log type!"
+    fi
+
+    
+    local SRC_PATH="$LOG_PATH_PREFIX/$PROJ_NAME"
+    local DEST_PATH="$LOGFILE_MERGE_PATH/$PROJ_NAME"
+
+    docker_logfile_collection_handler "$SRC_SERVER" "$SRC_PATH" "$DEST_PATH" "$RSYNC_PARAM" && docker_filling_logfiles "$SRC_SERVER" "$SRC_PATH" "$RSYNC_PARAM"
+
+}
+
+function docker_collect_business_logfiles_by_project()
+{
+    local PROJ_NAME="$1"
+    shift
+    local LOGFILE_DATE="$1"
+    shift
+    local LOG_TYPE="business" 
+    for server in ${DOCKER_HOST_ARRARY[@]}
+    do
+        docker_collect_logfiles_by_project "$server" "$PROJ_NAME" "$LOGFILE_DATE" "$LOG_TYPE"
+    done 
+}
+
+function docker_collect_service_logfiles_by_project()
+{
+    local PROJ_NAME="$1"
+    shift
+    local LOGFILE_DATE="$1"
+    shift
+    local LOG_TYPE="service" 
+
+    for server in ${DOCKER_HOST_ARRARY[@]}
+    do
+        docker_collect_logfiles_by_project "$server" "$PROJ_NAME" "$LOGFILE_DATE" "$LOG_TYPE"
+    done 
+}
+
+
+function docker_collect_all_logfiles_by_project()
+{
+    local PROJ_NAME="$1"
+    shift
+    local LOGFILE_DATE="$1"
+    shift
+    
+    docker_collect_business_logfiles_by_project "$PROJ_NAME" "$LOGFILE_DATE"
+    docker_collect_service_logfiles_by_project "$PROJ_NAME" "$LOGFILE_DATE"
+}
+
+docker_collect_all_logfiles_by_project $1 $2
+#docker_collect_business_logfiles_by_project $1 $2 
+#docker_collect_service_logfiles_by_project $1 $2

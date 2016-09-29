@@ -1,0 +1,109 @@
+#!/bin/bash
+
+PWD=$(cd $(dirname $0);pwd)
+. /var/yanxiu/cluster/yanxiu-docker/sbin/etcd/etcd_handler
+
+DOCKER_PREFIX=/services/docker
+CLUSTER_PREFIX=/services/proxy
+
+function regist_one_docker()
+{
+    local DOCKER_KEY="$1"
+    local ETCD_VALUE="$2"
+    local ETCD_KEY="$DOCKER_PREFIX/$DOCKER_KEY"
+    regist_one_file "$ETCD_KEY" "$ETCD_VALUE"
+}
+
+
+function delete_one_docker()
+{
+    local DOCKER_KEY="$1"
+    local ETCD_KEY="$DOCKER_PREFIX/$DOCKER_KEY"
+    recursive_delete_one_dir "$ETCD_KEY"
+}
+
+function regist_one_servername()
+{
+    local PROJECT_KEY="$1"
+    read -p'Pls input your servername: ' SERVERNAME
+    local ETCD_VALUE="$SERVERNAME"
+    local ETCD_KEY="$DOCKER_PREFIX/$PROJECT_KEY/servername"
+    regist_one_file "$ETCD_KEY" "$ETCD_VALUE" 
+}
+
+function join_projects_to_cluster_handler()
+{
+    local CLUSTER_WITH_HOST_KEY="$1"
+
+    query_without_prefix "$DOCKER_PREFIX" "$DOCKER_PREFIX/" 
+
+    read -p'Pls choose your project: ' PROJS
+
+    local PROJS_ARRAY=($PROJS)
+
+    for key in ${PROJS_ARRAY[@]}
+    do
+        echo key=$key
+        recursive_delete_one_dir "$CLUSTER_WITH_HOST_KEY/$key/instances/dockers" 
+        recursive_join_objects_to_dir "$CLUSTER_WITH_HOST_KEY" "$DOCKER_PREFIX/$key" "$DOCKER_PREFIX/"
+    done
+}
+
+function auto_join_one_project_to_cluster_handler()
+{
+    local PROJECT="$1"
+    local CLUSTER_WITH_HOST_KEY="$CLUSTER_PREFIX/$(query_all_without_prefix "$CLUSTER_PREFIX" "$CLUSTER_PREFIX/" | grep -w "$PROJECT"| grep -v "/$PROJECT/"  | awk -F"/$PROJECT" '{print $1}')"
+
+    recursive_delete_one_dir "$CLUSTER_WITH_HOST_KEY/$PROJECT/instances/dockers" 
+    recursive_join_objects_to_dir "$CLUSTER_WITH_HOST_KEY" "$DOCKER_PREFIX/$PROJECT" "$DOCKER_PREFIX/"
+}
+
+function main()
+{
+    cat <<EOF
+
+1) Create proxy server_Name for docker
+
+2) Join project to cluster
+
+3) Delete docker key
+
+EOF
+read -p'Pls choose your option: ' OPTION
+#query_all_dir "$DOCKER_PREFIX" | grep -Ev '(servername)'
+case $OPTION in
+1)
+    query_without_prefix "$DOCKER_PREFIX" "$DOCKER_PREFIX/"
+    read -p 'Pls choose a key to give servername: ' DOCKER_KEY
+    regist_one_servername "$DOCKER_KEY" 
+;;
+2)
+    query_without_prefix "$CLUSTER_PREFIX/nginx" "$CLUSTER_PREFIX/"
+    read -p 'Pls choose a cluster: ' CLUSTER_KEY
+
+    local CLUSTER_KEY="$CLUSTER_PREFIX/$CLUSTER_KEY"
+    for host in $(query_without_prefix "$CLUSTER_KEY" "$CLUSTER_KEY/")
+    do
+        join_projects_to_cluster_handler "$CLUSTER_KEY/$host"
+    done
+;;
+3)
+    query_all_without_prefix "$DOCKER_PREFIX" "$DOCKER_PREFIX/"| grep -Ev '(servername)'
+    read -p 'Pls choose a key to delete: ' DOCKER_KEY
+    delete_one_docker "$DOCKER_KEY"
+;;
+esac
+}
+
+case $1 in
+-m)
+main
+;;
+-s)
+query_all_dir "/services/docker"
+;;
+*)
+#auto_join_one_project_to_cluster_handler $2
+#query_all_without_prefix "$CLUSTER_PREFIX" "$CLUSTER_PREFIX/" | grep -w "$2" | grep -v "/$2/"  | awk -F"/$2" '{print $1}'
+;;
+esac

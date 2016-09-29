@@ -1,0 +1,219 @@
+#!/bin/bash -
+if ! [ "$#" -eq "4" ]; then
+cat << EOF
+
+USAGE:
+    CMD PROJECT_DOCKER_CONTEXT IMG_NAME TAG LIB_PATH
+
+DESCRIPTION:
+    PROJECT_DOCKER_CONTEXT:       	project related docker context, maybe test or product
+    IMG_NAME:           			the build image name
+    TAG:                			the build image tag
+    LIB_PATH:           			the the root lib path for build
+
+STRUCTURE CONTROL:
+    The project src MUST at least have a dir structure like below:
+        .
+        └── docker                  The docker context
+             ├── config     		a integration point for this build script
+             └── dfinition
+                  ├── package_dkfile
+                  ├── package_launch
+                  ├── runtime_dkfile
+                  └── runtime_launch
+             └── target
+
+
+DockerfileCtrl Interface:
+    thie file MUST have defined such interface below, for the whole building lifecycle:
+        {PROJECT_DOCKER_CONTEXT}/dfinition/runtime_launch
+        {PROJECT_DOCKER_CONTEXT}/dfinition/package_launch
+        {PROJECT_DOCKER_CONTEXT}/dfinition/package_dkfile
+        {PROJECT_DOCKER_CONTEXT}/dfinition/runtime_dkfile
+
+BUILDING ROUTINE:
+    There are 2 phease in this routine:
+        phease 1: Compiling and Packaging 
+        phease 2: Runtime image building 
+    RULES:
+        ALL Intermidiate results MUST be dumped into path : PROJECT_DOCKER_CONTEXT/target
+
+EOF
+    exit 1
+fi
+
+PROJECT_DOCKER_CONTEXT="$1"
+shift
+IMG_NAME="$1"
+shift
+TAG="$1"
+shift
+LIB_PATH="$1"
+shift
+
+PROJECT_DOCKER_CONTEXT=`echo ${PROJECT_DOCKER_CONTEXT} | sed 's/\/$//g'`
+if ! [ -f "${PROJECT_DOCKER_CONTEXT}/config" ]; then
+cat << EOF
+
+There must be a config file under project docker ctx : ${PROJECT_DOCKER_CONTEXT}"
+The Example dir structure is like this:
+
+docker(_test | _dev | _product | ....)
+├── config
+├── dfinition
+│   ├── package_dkfile
+│   ├── package_launch
+│   ├── runtime_dkfile
+│   └── runtime_launch
+├── resource
+│   └── app_hosts
+└── target
+
+And the config MUST answer Where the source root is, throw interface source_root
+
+EOF
+	exit 1
+fi
+
+
+if [ -z "${ROUTINE_CLEANUP}" ]; then
+	echo "ROUTINE_CLEANUP can not be empty, it must be export in"
+	echo "${PROJECT_DOCKER_CONTEXT}/config"
+	exit 1
+fi
+
+function create_image() {
+    BDIMG_NAME="${IMG_NAME}_bd"
+    BDCTN_NAME="${BDIMG_NAME}_${TAG}"
+    RTIMG_NAME="${IMG_NAME}"
+
+    cd ${PROJECT_DOCKER_CONTEXT}
+
+    #begin our initalize
+	if [ -f "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP}" ]; then
+		chmod 755 "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP}"
+	else
+		echo "Error : ${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP} Does not exsit"
+		exit 1
+	fi
+
+    if ! [ -d ${PROJECT_DOCKER_CONTEXT}/target ]; then
+        mkdir -p ${PROJECT_DOCKER_CONTEXT}/target 
+        if ! [ "$?" = "0" ]; then
+           echo "Error : can not create docker working dir : $PROJECT_DOCKER_CONTEXT/target " 
+           exit 1
+        fi
+    fi
+
+	eval "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP}"
+
+    if ! [ "$SKIP_PACKAGE" = "ON" ]; then
+        #begin our build work
+        docker build --force-rm=true -f $PACKAGE_DKFILE --tag=$BDIMG_NAME:$TAG .
+        #lunch bdimage to build source
+        cmd="docker run -i -t --rm \
+            -v ${SOURCE_ROOT}:/opt/src"
+
+        if ! [ -z "${LIB_PATH}" ] && [ "$LIB_PATH" != "/tmp/dummy" ]; then
+            cmd="${cmd} -v ${LIB_PATH}:/opt/lib"
+        fi
+
+        cmd="${cmd} \
+            -v ${PROJECT_DOCKER_CONTEXT}/target:/opt/target \
+            --name ${BDCTN_NAME} $BDIMG_NAME:$TAG"
+        echo $cmd
+        eval $cmd
+        docker rmi $BDIMG_NAME:$TAG
+    else
+        echo "create_image: SKIP_PACKAGE is ON, skip package OP"
+    fi
+
+    #begin build runtime context
+	if [ -n "${ROUTINE_PREPROCESS}" ]; then
+		if [ -f "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_PREPROCESS}" ]; then
+			chmod 755 "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_PREPROCESS}"
+			eval "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_PREPROCESS}"
+		fi
+	fi
+    docker build --force-rm=true -f $RUNTIME_DKFILE --tag=$RTIMG_NAME:$TAG .
+    if [ "$?" = "0" ]; then
+        docker tag -f $RTIMG_NAME:$TAG $RTIMG_NAME:latest
+        cat << EOF
+
+------------------------------------------------------------------
+
+INFO: build complete, update resulted tag to latest tag
+
+$RTIMG_NAME $TAG
+
+EOF
+    fi
+}
+
+function create_package() {
+    BDIMG_NAME="${IMG_NAME}_bd"
+    BDCTN_NAME="${BDIMG_NAME}_${TAG}"
+
+    cd ${PROJECT_DOCKER_CONTEXT}
+
+    #begin our initalize
+	if [ -f "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP}" ]; then
+		chmod 755 "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP}"
+	else
+		echo "Error : ${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP} Does not exsit"
+		exit 1
+	fi
+
+    if ! [ -d ${PROJECT_DOCKER_CONTEXT}/target ]; then
+        mkdir -p ${PROJECT_DOCKER_CONTEXT}/target 
+        if ! [ "$?" = "0" ]; then
+           echo "Error : can not create docker working dir : $PROJECT_DOCKER_CONTEXT/target " 
+           exit 1
+        fi
+    fi
+
+	eval "${PROJECT_DOCKER_CONTEXT}/${ROUTINE_CLEANUP}"
+
+    cat << EOF 
+
+CLEAN TARGET DIR: $PROJECT_DOCKER_CONTEXT/target    .................."
+
+EOF
+    #begin our build work
+    docker build --force-rm=true -f $PACKAGE_DKFILE --tag=$BDIMG_NAME:$TAG .
+    #lunch bdimage to build source
+    cmd="docker run -i -t --rm \
+        -v ${SOURCE_ROOT}:/opt/src"
+
+    if ! [ -z "${LIB_PATH}" ] && [ "$LIB_PATH" != "/tmp/dummy" ]; then
+        cmd="${cmd} -v ${LIB_PATH}:/opt/lib"
+    fi
+
+    cmd="${cmd} \
+        -v ${PROJECT_DOCKER_CONTEXT}/target:/opt/target \
+        --name ${BDCTN_NAME} $BDIMG_NAME:$TAG"
+    echo $cmd
+    eval $cmd
+    docker rmi $BDIMG_NAME:$TAG
+    cat << EOF
+
+PACKAGING TASK FINISHED, 
+THE pacakaged resources are moven to $PROJECT_DOCKER_CONTEXT/target DIR
+check dfinition/package_launch for more resouce retain policy info.
+BASICALLY, these are identical to the intermideat resources for RUNTIME IMAGE building task.
+
+EOF
+}
+
+case "$TAG" in
+    "THIS_TAG_IS_USED_TO_NOTIFY_A_PACKAGE_ACTION")
+        if ! [ "$SKIP_PACKAGE" = "ON" ]; then
+            create_package
+        else
+            echo "SKIP_PACKAGE is ON, do you forget set SOURCE_ROOT in conf?"
+        fi
+        ;;
+    *)
+        create_image
+        ;;
+esac

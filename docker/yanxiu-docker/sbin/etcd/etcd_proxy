@@ -1,0 +1,90 @@
+#!/bin/bash
+
+PWD=$(cd $(dirname $0);pwd)
+. /var/yanxiu/cluster/yanxiu-docker/sbin/etcd/etcd_handler
+
+
+function regist_one_cluster()
+{
+    local CLUSTER_KEY="$1"
+    local ETCD_KEY="/services/proxy/$CLUSTER_KEY"
+    regist_one_dir "$ETCD_KEY"
+}
+
+
+function delete_one_cluster()
+{
+    local CLUSTER_KEY="$1"
+    local ETCD_KEY="/services/proxy/$CLUSTER_KEY"
+    recursive_delete_one_dir "$CLUSTER_KEY"
+}
+
+function create_new_cluster_handler()
+{
+    local ETCD_KEY="$1"
+    ([ -n "$(echo "$ETCD_KEY"|grep '/')" ] &&\
+    check_one_dir "/services/proxy/$ETCD_KEY" &&\
+    colorHandler "red" "$ETCD_KEY Already exist or not in format!" && echo) ||\
+    regist_one_cluster "$ETCD_KEY"
+}
+
+function  join_one_node_to_cluster_handler()
+{
+    local CLUSTER_KEY="$1"
+    local HOST_PREFIX="/hosts"
+    local PROXY_PREFIX="/services/proxy"
+
+    query_without_prefix "$HOST_PREFIX" "$HOST_PREFIX/"
+
+    read -p'Pls choose your hosts: ' HOSTS
+
+    local HOSTS_ARRAY=($HOSTS)
+
+    #check_one_dir "$PROXY_PREFIX/$CLUSTER_KEY" || (colorHandler "red" "$ETCD_KEY Already exist !" && echo && exit 1)
+
+    for proxy_key in ${HOSTS_ARRAY[@]}
+    do
+        recursive_join_objects_to_dir "/$PROXY_PREFIX/$CLUSTER_KEY" "$HOST_PREFIX/$proxy_key" "$HOST_PREFIX/"
+    done
+}
+
+
+function main()
+{
+    cat <<EOF
+1) Create new cluster
+
+2) Join one node to a existing cluster
+
+3) Delete one node from cluster
+
+EOF
+read -p'Pls choose your option: ' OPTION
+query_without_prefix "/services/proxy/nginx" "/services/proxy/"
+case $OPTION in
+1)
+    read -p 'Pls Input new cluster name(exp: nginx/cluster1): ' CLUSTER_KEY
+    create_new_cluster_handler "$CLUSTER_KEY"
+;;
+2)
+    read -p 'Pls Input choose a existing cluster: ' CLUSTER_KEY
+    join_one_node_to_cluster_handler "$CLUSTER_KEY"
+;;
+3)
+    read -p 'Pls Input choose a existing node to delete: ' CLUSTER_KEY
+    delete_one_cluster "/services/proxy/$CLUSTER_KEY"
+;;
+esac
+}
+
+case $1 in
+-m)
+main
+;;
+-s)
+query_all_dir "/services/proxy"
+;;
+*)
+recursive_join_objects_to_dir "/services/proxy/nginx" "/hosts/192.168.1.168" "/hosts/"
+;;
+esac
