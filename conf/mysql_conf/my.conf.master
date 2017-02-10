@@ -1,0 +1,75 @@
+[client]
+default-character-set = utf8mb4
+port            = 3306
+socket          = /var/yx/var/data/mysql/mysql.sock
+
+
+[mysqld]
+port            = 3306
+datadir         = /var/yx/var/data/mysql
+socket          = /var/yx/var/data/mysql/mysql.sock
+user            = mysql
+symbolic-links  = 0
+key_buffer_size = 16M
+max_allowed_packet      = 16M
+table_open_cache        = 64
+sort_buffer_size        = 512K
+net_buffer_length       = 8K
+read_buffer_size        = 256K
+read_rnd_buffer_size    = 512K
+myisam_sort_buffer_size = 8M
+max_connections         = 400
+character-set-client-handshake  = FALSE
+character-set-server            = utf8mb4
+collation-server                = utf8mb4_unicode_ci
+init_connect                    = 'SET NAMES utf8mb4'
+
+lower_case_table_names  = 1
+
+#SLOW QUERY
+slow_query_log          = on
+long_query_time         = 1
+slow_query_log_file     = /var/yx/var/log/mysql/mysqld-slow.log
+max_allowed_packet      = 1024M
+innodb_log_file_size    = 1024M
+skip-external-locking
+
+#bin-log, master-slave
+server-id       = 49
+sync_binlog     = 1
+log-bin         = mysql-bin-49
+binlog_format   = mixed
+
+binlog-do-db = dds
+binlog-do-db = dds2
+binlog-do-db = dds_report
+binlog-do-db = ldap_user
+binlog-do-db = metaplate
+binlog-do-db = qianke
+
+innodb_buffer_pool_size = 16M
+innodb_flush_log_at_trx_commit = 1
+innodb_data_home_dir = /var/yx/var/data/mysql
+innodb_log_group_home_dir = /var/yx/var/log/mysql
+
+[mysqld_safe]
+log-error       = /var/yx/var/log/mysql/mysqld.log
+
+[mysqldump]
+quick
+max_allowed_packet = 1024M
+
+[mysql]
+default-character-set=utf8mb4
+no-auto-rehash
+# Remove the next comment character if you are not familiar with SQL
+#safe-updates
+
+[myisamchk]
+key_buffer_size = 20M
+sort_buffer_size = 20M
+read_buffer = 2M
+write_buffer = 2M
+
+[mysqlhotcopy]
+interactive-timeout
