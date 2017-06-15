@@ -1,0 +1,8 @@
+digraph G {
+    m_1 -> m_1;
+    m_2 -> m_1;
+    m_1 -> m_2;
+    m_2 -> m_2;
+    main -> init;
+    init -> main;
+}
