@@ -1,5 +1,5 @@
 #! /bin/bash -
-curr_path=$(cd `dirname $0`; pwd)
+curr_path=$(cd `dirname $(which $0)`; pwd)
 echo ${curr_path}
 cd ${curr_path}
 
