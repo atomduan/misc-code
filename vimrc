@@ -16,6 +16,8 @@ set scrolloff=6
 
 highlight Search term=reverse ctermfg=Black guifg=Yellow
 
+map ,z Pu
+map ,x :NERDTreeFind<cr>*
 map <F4> :NERDTree<cr>
 map ,c :nohl<cr>
 
