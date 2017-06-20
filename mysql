@@ -1,0 +1,4 @@
+#to see how to use some command
+mysql> help show tables;
+#show tables that name has ld
+mysql> show tables like '%ld%';

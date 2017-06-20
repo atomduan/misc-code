@@ -19,7 +19,7 @@ highlight Search term=reverse ctermfg=Black guifg=Yellow
 map <F4> :NERDTree<cr>
 map ,c :nohl<cr>
 
-let NERDTreeWinSize=30
+let NERDTreeWinSize=32
 let NERDTreeIgnore=['\.o$','\.bin$']
 
 filetype plugin indent on
@@ -48,6 +48,13 @@ let g:ctrlp_open_new_file = 'v'
 let g:ctrlp_root_markers = ['pom.xml', 'Makefile', 'README', 'README.md']
 let g:ctrlp_by_filename = 1
 let g:ctrlp_working_path_mode = 'rw'
+let g:ctrlp_custom_ignore = {
+            \ 'dir':  '\v[\/](\.(git|hg|svn)$|target$)',
+            \ 'file': '\v\.(exe|so|dll|class)$',
+            \ }
+
+let EasyGrepRecursive = 1
+let EasyGrepFilesToExclude = '*.class,target,*tar.gz,*.jar,*.war, .git/**.*,target/**.*'
 
 map <F3> :ConqueTermTab bash<cr>
 
