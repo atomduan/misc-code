@@ -1,0 +1,20 @@
+#You can install any path independent binaries in this way.
+#
+#1. Download from repo
+#2. unzip to some place
+#3. create symlinks
+#
+Name: activemq
+Version: unknown
+TMPDIR: ./tmp
+DIR_STRIP_LEVEL: 1 #remove the top directory from the tarball
+URL:  http://archive.apache.org/dist/activemq/5.12.1/apache-activemq-5.12.1-bin.tar.gz
+GIT_URL: http://archive.apache.org/dist/activemq/5.12.1/apache-activemq-5.12.1-bin.tar.gz
+GIT_TAG: v1.0 # not used now
+
+# we'll have a resin-pro-4.0.13/ from the tarball in release/
+INSTALL_TO: release
+
+# then we'll have a link resin -> resin-pro-4.0.13
+SYMLINKS: ~
+
