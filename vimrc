@@ -1,4 +1,6 @@
 colorscheme default
+syntax on
+
 set copyindent
 set preserveindent
 set softtabstop=0
@@ -13,16 +15,15 @@ set nu
 set nowrap
 set scrolloff=6
 
-
 highlight Search term=reverse ctermfg=Black guifg=Yellow
 
+map <F4> :NERDTree<cr>
 map ,z Pu
 map ,x :NERDTreeFind<cr>*
-map <F4> :NERDTree<cr>
 map ,c :nohl<cr>
 
 let NERDTreeWinSize=32
-let NERDTreeIgnore=['\.o$','\.bin$']
+let NERDTreeIgnore=['\.o$','\.bin$', '\.pyc$']
 
 filetype plugin indent on
 
@@ -30,22 +31,23 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#rc()
 
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'taglist.vim'
-Plugin 'SuperTab'
-Plugin 'vimwiki'
-Plugin 'winmanager'
+Plugin 'matrix.vim--Yang'
 Plugin 'bufexplorer.zip'
 Plugin 'The-NERD-tree'
-Plugin 'matrix.vim--Yang'
-Plugin 'FencView.vim'
 Plugin 'lrvick/Conque-Shell'
-Plugin 'Markdown'
-Plugin 'LaTeX-Suite-aka-Vim-LaTeX'
-Plugin 'c.vim'
 Plugin 'snipMate'
 Plugin 'ctrlp.vim'
 Plugin 'EasyGrep'
+Plugin 'Markdown'
+Plugin 'c.vim'
 
+""Need more learning
+"Plugin 'vimwiki'
+"Plugin 'FencView.vim'
+"let g:fencview_autodetect = 1  
+"let g:fencview_checklines = 10
+
+let g:ctrlp_dont_split = 'NERD'
 let g:ctrlp_open_new_file = 'v'
 let g:ctrlp_root_markers = ['pom.xml', 'Makefile', 'README', 'README.md']
 let g:ctrlp_by_filename = 1
@@ -54,6 +56,7 @@ let g:ctrlp_custom_ignore = {
             \ 'dir':  '\v[\/](\.(git|hg|svn)$|target$)',
             \ 'file': '\v\.(exe|so|dll|class|o)$',
             \ }
+let g:ctrlp_follow_symlinks = 1
 
 let EasyGrepRecursive = 1
 let EasyGrepFilesToExclude = '*.class,target,*tar.gz,*.jar,*.war, .git/**.*,target/**.*'
