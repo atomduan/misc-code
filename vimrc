@@ -1,5 +1,6 @@
 colorscheme default
-syntax on
+set syntax=on
+set filetype=go
 
 set copyindent
 set preserveindent
@@ -40,6 +41,7 @@ Plugin 'ctrlp.vim'
 Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
+Plugin 'fatih/vim-go'
 
 ""Need more learning
 "Plugin 'vimwiki'
@@ -60,6 +62,12 @@ let g:ctrlp_follow_symlinks = 1
 
 let EasyGrepRecursive = 1
 let EasyGrepFilesToExclude = '*.class,target,*tar.gz,*.jar,*.war, .git/**.*,target/**.*'
+
+let g:go_highlight_structs = 1 
+let g:go_highlight_methods = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
 
 map <F3> :ConqueTermTab bash<cr>
 

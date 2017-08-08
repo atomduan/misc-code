@@ -1,0 +1,34 @@
+#!/bin/bash -
+#this script must be sourced from the terminal, or else, the env will not affected
+
+agent_pid=$(ps -ef | grep ssh-agent | grep -v grep | awk '{print $2}')
+
+opt="$1"
+shift 1
+case "$opt" in
+    "-f")
+        if ! [ "x$agent_pid" = "x" ]; then
+            kill $agent_pid
+        fi
+        ssh-agent -s > /home/work/dw_ins/.ssh/agent_env.sh
+    ;;
+
+    "-h"|"--help")
+    cat << EOF
+$0 <option>
+option:
+-f  force clean the last ssh-agent
+EOF
+    ;;
+
+    *)
+        if [ "x$agent_pid" = "x" ]; then
+            ssh-agent -s > /home/work/dw_ins/.ssh/agent_env.sh
+        fi
+    ;;
+esac
+
+source /home/work/dw_ins/.ssh/agent_env.sh
+ssh-add /home/work/dw_ins/.ssh/id_rsa
+export MAVEN_HOME="/home/work/dw_ins/loc_env/maven/current"
+export PATH="$MAVEN_HOME/bin:$PATH"
