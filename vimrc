@@ -1,7 +1,8 @@
+set nocompatible "what does this really mean?
+
 colorscheme default
 set syntax=on
 set filetype=go
-
 set copyindent
 set preserveindent
 set softtabstop=0
