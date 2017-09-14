@@ -1,0 +1,37 @@
+#!/bin/bash -
+opt="$1"
+shift 1
+if [ "x$opt" = "x-h" ] || [ "x$opt" = "x--help" ]; then
+    cat <<EOF
+$0 <option>
+to switch relevant project git branch
+option:
+    -h|--help   show help info
+EOF
+    exit 0
+fi
+
+if ! [ -f "./branch" ]; then
+    echo "can not find branch file"
+    exit 1
+fi
+
+br=`cat ./branch`
+if ! [ -n "$br" ]; then
+    echo "branch name is empty"
+fi
+
+
+function check_out_project()
+{     
+    local prj="$1"
+    pushd $prj
+        git checkout $br 
+    popd
+}
+
+
+while read l;
+do
+    check_out_project $l
+done < <(find -maxdepth 1 -type l | grep mifi)

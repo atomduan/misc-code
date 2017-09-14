@@ -1,0 +1,53 @@
+#!/bin/bash -
+if ! [ -f "/home/mi/.m2/class.index" ]; then
+    find /home/mi/.m2/repository/com/xiaomi -type f -name '*.jar' \
+        | xargs -I{} bash -c '(jar -tf {} | xargs -I[] echo {}:[])' > ~/.m2/class.index &
+fi
+
+opt="$1"
+shift 1
+
+
+case $opt in
+    "--help" | "-h")
+        cat <<EOF
+$0 <option> className
+option:
+    -h | --help     help info
+    -p | --pom      show pom content
+    -j | --jar      show pom content
+EOF
+        ;;
+    "--pom"|"-pom"|"-p")
+idx="$@"
+if [ -n "$idx" ]; then
+    (res=$(grep $idx /home/mi/.m2/class.index)
+    if [ -n "$res" ]; then
+        echo $res | sed 's/ /\n/g' | grep $idx --color
+    fi) | cut -d: -f1 | sort | uniq | sed 's/\.jar/.pom/g'
+fi
+        ;;
+    "--jar"|"-jar"|"-j")
+idx="$@"
+if [ -n "$idx" ]; then
+    (res=$(grep $idx /home/mi/.m2/class.index)
+    if [ -n "$res" ]; then
+        echo $res | sed 's/ /\n/g' | grep $idx --color
+    fi) | cut -d: -f1 | sort | uniq
+fi
+        ;;
+    *)
+idx="$opt"
+if [ -n "$idx" ]; then
+    res=$(grep $idx /home/mi/.m2/class.index)
+    if [ -n "$res" ]; then
+        echo $res | sed 's/ /\n/g' | grep $idx --color
+        jarfile=$(echo $res | cut -d: -f1)
+        echo "Possible pom is:"
+        pom="${jarfile%.jar}.pom"
+        echo $pom
+    fi
+fi
+        ;;
+esac
+

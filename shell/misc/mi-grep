@@ -1,0 +1,55 @@
+#!/bin/bash -
+
+function search() 
+{
+    local count=0
+    local cmd="$@"
+
+    while read line; 
+    do 
+    	echo $line
+    	count=$(( $count+1 ))
+    done< <(eval $cmd --color=always |awk 'BEGIN{c=1}{print c"\t"$0;c=c+1}')
+
+    filecount=`head -1 /dev/stdin | grep -oE '[0-9]+'`
+    if [ -z "$filecount" ]; then
+    	echo "invalid filecount"
+    	exit 1
+    fi
+
+    filepath=`eval $cmd | cut -d: -f1 | sed -n "${filecount}p" 2>/dev/null`
+    vi -b $filepath
+}
+
+
+opt=$1
+shift 1
+case $opt in
+    "--help" | "-h")
+        cat << EOF
+cmd : $0
+options:
+    --vt <class name>       find class and open
+    --dcl <class name>      find class instance declare place
+    --cal <calss> <method>  find method call place
+EOF
+        ;;
+    "--vt")
+        vt $1
+        ;;
+    "--cal")
+        clazz="$1"
+        shift 1
+        method="$1"
+        shift 1
+        cmd="grep -Iir --exclude=*.js --exclude=target --exclude=*.class -E '${clazz}\.${method}' ."
+        search $cmd
+        ;;
+    "--dcl")
+        cmd="grep -Ir --exclude=*.js --exclude=target --exclude=*.class -E ' $1 [a-zA-Z0-9]*' ."
+        search $cmd
+        ;;
+    *)
+        grep -Iir --exclude=*.js --exclude=target --exclude=*.class --color=always $opt .
+        ;;
+esac
