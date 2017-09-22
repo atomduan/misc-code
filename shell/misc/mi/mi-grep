@@ -24,6 +24,11 @@ function search()
 
 opt=$1
 shift 1
+
+if [ -z "$opt" ]; then
+    opt="--help"
+fi
+
 case $opt in
     "--help" | "-h")
         cat << EOF
@@ -32,12 +37,13 @@ options:
     --vt <class name>       find class and open
     --dcl <class name>      find class instance declare place
     --cal <calss> <method>  find method call place
+    --map <url path>        find mapping controller
 EOF
         ;;
-    "--vt")
+    "--vt" | "-vt" | "-v")
         vt $1
         ;;
-    "--cal")
+    "--cal" | "-cal" | "-c")
         clazz="$1"
         shift 1
         method="$1"
@@ -45,9 +51,21 @@ EOF
         cmd="grep -Iir --exclude=*.js --exclude=target --exclude=*.class -E '${clazz}\.${method}' ."
         search $cmd
         ;;
-    "--dcl")
+    "--dcl" | "-dcl" | "-d")
         cmd="grep -Ir --exclude=*.js --exclude=target --exclude=*.class -E ' $1 [a-zA-Z0-9]*' ."
         search $cmd
+        ;;
+    "--map" | "-map" | "-m")
+        if [ -n "$1" ]; then
+            cmd="grep -Ir --exclude=*.js --exclude=target --exclude=*.class -E '(@RequestMapping|@Path|@Get|@Post)' ."
+            while read line;
+            do
+                res=`echo $line | awk -F: '{print $2}'`
+                if echo $res | grep $1 > /dev/null; then
+                    echo $line | grep $1 --color
+                fi
+            done< <(eval $cmd)
+        fi
         ;;
     *)
         grep -Iir --exclude=*.js --exclude=target --exclude=*.class --color=always $opt .

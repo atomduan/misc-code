@@ -1,0 +1,26 @@
+#!/bin/bash -
+if ! [ "$#" -eq "2" ]; then
+    echo "need two params: jar and class"
+fi
+
+jar="$1"
+shift 1
+clazz="$1"
+shift 1
+opt="$@"
+
+if ! [ -d "/tmp/mi-javap/$$" ];then
+    mkdir -p /tmp/mi-javap/$$
+fi
+
+cp $jar /tmp/mi-javap/$$/
+
+pushd /tmp/mi-javap/$$
+jar -xf `basename $jar`
+clzfile=`find . | grep "${clazz}.class" | head -1`
+echo "class file is : " + $clzfile
+#-l -p -c is common used
+javap $@ $clzfile
+popd
+
+rm -r /tmp/mi-javap/$$

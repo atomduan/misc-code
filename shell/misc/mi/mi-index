@@ -7,6 +7,10 @@ fi
 opt="$1"
 shift 1
 
+if [ -z "$opt" ]; then
+    opt="--help"
+fi
+
 
 case $opt in
     "--help" | "-h")

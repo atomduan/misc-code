@@ -1,7 +1,7 @@
 #!/bin/bash -x
 target_war="$@"
-cp_path="/home/mi/LocEnv/tomcat/apache-tomcat-9.0.0.M22/webapps"
-TOMCAT_HOME="/home/mi/LocEnv/tomcat/apache-tomcat-9.0.0.M22"
+TOMCAT_HOME="/home/mi/LocEnv/tomcat/current"
+cp_path="$TOMCAT_HOME/webapps"
 
 if [ -f "$target_war" ]; then
     if [ -f "$cp_path/foo.war" ]; then
