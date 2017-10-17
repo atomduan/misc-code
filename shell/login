@@ -1,0 +1,54 @@
+#!/bin/bash -
+dest="$@"
+
+case "${dest}" in 
+	"t"|"te"|"tes"|"test")
+		hostname="122.11.51.24"
+		passwd="djT#Y2nx1u9e962"
+		expect -c "
+			spawn ssh -t duanjuntao@${hostname} -p 8765
+			expect {
+			    \"password:\"	{ send -- \"${passwd}\r\";}
+			}
+			expect {
+			    \"Last login\"	{ interact; }
+			}
+			"
+		;;
+	"y"|"ya"|"yan"|"yanxiu")
+		hostname="122.11.51.24"
+		passwd="djT#Y2nx1u9e962"
+		expect -c "
+			spawn ssh -t duanjuntao@${hostname} -p 8765
+			expect {
+			    \"password:\"	{ send -- \"${passwd}\r\";}
+			}
+			expect {
+			    \"Last login\"	{ send -- \"ssh 192.168.12.7\r\" }
+			}
+			expect {
+			    \"Last login\"	{ interact; }
+			}
+			"
+		;;
+	"a"|"ac"|"acer")
+		hostname="192.168.0.105"
+		passwd="Duan@1234"
+		expect -c "
+			spawn ssh -t juntaoduan@${hostname} 
+			expect {
+			    \"password:\"	{ send -- \"${passwd}\r\";}
+			}
+			expect {
+			    \"Last login\"	{ interact; }
+			}
+			"
+		;;
+	*)
+		cat << EOF
+
+`basename $0` [acer | yanxiu]
+
+EOF
+		;;
+esac

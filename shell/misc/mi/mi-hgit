@@ -27,4 +27,12 @@ l) 创建远程分支 git push origin 分支名
 
 m) 从远程分支拉取到本地 git checkout origin/远程分支 -b 本地分支
 
+n) 给当前分支的当前版本打一个tag，并推送到远端：git tag v20171017-1100 && git push origin v20171017-1100
+
+o) 将本地所有tag推送到远端: git push origin --tags
+
+p) 删除一个tag: git tag -d v20171017-1100
+
+q) 显示一个tag对应的版本信息: git show v20171017-1100
+
 EOF
