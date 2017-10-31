@@ -1,0 +1,23 @@
+#!/usr/bin/python
+
+key = ''
+value = ''
+
+def main(argv):
+    global key, value
+    f = open('/dev/stdin')
+    for l in f.readlines():
+        ps = l.strip().split()
+        if ps[0] == key:
+            key = ps[0]
+            value = value + ' ' + ' '.join(ps[1:])
+        else:
+            if len(key) > 0:
+                print key+' '+value
+            key = ps[0]
+            value = ' '.join(ps[1:])
+    print key+' '+value
+
+if __name__ == '__main__':
+    import sys
+    sys.exit(main(sys.argv))

@@ -1,4 +1,4 @@
-set nocompatible "what does this really mean?
+"set nocompatible "what does this really mean?
 
 colorscheme default
 set syntax=on
