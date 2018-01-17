@@ -2,7 +2,7 @@
 
 colorscheme default
 set syntax=on
-set filetype=go
+set filetype=on
 set copyindent
 set preserveindent
 set softtabstop=0
@@ -46,10 +46,16 @@ Plugin 'c.vim'
 Plugin 'fatih/vim-go'
 
 ""Need more learning
+"Plugin 'session.vim'
 "Plugin 'vimwiki'
 "Plugin 'FencView.vim'
 "let g:fencview_autodetect = 1  
 "let g:fencview_checklines = 10
+
+let g:bufExplorerDefaultHelp=0       " Do not show default help.
+let g:bufExplorerShowRelativePath=1  " Show relative paths.
+let g:bufExplorerSortBy='mru'        " Sort by most recently used.
+map ,m :BufExplorer<cr>
 
 let g:ctrlp_dont_split = 'NERD'
 let g:ctrlp_open_new_file = 'v'
