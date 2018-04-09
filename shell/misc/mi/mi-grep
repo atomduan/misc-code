@@ -48,16 +48,16 @@ EOF
         shift 1
         method="$1"
         shift 1
-        cmd="grep -Iir --exclude=*.js --exclude=target --exclude=*.class -E '${clazz}\.${method}' ."
+        cmd="grep -Iir --exclude=*.js --exclude=target --exclude=.git --exclude=*.class -E '${clazz}\.${method}' ."
         search $cmd
         ;;
     "--dcl" | "-dcl" | "-d")
-        cmd="grep -Ir --exclude=*.js --exclude=target --exclude=*.class -E ' $1 [a-zA-Z0-9]*' ."
+        cmd="grep -Ir --exclude=*.js --exclude=target --exclude=.git --exclude=*.class -E ' $1 [a-zA-Z0-9]*' ."
         search $cmd
         ;;
     "--map" | "-map" | "-m")
         if [ -n "$1" ]; then
-            cmd="grep -Ir --exclude=*.js --exclude=target --exclude=*.class -E '(@RequestMapping|@Path|@Get|@Post)' ."
+            cmd="grep -Ir --exclude=*.js --exclude=target --exclude=.git --exclude=*.class -E '(@RequestMapping|@Path|@Get|@Post)' ."
             while read line;
             do
                 res=`echo $line | awk -F: '{print $2}'`
@@ -68,6 +68,6 @@ EOF
         fi
         ;;
     *)
-        grep -Iir --exclude=*.js --exclude=target --exclude=*.class --color=always $opt .
+        grep -Iir --exclude=*.js --exclude=target --exclude=.git --exclude=*.class --color=always $opt .
         ;;
 esac
