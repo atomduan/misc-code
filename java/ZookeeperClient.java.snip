@@ -1,0 +1,20 @@
+@Override
+public void afterPropertiesSet() throws Exception { 
+    //配置测试环境的白名单策略,如果线上环境直接略过 
+    if (true == ZKFacade.getZKSettings().getEnvironmentType().isProduction()) {
+        logger.info("AuditedSmsProxy.afterPropertiesSet: zk env is PRODUCTION, skip white list config");
+        return;
+    }   
+    logger.info("AuditedSmsProxy.afterPropertiesSet: zk env is staging, init white list config");
+    zkClient = ZKFacade.getClient("/kiwi", EnvironmentType.STAGING);
+    if (!zkClient.exists(PATH_MIFI_INS_MSG_SENDER_PHONE_WHITE_LIST)) {
+        zkClient.createPersistent(PATH_MIFI_INS_MSG_SENDER_PHONE_WHITE_LIST);
+    }   
+    zkClient.registerDataChanges(String.class, PATH_MSG_SENDER_PHONE_WHITE_LIST, 
+            new ZKDataChangeListener<String>() {
+                @Override
+                public void onChanged(String path, String data) {
+                    updateWhiteListPhone(path, data);
+                }   
+            }); 
+}   
