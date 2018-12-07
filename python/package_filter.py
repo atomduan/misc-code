@@ -3,6 +3,9 @@
 import sys
 import re
 
+#按照顺序读取多个文件，并根据第一列进行去重，去重的优先级是前文件出现的key的优先级高于后文件
+#之前用list[]实现，他的is in非常慢。改用set()方法，速度快了非常多
+
 base_file_dir = "/home/rd/huqian/data/push/test"
 file_list = base_file_dir+"/file.list"
 separator = ' '
