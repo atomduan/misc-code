@@ -3,8 +3,9 @@
 import sys
 import re
 
-base_file_dir = "/home/rd/lurenjia/data/push/test"
+base_file_dir = "/home/rd/huqian/data/push/test"
 file_list = base_file_dir+"/file.list"
+separator = ' '
 
 pkg_dict = set()
 
@@ -17,11 +18,14 @@ def process_file(file_name):
     print "try to filter "+file_path+" now ......"
     for record in rf.readlines():
         count += 1
-        params = record.split(' ')
-        key = params[0].strip()
-        if key not in pkg_dict:
-            pkg_dict.add(key)
-            wf.write(record) 
+        try:
+            params = record.split(separator)
+            key = params[0].strip()
+            if key not in pkg_dict:
+                pkg_dict.add(key)
+                wf.write(record)
+        except Exception,msg:
+            print("Error occure while parsing "+record.rstrip()+" msg:"+str(msg))
         if count % 10000 == 0:
             print str(count)+" records processed ......"
     wf.close()
