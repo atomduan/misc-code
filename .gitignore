@@ -5,6 +5,7 @@ __pycache__/
 
 #boot file
 *.img
+*.swp
 *.bin
 
 # autoconf files
