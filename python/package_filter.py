@@ -18,8 +18,8 @@ def process_file(file_name):
     file_path = base_file_dir+"/"+file_name
     with open(file_path) as rf:
         with open(file_path+".out.txt",'w') as wf:
-            print "try to filter "+file_path+" now ......"
-            for record in rf.readlines():
+            print "try to filter %s now ......" % (file_path)
+            for record in iter(rf):
                 count += 1
                 try:
                     params = record.split(separator)
@@ -28,11 +28,11 @@ def process_file(file_name):
                         pkg_dict.add(key)
                         wf.write(record)
                 except Exception,msg:
-                    print("Error occure while parsing "+record.rstrip()+" msg:"+str(msg))
-                if count % 10000 == 0:
-                    print str(count)+" records processed ......"
+                    print "error occure while parsing: %s , msg: %s" % (record.rstrip(),str(msg))
+                if count % 10 == 0:
+                    print "%d records processed ......" % (count)
 
 if __name__ == '__main__':
     with open(file_list) as f:
-        for l in f.readlines():
+        for l in iter(f):
             process_file(l.strip())
