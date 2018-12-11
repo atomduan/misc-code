@@ -34,5 +34,5 @@ def process_file(file_name):
 
 if __name__ == '__main__':
     with open(file_list) as f:
-        for l in iter(f):
-            process_file(l.strip())
+        for line in iter(f):
+            process_file(line.strip())
