@@ -35,4 +35,6 @@ def process_file(file_name):
 if __name__ == '__main__':
     with open(file_list) as f:
         for line in iter(f):
-            process_file(line.strip())
+            file_name = line.strip()
+            if len(file_name) > 0:
+                process_file(file_name)
