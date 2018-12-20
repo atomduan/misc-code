@@ -64,7 +64,7 @@ let g:ctrlp_by_filename = 1
 let g:ctrlp_working_path_mode = 'rw'
 let g:ctrlp_custom_ignore = {
             \ 'dir':  '\v[\/](\.(git|hg|svn)$|target$)',
-            \ 'file': '\v\.(exe|so|dll|class|o)$',
+            \ 'file': '\v\.(exe|so|dll|class|bin|o)$',
             \ }
 let g:ctrlp_follow_symlinks = 1
 
