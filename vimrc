@@ -26,7 +26,7 @@ map ,x :NERDTreeFind<cr>*
 map ,c :nohl<cr>
 
 let NERDTreeWinSize=32
-let NERDTreeIgnore=['\.o$','\.bin$', '\.pyc$']
+let NERDTreeIgnore=['\.o$','\.bin$', '\.pyc$', '\.jar$']
 
 filetype plugin indent on
 
@@ -40,6 +40,7 @@ Plugin 'The-NERD-tree'
 Plugin 'lrvick/Conque-Shell'
 Plugin 'snipMate'
 Plugin 'ctrlp.vim'
+Plugin 'python.vim'
 Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
@@ -64,7 +65,7 @@ let g:ctrlp_by_filename = 1
 let g:ctrlp_working_path_mode = 'rw'
 let g:ctrlp_custom_ignore = {
             \ 'dir':  '\v[\/](\.(git|hg|svn)$|target$)',
-            \ 'file': '\v\.(exe|so|dll|class|bin|o)$',
+            \ 'file': '\v\.(exe|so|dll|class|bin|jar|o)$',
             \ }
 let g:ctrlp_follow_symlinks = 1
 
