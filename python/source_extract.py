@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import os
 import shutil
-from subprocess import call
 
 m2_repo = '/home/hexie/.m2'
 repo_path_prefix = m2_repo+'/repository'
@@ -25,9 +24,12 @@ def extract_src_jar(jar_path):
         jar_name = os.path.basename(jar_path)
         cmd = 'cd %s; jar -xf %s;'%(jar_dir,jar_name)
         try:
+            print 'os.system exec cmd: %s'%(cmd)
             res = os.system(cmd)
             if res != 0:
                 print '[WARN] cmd %s excute return abnormal, code %d'%(cmd,res)
+            else:
+                print 'SUCCESS......'
         except Exception,msg:
             print '[ERROR] extracting fail jar_path: %s , msg: %s'%(jar_path,str(msg))
             print '[ERROR] relevant cmd is: %s'%(cmd)
