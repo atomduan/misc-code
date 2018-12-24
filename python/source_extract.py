@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import os
 import shutil
+from subprocess import call
 
 m2_repo = '/home/hexie/.m2'
 repo_path_prefix = m2_repo+'/repository'
@@ -11,7 +12,8 @@ src_path = source_path_prefix
 
 
 def extract_src_jar(jar_path):
-    print jar_path
+    if len(jar_path) == 0:
+        return
     if os.path.isfile(jar_path):
         #clean dictionaries in jar_dir
         jar_dir = os.path.dirname(jar_path)
@@ -19,10 +21,20 @@ def extract_src_jar(jar_path):
         for d in dirs:
             if len(source_path_prefix)>0 and source_path_prefix in d:
                 os.rmdir(d)
-        #extract source.jar
+        #extract jar_path in jar_dir
+        jar_name = os.path.basename(jar_path)
+        cmd = 'cd %s; jar -xf %s;' % (jar_dir,jar_name)
+        try:
+            os.system(cmd)
+        except Exception,msg:
+            print 'error occure while extracting jar_path: %s , msg: %s'%(jar_path,str(msg))
+            print 'relevant cmd is %s'%(cmd)
 
 
 def extract_source_from_repo():
+    if not os.isdir(repo_path):
+        print '[ERROR] repo_path %s is not a dir or exsited...'%(repo_path)
+        return
     for root,dirs,files in os.walk(repo_path):
         for f in files:
             if os.path.splitext(f)[1] == '.jar':
