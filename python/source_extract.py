@@ -7,8 +7,8 @@ m2_repo = '/home/hexie/.m2'
 repo_path_prefix = m2_repo+'/repository'
 source_path_prefix = m2_repo+'/repository_source'
 
+#specified you repo source.jar path 
 repo_path = repo_path_prefix
-src_path = source_path_prefix
 
 
 def extract_src_jar(jar_path):
@@ -23,12 +23,14 @@ def extract_src_jar(jar_path):
                 os.rmdir(d)
         #extract jar_path in jar_dir
         jar_name = os.path.basename(jar_path)
-        cmd = 'cd %s; jar -xf %s;' % (jar_dir,jar_name)
+        cmd = 'cd %s; jar -xf %s;'%(jar_dir,jar_name)
         try:
-            os.system(cmd)
+            res = os.system(cmd)
+            if res != 0:
+                print '[WARN] cmd %s excute return abnormal, code %d'%(cmd,res)
         except Exception,msg:
-            print 'error occure while extracting jar_path: %s , msg: %s'%(jar_path,str(msg))
-            print 'relevant cmd is %s'%(cmd)
+            print '[ERROR] extracting fail jar_path: %s , msg: %s'%(jar_path,str(msg))
+            print '[ERROR] relevant cmd is: %s'%(cmd)
 
 
 def extract_source_from_repo():
