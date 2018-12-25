@@ -2,12 +2,8 @@
 import sys
 
 def process_line(line):
-    ps = line.split(' ')
-    if ps[2] == ps[1]:
-        print line
+    print line
 
 if __name__ == '__main__':
-    f = open('/dev/stdin')
-    for l in f.readlines():
-        process_line(l.rstrip())
-    f.close()
+    for l in sys.stdin.readlines():
+        process_line(l.strip())
