@@ -2,7 +2,7 @@
 import os
 import shutil
 
-m2_repo = '/home/hexie/.m2'
+m2_repo = '/home/mi/.m2'
 repo_path_prefix = m2_repo+'/repository'
 source_path_prefix = m2_repo+'/repository_source'
 
@@ -19,7 +19,8 @@ def extract_src_jar(jar_path):
         dirs = [jar_dir+'/'+d for d in os.listdir(jar_dir) if os.path.isdir(jar_dir+'/'+d)]
         for d in dirs:
             if len(source_path_prefix)>0 and source_path_prefix in d:
-                os.rmdir(d)
+                pass
+                #os.rmdir(d)
         #extract jar_path in jar_dir
         jar_name = os.path.basename(jar_path)
         cmd = 'cd %s; jar -xf %s;'%(jar_dir,jar_name)
@@ -36,7 +37,7 @@ def extract_src_jar(jar_path):
 
 
 def extract_source_from_repo():
-    if not os.isdir(repo_path):
+    if not os.path.isdir(repo_path):
         print '[ERROR] repo_path %s is not a dir or exsited...'%(repo_path)
         return
     for root,dirs,files in os.walk(repo_path):
