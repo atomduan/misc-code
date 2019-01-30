@@ -9,7 +9,7 @@ source_path_prefix = m2_repo+'/repository_source'
 #specified you repo source.jar path 
 repo_path = repo_path_prefix
 
-package_filter = ['javaparser-core'];
+package_filter = [];
 
 
 def extract_src_jar(jar_path):
