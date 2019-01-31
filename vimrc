@@ -45,6 +45,7 @@ Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
 Plugin 'fatih/vim-go'
+Plugin 'atom-java.vim'
 
 ""Need more learning
 "Plugin 'session.vim'

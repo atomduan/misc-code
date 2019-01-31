@@ -9,7 +9,7 @@ source_path_prefix = m2_repo+'/repository_source'
 #specified you repo source.jar path 
 repo_path = repo_path_prefix
 
-package_filter = [];
+package_filter = ['antlr'];
 
 
 def extract_src_jar(jar_path):
