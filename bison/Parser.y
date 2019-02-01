@@ -22,7 +22,7 @@ int yyerror(SExpression **expression, yyscan_t scanner, const char *msg) {
 %output  "Parser.c"
 %defines "Parser.h"
 
-%define api.pure
+%define api.pure full
 %lex-param   { yyscan_t scanner }
 %parse-param { SExpression **expression }
 %parse-param { yyscan_t scanner }
