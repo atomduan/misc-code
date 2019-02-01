@@ -1,4 +1,4 @@
-echo "atom-java.vim plugin logic loaded......"
+"echo 'atom-java.vim plugin logic loaded......'
 let s:plugin_root_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
 python << EOF
