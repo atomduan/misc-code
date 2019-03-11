@@ -11,6 +11,7 @@ void yyerror(char const *);
 
 %token NUM
 
+%defines "misc_yy_gen.h"
 
 %%
 

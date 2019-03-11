@@ -1,9 +1,9 @@
 #include <linux_config.h>
+#include <misc_yy_gen.h>
 
 int
 main(int argc,char **argv)
 {
-    printf("asdfsdf \n"); 
-    return 0;
+    return yyparse();
 }
 

@@ -1,0 +1,71 @@
+#!/bin/bash -
+
+curr=$(cd `dirname $(which $0)`; pwd)
+
+cd $curr
+
+yy_name="$1"
+yy_name=$(echo $yy_name | sed 's/\.y//g')
+yy_name=$(echo $yy_name | sed 's/\.//g')
+
+if [ -z "${yy_name}" ]; then 
+cat <<END
+Help
+    Invalid input yy file name can not be empty
+
+    USAGE: ./build <yy_file_name>
+
+END
+    exit 1
+fi
+
+if ! [ -f "${yy_name}.y" ]; then 
+    echo "Can not find grammar file ${yy_name}.y in current dir"
+    exit 1
+fi
+
+rm Makefile
+
+cat <<END > Makefile
+CC = gcc
+CFLAGS = -c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
+
+LINK = \$(CC)
+
+BUILD_DEPS = ../includes/linux_config.h
+
+BUILD_INCS = -I ./ \\
+	-I ../includes
+
+END
+
+cat <<END >> Makefile
+
+misc_parser: ${yy_name}.tab.o \\
+	misc_parser.o
+
+	\$(LINK) -o misc_parser.bin ${yy_name}.tab.o \\
+	misc_parser.o \\
+	-ldl -lpthread -lm -Wl,-E
+
+${yy_name}.tab.c:
+	bison ${yy_name}.y
+
+${yy_name}.tab.o: ${yy_name}.tab.c
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}.tab.o ${yy_name}.tab.c
+
+misc_parser.o:	\$(BUILD_DEPS)
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o misc_parser.o misc_parser.c
+
+END
+
+
+cat <<END >> Makefile
+.PHONY:clean
+clean:
+	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h
+END
+
+make clean
+
+make
