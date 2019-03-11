@@ -7,11 +7,10 @@ int yylex(void);
 void yyerror(char const *);
 %}
 
-%define api.value.type {double}
-
-%token NUM
-
 %defines "misc_yy_gen.h"
+
+%define api.value.type {double}
+%token NUM
 
 %%
 
