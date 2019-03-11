@@ -29,6 +29,10 @@ input:
 line:
     '\n'
 |   exp '\n'                { printf ("%.10g\n", $1); }
+|   error '\n'              { 
+                                fprintf(stderr,"recover by using yyerrok, waiting for next input\n");
+                                yyerrok; 
+                            }
 ;
 
 /* the pseudo-variable $$ stands for the semantic value */
