@@ -1,5 +1,6 @@
 /* Infix notation calculator.  */
 %{
+
 #include <linux_config.h>
 #include <misc_parser.h>
 #include <misc_yy_mulfcal.h>
@@ -15,7 +16,7 @@ void init_table (void);
 %define api.value.type union
 %token <double>     NUM
 %token <symrec*>    VAR FNCT
-%type <double>     exp 
+%type <double>      exp 
 
 /* the higher the line number of the declaration */
 /* (lower on the page or screen), the higher the precedence */
@@ -66,89 +67,86 @@ exp:
 symrec *sym_table;
 
 typedef struct init_fnct_s init_fnct;
-struct init_fnct_s
-{
-  char const *fname;
-  double (*fnct) (double);
+struct init_fnct_s {
+    char const *fname;
+    double (*fnct) (double);
 };
 
 static const init_fnct arith_fncts[] =
 {
-  { "atan", atan },
-  { "cos",  cos  },
-  { "exp",  exp  },
-  { "ln",   log  },
-  { "sin",  sin  },
-  { "sqrt", sqrt },
-  { 0, 0 },
+    { "atan", atan },
+    { "cos",  cos  },
+    { "exp",  exp  },
+    { "ln",   log  },
+    { "sin",  sin  },
+    { "sqrt", sqrt },
+    { 0, 0 },
 };
 
 int
 yylex (void)
 {
     int c;
-    /* Ignore white space, get first nonwhite character.  */
-    while ((c = getchar ()) == ' ' || c == '\t')
+    /* Ignore white space, get first nonwhite character. */
+    while ((c = getchar()) == ' ' || c == '\t')
         continue;
 
     if (c == EOF) return 0;
 
-    /* Char starts a number => parse the number.         */
-    if (c == '.' || isdigit (c)) {
-        ungetc (c, stdin);
-        scanf ("%lf", &yylval.NUM);
+    /* Char starts a number => parse the number. */
+    if (c == '.' || isdigit(c)) {
+        ungetc(c, stdin);
+        scanf("%lf", &yylval.NUM);
         return NUM;
     }
-    /* Char starts an identifier => read the name.       */
-    if (isalpha (c)) {
+    /* Char starts an identifier => read the name. */
+    if (isalpha(c)) {
         /* Initially make the buffer long enough
-         for a 40-character symbol name.  */
+         for a 40-character symbol name. */
         static size_t length = 40;
         static char *symbuf = 0;
         symrec *s;
         size_t i;
         if (!symbuf)
-            symbuf = (char *) malloc (length + 1);
+            symbuf = (char *) malloc(length + 1);
         i = 0;
         do {
-            /* If buffer is full, make it bigger.        */
+            /* If buffer is full, make it bigger. */
             if (i == length) {
                 length *= 2;
-                symbuf = (char *) realloc (symbuf, length + 1);
+                symbuf = (char *) realloc(symbuf, length + 1);
             }
-            /* Add this character to the buffer.         */
+            /* Add this character to the buffer. */
             symbuf[i++] = c;
-            /* Get another character.                    */
-            c = getchar ();
-        } while (isalnum (c));
+            /* Get another character. */
+            c = getchar();
+        } while (isalnum(c));
 
-        ungetc (c, stdin);
+        ungetc(c, stdin);
         symbuf[i] = '\0';
 
-        s = getsym (symbuf);
-        if (s == 0) s = putsym (symbuf, VAR);
+        s = getsym(symbuf);
+        if (s == 0) s = putsym(symbuf, VAR);
         *((symrec**) &yylval) = s;
         return s->type;
     }
-
-    /* Any other character is a token by itself.        */
+    /* Any other character is a token by itself. */
     return c;
 }
 
 void
 yyerror (char const *s)
 {
-  fprintf (stderr, "%s\n", s);
+    fprintf(stderr,"%s\n",s);
 }
 
 void
 init_table (void)
 {
-  int i;
-  for (i = 0; arith_fncts[i].fname != 0; i++)
-    {
-      symrec *ptr = putsym (arith_fncts[i].fname, FNCT);
-      ptr->value.fnctptr = arith_fncts[i].fnct;
+    int i;
+    for (i = 0; arith_fncts[i].fname != 0; i++) {
+        symrec *ptr = putsym(arith_fncts[i].fname,FNCT);
+        ptr->value.fnctptr = arith_fncts[i].fnct;
     }
 }
 
