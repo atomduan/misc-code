@@ -2,9 +2,11 @@
 %{
 /* Prologue begin */
 #include <linux_config.h>
+#include <misc_parser.h>
 
 int yylex(void);
 void yyerror(char const *);
+
 %}
 
 %defines "misc_yy_gen.h"
@@ -66,4 +68,12 @@ void
 yyerror (char const *s)
 {
   fprintf (stderr, "%s\n", s);
+}
+
+int
+process_yy(int argc,char **argv)
+{
+    yylloc.first_line = yylloc.last_line = 1;
+    yylloc.first_column = yylloc.last_column = 0;
+    return yyparse();
 }

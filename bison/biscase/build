@@ -24,6 +24,11 @@ if ! [ -f "${yy_name}.y" ]; then
     exit 1
 fi
 
+yy_header=""
+if [ -f "${yy_name}.h" ]; then
+    yy_header="${yy_name}.h"
+fi
+
 rm Makefile
 
 cat <<END > Makefile
@@ -32,8 +37,7 @@ CFLAGS = -c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 
 LINK = \$(CC)
 
-BUILD_DEPS = ../includes/linux_config.h
-
+BUILD_DEPS = ../includes/linux_config.h misc_parser.h ${yy_header}
 BUILD_INCS = -I ./ \\
 	-I ../includes
 
@@ -42,9 +46,24 @@ END
 cat <<END >> Makefile
 
 misc_parser: ${yy_name}.tab.o \\
+END
+if [ -f "${yy_name}.c" ]; then
+cat <<END >> Makefile
+    ${yy_name}.o \\
+END
+fi
+cat <<END >> Makefile
 	misc_parser.o
 
 	\$(LINK) -o misc_parser.bin ${yy_name}.tab.o \\
+END
+
+if [ -f "${yy_name}.c" ]; then
+cat <<END >> Makefile
+	${yy_name}.o \\
+END
+fi
+cat <<END >> Makefile
 	misc_parser.o \\
 	-ldl -lpthread -lm -Wl,-E
 
@@ -53,10 +72,18 @@ ${yy_name}.tab.c:
 
 ${yy_name}.tab.o: ${yy_name}.tab.c
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}.tab.o ${yy_name}.tab.c
+END
+if [ -f "${yy_name}.c" ]; then
+cat <<END >> Makefile
+
+${yy_name}.o:	\$(BUILD_DEPS)
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}.o ${yy_name}.c
+END
+fi
+cat <<END >> Makefile
 
 misc_parser.o:	\$(BUILD_DEPS)
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o misc_parser.o misc_parser.c
-
 END
 
 
