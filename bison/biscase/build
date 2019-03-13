@@ -88,6 +88,7 @@ END
 
 
 cat <<END >> Makefile
+
 .PHONY:clean
 clean:
 	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h

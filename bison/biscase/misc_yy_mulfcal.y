@@ -5,6 +5,8 @@
 #include <misc_parser.h>
 #include <misc_yy_mulfcal.h>
 
+#define YYDEBUG 1
+
 int yylex(void);
 void yyerror(char const *);
 void init_table (void);
@@ -14,9 +16,9 @@ void init_table (void);
 %defines "misc_yy_gen.h"
 
 %define api.value.type union
-%token <double>     NUM
-%token <symrec*>    VAR FNCT
-%type <double>      exp 
+%token  <double>        NUM
+%token  <symrec*>       VAR FNCT
+%type   <double>        exp 
 
 /* the higher the line number of the declaration */
 /* (lower on the page or screen), the higher the precedence */
@@ -64,7 +66,6 @@ exp:
 %%
 
 /* Epilogue Begin */
-symrec *sym_table;
 
 typedef struct init_fnct_s init_fnct;
 struct init_fnct_s {
@@ -88,11 +89,9 @@ yylex (void)
 {
     int c;
     /* Ignore white space, get first nonwhite character. */
-    while ((c = getchar()) == ' ' || c == '\t')
+    while ((c=getchar())==' ' || c=='\t')
         continue;
-
     if (c == EOF) return 0;
-
     /* Char starts a number => parse the number. */
     if (c == '.' || isdigit(c)) {
         ungetc(c, stdin);
@@ -108,13 +107,13 @@ yylex (void)
         symrec *s;
         size_t i;
         if (!symbuf)
-            symbuf = (char *) malloc(length + 1);
+            symbuf = (char *) malloc(length+1);
         i = 0;
         do {
             /* If buffer is full, make it bigger. */
             if (i == length) {
                 length *= 2;
-                symbuf = (char *) realloc(symbuf, length + 1);
+                symbuf = (char *) realloc(symbuf,length+1);
             }
             /* Add this character to the buffer. */
             symbuf[i++] = c;
@@ -122,11 +121,11 @@ yylex (void)
             c = getchar();
         } while (isalnum(c));
 
-        ungetc(c, stdin);
+        ungetc(c,stdin);
         symbuf[i] = '\0';
 
         s = getsym(symbuf);
-        if (s == 0) s = putsym(symbuf, VAR);
+        if (s == 0) s = putsym(symbuf,VAR);
         *((symrec**) &yylval) = s;
         return s->type;
     }
@@ -153,7 +152,11 @@ init_table (void)
 int
 process_yy(int argc,char **argv)
 {
-    yylloc.first_line = yylloc.last_line = 1;
-    yylloc.first_column = yylloc.last_column = 0;
+    int i;
+    /* Enable parse traces on option -p.  */
+    for (i = 1; i < argc; ++i)
+        if (!strcmp(argv[i], "-p"))
+            yydebug = 1;
+    init_table ();
     return yyparse();
 }

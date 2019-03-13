@@ -19,8 +19,6 @@ struct symrec
 
 
 /* The symbol table: a chain of 'struct symrec'.  */
-extern symrec *sym_table;
-
 symrec *putsym (char const *, int);
 symrec *getsym (char const *);
 #endif
