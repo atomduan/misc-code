@@ -27,6 +27,8 @@ void init_table();
 %precedence NEG   /* negation--unary minus, also has a precedence, Context-Dependent Precedence */
 %right '^'        /* exponentiation */
 
+%expect 5   /* Means we expect 5 s-r conflicts */
+
 /* Grammar rules begin */
 %%
 input:
