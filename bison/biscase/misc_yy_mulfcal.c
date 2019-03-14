@@ -12,6 +12,7 @@ putsym(const char *sym_name, int sym_type)
     strcpy (ptr->name,sym_name);
     ptr->type = sym_type;
     ptr->value.var = 0; /* Set value to 0 even if fctn.  */
+    ptr->has_init = 0;
     ptr->next = sym_table;
     sym_table = ptr;
     return ptr;

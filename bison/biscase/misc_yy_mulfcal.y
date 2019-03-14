@@ -44,8 +44,18 @@ line:
 
 exp:
     NUM                     { $$ = $1; }
-|   VAR                     { $$ = $1->value.var; }
-|   VAR '=' exp             { $$ = $3; $1->value.var = $3; }
+|   VAR                     { 
+                                if ($1->has_init == 1) {
+                                    $$ = $1->value.var; 
+                                } else {
+                                    yyerror("use uninit VAR error\n");
+                                }
+                            }
+|   VAR '=' exp             { 
+                                $$ = $3; 
+                                $1->value.var = $3;
+                                $1->has_init = 1;
+                            }
 |   FNCT '(' exp ')'        { $$ = (*($1->value.fnctptr))($3); }
 |   exp '+' exp             { $$ = $1 + $3; }
 |   exp '-' exp             { $$ = $1 - $3; }

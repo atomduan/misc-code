@@ -7,6 +7,7 @@ typedef struct symrec_s symrec;
 struct symrec_s {
   char *name;  /* name of symbol */
   int type;    /* type of symbol: either VAR or FNCT */
+  int has_init;
   union {
     double var;      /* value of a VAR */
     func_t fnctptr;  /* value of a FNCT */
