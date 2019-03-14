@@ -18,7 +18,7 @@ void init_table (void);
 %define api.value.type union
 %token  <double>        NUM
 %token  <symrec*>       VAR FNCT
-%type   <double>        exp 
+%type   <double>        exp
 
 /* the higher the line number of the declaration */
 /* (lower on the page or screen), the higher the precedence */
@@ -107,13 +107,13 @@ yylex (void)
         symrec *s;
         size_t i;
         if (!symbuf)
-            symbuf = (char *) malloc(length+1);
+            symbuf = (char*)malloc(length+1);
         i = 0;
         do {
             /* If buffer is full, make it bigger. */
             if (i == length) {
                 length *= 2;
-                symbuf = (char *) realloc(symbuf,length+1);
+                symbuf = (char*)realloc(symbuf,length+1);
             }
             /* Add this character to the buffer. */
             symbuf[i++] = c;
@@ -134,16 +134,16 @@ yylex (void)
 }
 
 void
-yyerror (char const *s)
+yyerror(const char *s)
 {
     fprintf(stderr,"%s\n",s);
 }
 
 void
-init_table (void)
+init_table(void)
 {
     int i;
-    for (i = 0; arith_fncts[i].fname != 0; i++) {
+    for (i=0; arith_fncts[i].fname != 0; i++) {
         symrec *ptr = putsym(arith_fncts[i].fname,FNCT);
         ptr->value.fnctptr = arith_fncts[i].fnct;
     }
@@ -153,9 +153,9 @@ int
 process_yy(int argc,char **argv)
 {
     int i;
-    /* Enable parse traces on option -p.  */
+    /* Enable parse traces on option -x.  */
     for (i = 1; i < argc; ++i)
-        if (!strcmp(argv[i], "-p"))
+        if (strcmp(argv[i],"-x") == 0)
             yydebug = 1;
     init_table ();
     return yyparse();
