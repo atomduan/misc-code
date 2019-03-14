@@ -127,6 +127,7 @@ yylex(void)
         symbuf[i] = '\0';
 
         s = getsym(symbuf);
+        /* If s is not NULL, it is inited to a FNCT already in init_table() */
         if (s == 0) s = putsym(symbuf,VAR);
         *((symrec**) &yylval) = s;
         return s->type;
