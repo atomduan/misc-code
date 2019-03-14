@@ -7,9 +7,9 @@
 
 #define YYDEBUG 1
 
-int yylex(void);
-void yyerror(char const *);
-void init_table (void);
+int yylex();
+void yyerror(const char *);
+void init_table();
 
 %}
 
@@ -85,7 +85,7 @@ static const init_fnct arith_fncts[] =
 };
 
 int
-yylex (void)
+yylex(void)
 {
     int c;
     /* Ignore white space, get first nonwhite character. */
