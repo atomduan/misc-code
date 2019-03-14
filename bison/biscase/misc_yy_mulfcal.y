@@ -48,6 +48,7 @@ exp:
                                 if ($1->has_init == 1) {
                                     $$ = $1->value.var; 
                                 } else {
+                                    printf("use uninit VAR name %s\n", $1->name);
                                     yyerror("use uninit VAR error\n");
                                 }
                             }
