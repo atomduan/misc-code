@@ -1,0 +1,13 @@
+#!/bin/bash -
+dest="$@"
+
+passwd="Duan@1234"
+expect -c "
+	spawn ssh -t duanjuntao@relay.xm.com
+	expect {
+	    \"password:\"	{ send -- \"${passwd}\r\";}
+	}
+	expect {
+	    \"token:\"	{ interact; }
+	}
+	"

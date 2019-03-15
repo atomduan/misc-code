@@ -1,0 +1,12 @@
+#!/bin/bash -x
+
+export LC_ALL="en_US.UTF-8"
+export JAVA_HOME=/opt/java/current
+export PATH=$JAVA_HOME/bin:$PATH
+
+export MAVEN_HOME=/opt/maven/current
+export PATH=$MAVEN_HOME/bin:$PATH
+
+cd /home/mi/LocEnv/tomcat-jenkins/current/bin
+echo $JAVA_HOME
+./startup.sh
