@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import os
 import shutil
 
@@ -23,21 +23,21 @@ def extract_src_jar(jar_path):
         dirs = [jar_dir+'/'+d for d in os.listdir(jar_dir) if os.path.isdir(jar_dir+'/'+d)]
         for d in dirs:
             if len(source_path_prefix)>0 and source_path_prefix in d:
-                print '[INFO] path:%s not empty, try to rmtree'%(d)
+                print('[INFO] path:%s not empty, try to rmtree'%(d))
                 shutil.rmtree(d,ignore_errors=True)
         #extract jar_path in jar_dir
         jar_name = os.path.basename(jar_path)
         cmd = 'cd %s; jar -xf %s;'%(jar_dir,jar_name)
         try:
-            print 'os.system exec cmd: %s'%(cmd)
+            print('os.system exec cmd: %s'%(cmd))
             res = os.system(cmd)
             if res != 0:
-                print '[WARN] cmd %s excute return abnormal, code %d'%(cmd,res)
+                print('[WARN] cmd %s excute return abnormal, code %d'%(cmd,res))
             else:
-                print 'SUCCESS......'
-        except Exception,msg:
-            print '[ERROR] extracting fail jar_path: %s , msg: %s'%(jar_path,str(msg))
-            print '[ERROR] relevant cmd is: %s'%(cmd)
+                print('SUCCESS......')
+        except Exception as msg:
+            print('[ERROR] extracting fail jar_path: %s , msg: %s'%(jar_path,str(msg)))
+            print('[ERROR] relevant cmd is: %s'%(cmd))
 
 
 def process_single_source_pkg(root,dirs,f,src_jar_path):
@@ -51,7 +51,7 @@ def process_single_source_pkg(root,dirs,f,src_jar_path):
 
 def extract_source_from_repo():
     if not os.path.isdir(repo_path):
-        print '[ERROR] repo_path %s is not a dir or exsited...'%(repo_path)
+        print('[ERROR] repo_path %s is not a dir or exsited...'%(repo_path))
         return
     for root,dirs,files in os.walk(repo_path):
         for f in files:
@@ -61,11 +61,11 @@ def extract_source_from_repo():
                     if len(package_filter) > 0:
                         for fig in package_filter:
                             if fig in src_jar_path:
-                                print '[INFO] filter hitted %s, processe this package'%(fig)
+                                print('[INFO] filter hitted %s, processe this package'%(fig))
                                 process_single_source_pkg(root,dirs,f,src_jar_path)
                                 break;
                     else:
-                        print '[INFO] no filter processe ALL package'
+                        print('[INFO] no filter processe ALL package')
                         process_single_source_pkg(root,dirs,f,src_jar_path)
 
 
