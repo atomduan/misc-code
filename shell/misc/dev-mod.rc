@@ -25,7 +25,7 @@ user_ssh_dir="${ssh_dir}/${username}"
 if ! [ -d "${user_ssh_dir}" ]; then
     cat << EOF
 [WARNING] username:${username} has not configured
-[WARNING] please contact your administrator ${username} to config {username} pub-key into ${user_ssh_dir}
+[WARNING] please contact your administrator ${username} to config ${username} pub-key into ${user_ssh_dir}
 [WARNING] sample like this:
             ${username}/
             ├── id_rsa
