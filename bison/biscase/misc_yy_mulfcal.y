@@ -5,18 +5,20 @@
 #include <misc_parser.h>
 #include <misc_yy_mulfcal.h>
 
-int yylex(void);
-void yyerror(char const *);
-void init_table (void);
+#define YYDEBUG 1
+
+int yylex();
+void yyerror(const char *);
+void init_table();
 
 %}
 
 %defines "misc_yy_gen.h"
 
 %define api.value.type union
-%token <double>     NUM
-%token <symrec*>    VAR FNCT
-%type <double>      exp 
+%token  <double>        NUM
+%token  <symrec*>       VAR FNCT
+%type   <double>        exp
 
 /* the higher the line number of the declaration */
 /* (lower on the page or screen), the higher the precedence */
@@ -24,6 +26,8 @@ void init_table (void);
 %left '*' '/'
 %precedence NEG   /* negation--unary minus, also has a precedence, Context-Dependent Precedence */
 %right '^'        /* exponentiation */
+
+%expect 5   /* Means we expect 5 s-r conflicts */
 
 /* Grammar rules begin */
 %%
@@ -40,8 +44,19 @@ line:
 
 exp:
     NUM                     { $$ = $1; }
-|   VAR                     { $$ = $1->value.var; }
-|   VAR '=' exp             { $$ = $3; $1->value.var = $3; }
+|   VAR                     { 
+                                if ($1->has_init == 1) {
+                                    $$ = $1->value.var; 
+                                } else {
+                                    printf("use uninit VAR name %s\n", $1->name);
+                                    yyerror("use uninit VAR error\n");
+                                }
+                            }
+|   VAR '=' exp             { 
+                                $$ = $3; 
+                                $1->value.var = $3;
+                                $1->has_init = 1;
+                            }
 |   FNCT '(' exp ')'        { $$ = (*($1->value.fnctptr))($3); }
 |   exp '+' exp             { $$ = $1 + $3; }
 |   exp '-' exp             { $$ = $1 - $3; }
@@ -64,7 +79,6 @@ exp:
 %%
 
 /* Epilogue Begin */
-symrec *sym_table;
 
 typedef struct init_fnct_s init_fnct;
 struct init_fnct_s {
@@ -84,15 +98,13 @@ static const init_fnct arith_fncts[] =
 };
 
 int
-yylex (void)
+yylex(void)
 {
     int c;
     /* Ignore white space, get first nonwhite character. */
-    while ((c = getchar()) == ' ' || c == '\t')
+    while ((c=getchar())==' ' || c=='\t')
         continue;
-
     if (c == EOF) return 0;
-
     /* Char starts a number => parse the number. */
     if (c == '.' || isdigit(c)) {
         ungetc(c, stdin);
@@ -108,13 +120,13 @@ yylex (void)
         symrec *s;
         size_t i;
         if (!symbuf)
-            symbuf = (char *) malloc(length + 1);
+            symbuf = (char*)malloc(length+1);
         i = 0;
         do {
             /* If buffer is full, make it bigger. */
             if (i == length) {
                 length *= 2;
-                symbuf = (char *) realloc(symbuf, length + 1);
+                symbuf = (char*)realloc(symbuf,length+1);
             }
             /* Add this character to the buffer. */
             symbuf[i++] = c;
@@ -122,11 +134,12 @@ yylex (void)
             c = getchar();
         } while (isalnum(c));
 
-        ungetc(c, stdin);
+        ungetc(c,stdin);
         symbuf[i] = '\0';
 
         s = getsym(symbuf);
-        if (s == 0) s = putsym(symbuf, VAR);
+        /* If s is not NULL, it is inited to a FNCT already in init_table() */
+        if (s == 0) s = putsym(symbuf,VAR);
         *((symrec**) &yylval) = s;
         return s->type;
     }
@@ -135,16 +148,16 @@ yylex (void)
 }
 
 void
-yyerror (char const *s)
+yyerror(const char *s)
 {
     fprintf(stderr,"%s\n",s);
 }
 
 void
-init_table (void)
+init_table(void)
 {
     int i;
-    for (i = 0; arith_fncts[i].fname != 0; i++) {
+    for (i=0; arith_fncts[i].fname != 0; i++) {
         symrec *ptr = putsym(arith_fncts[i].fname,FNCT);
         ptr->value.fnctptr = arith_fncts[i].fnct;
     }
@@ -153,7 +166,11 @@ init_table (void)
 int
 process_yy(int argc,char **argv)
 {
-    yylloc.first_line = yylloc.last_line = 1;
-    yylloc.first_column = yylloc.last_column = 0;
+    int i;
+    /* Enable parse traces on option -x.  */
+    for (i = 1; i < argc; ++i)
+        if (strcmp(argv[i],"-x") == 0)
+            yydebug = 1;
+    init_table ();
     return yyparse();
 }

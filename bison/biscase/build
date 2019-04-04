@@ -29,6 +29,11 @@ if [ -f "${yy_name}.h" ]; then
     yy_header="${yy_name}.h"
 fi
 
+yy_tab_header=""
+if [ -f "${yy_name}.tab.h" ]; then
+    yy_tab_header="${yy_name}.tab.h"
+fi
+
 rm Makefile
 
 cat <<END > Makefile
@@ -37,7 +42,7 @@ CFLAGS = -c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 
 LINK = \$(CC)
 
-BUILD_DEPS = ../includes/linux_config.h misc_parser.h ${yy_header}
+BUILD_DEPS = ../includes/linux_config.h misc_parser.h ${yy_header} ${yy_tab_header}
 BUILD_INCS = -I ./ \\
 	-I ../includes
 
@@ -68,7 +73,7 @@ cat <<END >> Makefile
 	-ldl -lpthread -lm -Wl,-E
 
 ${yy_name}.tab.c:
-	bison ${yy_name}.y
+	bison -d ${yy_name}.y
 
 ${yy_name}.tab.o: ${yy_name}.tab.c
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}.tab.o ${yy_name}.tab.c
@@ -88,6 +93,7 @@ END
 
 
 cat <<END >> Makefile
+
 .PHONY:clean
 clean:
 	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h

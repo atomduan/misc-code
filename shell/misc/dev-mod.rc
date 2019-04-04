@@ -1,0 +1,49 @@
+#!/bin/bash -
+#USAGE source this file in .bashrc like: source dev-mod.rc username
+function dwenv_init() {
+
+ssh_dir="${DW_HOME}/.ssh"
+alias vi="vim -u ${DW_HOME}/.vimrc"
+source "${DW_HOME}/.m2/bash_completion.bash"
+export MAVEN_HOME="${DW_HOME}/opt/maven/current"
+export PATH="${MAVEN_HOME}/bin:$PATH"
+
+#ssh-key user config begin
+username="$1"
+shift 1
+
+if [ "x${username}" = "x" ]; then
+    cat << EOF
+USAGE:
+dwenv.rc <username>
+    username can not be empty
+EOF
+    return 1 
+fi
+
+user_ssh_dir="${ssh_dir}/${username}"
+if ! [ -d "${user_ssh_dir}" ]; then
+    cat << EOF
+[WARNING] username:${username} has not configured
+[WARNING] please contact your administrator ${username} to config ${username} pub-key into ${user_ssh_dir}
+[WARNING] sample like this:
+            ${username}/
+            ├── id_rsa
+            └── id_rsa.pub
+
+EOF
+    return 1
+fi
+
+#clean ssh-agent environment
+ssh-agent -k
+ssh-agent -s > ${user_ssh_dir}/agent_env.sh
+source ${user_ssh_dir}/agent_env.sh
+ssh-add ${user_ssh_dir}/id_rsa
+
+#ssh-key user config end
+
+return 0
+}
+dwenv_init $@
+
