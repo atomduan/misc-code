@@ -1,8 +1,9 @@
-"set nocompatible
-"set syntax=on
+set nocompatible
 syntax on
+filetype on
 
 colorscheme default
+set syntax=on
 set filetype=on
 set copyindent
 set preserveindent
