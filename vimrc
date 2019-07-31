@@ -1,7 +1,8 @@
-"set nocompatible "what does this really mean?
+"set nocompatible
+"set syntax=on
+syntax on
 
 colorscheme default
-set syntax=on
 set filetype=on
 set copyindent
 set preserveindent
