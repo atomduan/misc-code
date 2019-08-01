@@ -18,6 +18,7 @@ set encoding=utf-8
 set nu 
 set nowrap
 set scrolloff=6
+"set foldmethod=syntax
 "set cursorline
 
 highlight Search term=reverse ctermfg=Black guifg=Yellow
@@ -47,7 +48,7 @@ Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
 Plugin 'fatih/vim-go'
-Plugin 'atom-java.vim'
+"Plugin 'atom-java.vim'
 
 ""Need more learning
 "Plugin 'session.vim'
@@ -81,7 +82,9 @@ let g:go_highlight_functions = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 
-map <F3> :ConqueTermTab bash<cr>
+map <F3> :ConqueTermVSplit bash<cr>
+"map <F3> :ConqueTermTab bash<cr>
+
 map * *N
 
 "auto open nertree
