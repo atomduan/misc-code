@@ -92,4 +92,6 @@ nnoremap <F3> :ConqueTermVSplit bash<cr>
 nnoremap * *N
 
 "auto open nertree
-au VimEnter * NERDTree
+autocmd VimEnter * NERDTree
+
+nnoremap <leader>ev :vsplit ~/.vimrc<cr>
