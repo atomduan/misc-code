@@ -20,10 +20,10 @@ set scrolloff=6
 
 highlight Search term=reverse ctermfg=Black guifg=Yellow
 
-map <F4> :NERDTree<cr>
-map ,z Pu
-map ,x :NERDTreeFind<cr>*
-map ,c :nohl<cr>
+nnoremap <F4> :NERDTree<cr>
+nnoremap ,z Pu
+nnoremap ,x :NERDTreeFind<cr>*
+nnoremap ,c :nohl<cr>
 
 let NERDTreeWinSize=32
 let NERDTreeIgnore=['\.o$','\.bin$', '\.pyc$', '\.jar$']
@@ -57,7 +57,7 @@ Plugin 'atom-java.vim'
 let g:bufExplorerDefaultHelp=0       " Do not show default help.
 let g:bufExplorerShowRelativePath=1  " Show relative paths.
 let g:bufExplorerSortBy='mru'        " Sort by most recently used.
-map ,m :BufExplorer<cr>
+nnoremap ,m :BufExplorer<cr>
 
 let g:ctrlp_dont_split = 'NERD'
 let g:ctrlp_open_new_file = 'v'
@@ -79,7 +79,7 @@ let g:go_highlight_functions = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 
-map <F3> :ConqueTermTab bash<cr>
+nnoremap <F3> :ConqueTermTab bash<cr>
 
 "auto open nertree
 au VimEnter * NERDTree
