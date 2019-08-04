@@ -22,15 +22,18 @@ set incsearch
 "set foldmethod=syntax
 "set cursorline
 
+let mapleader = ","
+
 highlight Search term=reverse ctermfg=Black guifg=Yellow
 
 nnoremap <F4> :NERDTree<cr>
-nnoremap ,z Pu
-nnoremap ,x :NERDTreeFind<cr>*
-nnoremap ,c :nohl<cr>
+nnoremap <leader>z Pu
+nnoremap <leader>x :NERDTreeFind<cr>*
+nnoremap <leader>c :nohl<cr>
 
 let NERDTreeWinSize=32
 let NERDTreeIgnore=['\.o$','\.bin$', '\.pyc$', '\.jar$']
+
 
 filetype plugin indent on
 
@@ -61,7 +64,7 @@ Plugin 'fatih/vim-go'
 let g:bufExplorerDefaultHelp=0       " Do not show default help.
 let g:bufExplorerShowRelativePath=1  " Show relative paths.
 let g:bufExplorerSortBy='mru'        " Sort by most recently used.
-nnoremap ,m :BufExplorer<cr>
+nnoremap <leader>m :BufExplorer<cr>
 
 let g:ctrlp_dont_split = 'NERD'
 let g:ctrlp_open_new_file = 'v'
