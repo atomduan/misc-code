@@ -8,13 +8,13 @@ import vim
 plugin_root_dir = vim.eval('s:plugin_root_dir')
 python_root_dir = normpath(join(plugin_root_dir, '..', 'python'))
 sys.path.insert(0, python_root_dir)
-import plugin_entry
+import plugin_init
 EOF
 
 function! AtomFoo()
-python << EOF
-from plugin_entry import atom_foo
-atom_foo()
+python3 << EOF
+import plugin_init 
 EOF
 endfunction
+
 command! -nargs=0 AtomFoo call AtomFoo()

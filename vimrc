@@ -1,4 +1,6 @@
-"set nocompatible "what does this really mean?
+set nocompatible
+syntax on
+filetype on
 
 colorscheme default
 set syntax=on
@@ -16,6 +18,8 @@ set encoding=utf-8
 set nu 
 set nowrap
 set scrolloff=6
+set incsearch
+"set foldmethod=syntax
 "set cursorline
 
 highlight Search term=reverse ctermfg=Black guifg=Yellow
@@ -45,7 +49,7 @@ Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
 Plugin 'fatih/vim-go'
-Plugin 'atom-java.vim'
+"Plugin 'atom-java.vim'
 
 ""Need more learning
 "Plugin 'session.vim'
@@ -79,7 +83,10 @@ let g:go_highlight_functions = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 
-nnoremap <F3> :ConqueTermTab bash<cr>
+nnoremap <F3> :ConqueTermVSplit bash<cr>
+"nnoremap <F3> :ConqueTermTab bash<cr>
+
+nnoremap * *N
 
 "auto open nertree
 au VimEnter * NERDTree
