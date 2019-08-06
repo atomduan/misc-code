@@ -97,3 +97,4 @@ nnoremap * *N
 autocmd VimEnter * NERDTree
 
 nnoremap <leader>ev :vsplit ~/.vimrc<cr>
+nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
