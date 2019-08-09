@@ -1,0 +1,1 @@
+* * * * * work cd /home/work/yan/libexec/jmxmonitor/bin/ && /usr/bin/python jmxmonitor.py --host localhost --port 7731 yan 
