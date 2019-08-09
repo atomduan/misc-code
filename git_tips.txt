@@ -1,2 +1,5 @@
 #show git branch graph
 git log --pretty=format:"%h %s" --graph
+
+#export git project
+git archive master | tar -x -C /somewhere/else/exsited/dir
