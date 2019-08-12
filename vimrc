@@ -22,7 +22,7 @@ set incsearch
 "set foldmethod=syntax
 "set cursorline
 
-let mapleader = ","
+let mapleader=","
 
 highlight Search term=reverse ctermfg=Black guifg=Yellow
 
