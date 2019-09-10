@@ -44,10 +44,7 @@ def flatten_dict(data):
     return new_data
 
 def send_to_falcon_transfer(ep, data, tags="", counter_type="GAUGE"):
-    # data[metric]['value'] = value
     data = flatten_dict(data)
-    #print(data)
-
     ts = int(time.time())
     d = []
     for metric in data.keys():
@@ -98,10 +95,6 @@ def jmx_update(srv, host, port):
                     del json_info[key][item]
             if key in jvm_key:
                 jmx_info[key] = json_info[key]
-
-        #print(json.dumps(jmx_counter, indent=1))
-#{ "java.lang": { "XXXXX" : { "value": 0.0, "unit": "%" ...}}}
-
         endpoint = socket.gethostname()
         send_to_falcon_transfer(endpoint, jmx_info, tags="service={0}".format(srv))
 
