@@ -28,7 +28,7 @@ def extract_src_jar(jar_path):
                 shutil.rmtree(d,ignore_errors=True)
         #extract jar_path in jar_dir
         jar_name = os.path.basename(jar_path)
-        cmd = 'cd %s; jar -xf %s;'%(jar_dir,jar_name)
+        cmd = 'cd %s; jar -xf %s;touch README.md'%(jar_dir,jar_name)
         try:
             print('os.system exec cmd: %s'%(cmd))
             res = os.system(cmd)
