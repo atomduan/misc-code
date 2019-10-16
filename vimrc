@@ -102,7 +102,6 @@ let g:go_highlight_build_constraints = 1
 
 
 nnoremap <F3> :ConqueTermVSplit bash<cr>
-"nnoremap <F3> :ConqueTermTab bash<cr>
 
 nnoremap * *N
 
@@ -111,3 +110,4 @@ autocmd VimEnter * NERDTree
 
 nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
+nnoremap <leader>cw "+yiw
