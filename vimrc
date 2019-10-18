@@ -111,3 +111,41 @@ autocmd VimEnter * NERDTree
 nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
 nnoremap <leader>cw "+yiw
+
+
+"cscope config
+if has("cscope")
+	set csprg=/usr/bin/cscope
+	set csto=0
+	set cst
+	set nocsverb
+	" add any database in current directory
+	if filereadable("cscope.out")
+	    cs add cscope.out
+	" else add database pointed to by environment
+	elseif $CSCOPE_DB != ""
+	    cs add $CSCOPE_DB
+	endif
+	set csverb
+endif
+
+nmap <leader>fs :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fg :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fc :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>ft :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fe :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>ff :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <leader>fi :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <leader>fd :cs find d <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fa :cs find a <C-R>=expand("<cword>")<CR><CR>
+
+" Hitting CTRL-space before the search type does a vertical
+" split instead of a horizontal one
+nmap <leader>fvs :vert scs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fvg :vert scs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fvc :vert scs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fvt :vert scs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fve :vert scs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fvi :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <leader>fvd :vert scs find d <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>fva :vert scs find a <C-R>=expand("<cword>")<CR><CR>
