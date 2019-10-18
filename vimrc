@@ -138,9 +138,6 @@ nmap <leader>ff :cs find f <C-R>=expand("<cfile>")<CR><CR>
 nmap <leader>fi :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nmap <leader>fd :cs find d <C-R>=expand("<cword>")<CR><CR>
 nmap <leader>fa :cs find a <C-R>=expand("<cword>")<CR><CR>
-
-" Hitting CTRL-space before the search type does a vertical
-" split instead of a horizontal one
 nmap <leader>fvs :vert scs find s <C-R>=expand("<cword>")<CR><CR>
 nmap <leader>fvg :vert scs find g <C-R>=expand("<cword>")<CR><CR>
 nmap <leader>fvc :vert scs find c <C-R>=expand("<cword>")<CR><CR>
