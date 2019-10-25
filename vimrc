@@ -27,9 +27,8 @@ let mapleader=","
 highlight Search term=reverse ctermfg=Black guifg=Yellow
 
 nnoremap <F4> :NERDTree<cr>
-nnoremap <leader>z Pu
+nnoremap <leader>z :nohl
 nnoremap <leader>x :NERDTreeFind<cr>*
-nnoremap <leader>c :nohl<cr>
 nnoremap <leader>j 8j
 nnoremap <leader>k 8k
 
@@ -111,6 +110,7 @@ autocmd VimEnter * NERDTree
 nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
 nnoremap <leader>cw "+yiw
+nnoremap <leader>cy "+yy
 
 
 "cscope config
