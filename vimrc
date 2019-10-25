@@ -27,7 +27,7 @@ let mapleader=","
 highlight Search term=reverse ctermfg=Black guifg=Yellow
 
 nnoremap <F4> :NERDTree<cr>
-nnoremap <leader>z :nohl
+nnoremap <leader>z :nohl<cr>
 nnoremap <leader>x :NERDTreeFind<cr>*
 nnoremap <leader>j 8j
 nnoremap <leader>k 8k
