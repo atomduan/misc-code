@@ -1,0 +1,70 @@
+*) main invoke process
+    src/java.base/share/native/launcher/main.c 
+        --> main(int argc, char **argv)
+        src/java.base/share/native/libjli/java.c:
+            --> JLI_Launch(...)
+            src/java.base/unix/native/libjli/java_md_solinux.c
+                <<<<  --> LoadJavaVM(...) init jvm create hook is in this method  >>>>
+                --> JVMInit(...)
+                src/java.base/share/native/libjli/java.c
+                    --> ContinueInNewThread(...)
+                    src/java.base/unix/native/libjli/java_md_solinux.c
+                        --> CallJavaMainInNewThread(...)
+                            if (pthread_create(&tid, &attr, ThreadJavaMain, args) == 0) {
+                            ThreadJavaMain() --> return (void*)(intptr_t)JavaMain(args);
+                        src/java.base/share/native/libjli/java.c
+                            --> JavaMain(void* _args)
+                                <<<<  --> InitializeJVM(...) initialize jvm logical is here >>>> 
+                                --> (*env)->CallStaticVoidMethod(env, mainClass, mainID, mainArgs);
+                            src/hotspot/share/prims/jni.cpp
+                                --> CallStaticVoidMethod(...)
+                                    --> jni_invoke_static(...)
+                                        --> JavaCalls::call(result, method, &java_args, CHECK);
+                                src/hotspot/share/runtime/javaCalls.cpp
+                                    -->call(...)
+                                        --> void JavaCalls::call_helper(...)
+                                            --> StubRoutines::call_stub()(...) #call_stub return CallStub pointer
+                                    src/hotspot/share/runtime/stubRoutines.hpp
+                                        --> static CallStub call_stub() { return CAST_TO_FN_PTR(CallStub, _call_stub_entry); }
+                                            --> #define CAST_TO_FN_PTR(func_type, value) (reinterpret_cast<func_type>(value))
+                                                ## _call_stub_entry is a CallStub pointer
+    
+
+*) _call_stub_entry info:
+    defined in :
+    src/hotspot/share/runtime/stubRoutines.hpp
+        --> class StubRoutines: AllStatic {
+              static address _call_stub_entry;
+
+
+*) _call_stub_entry is initialized in jvm init process, jvm initial process is process as below:
+    init jvm func in :
+        src/java.base/share/native/libjli/java.c
+        --> JLI_Launch(...)
+        -->     if (!LoadJavaVM(jvmpath, &ifn))
+            src/java.base/unix/native/libjli/java_md_solinux.c
+            --> LoadJavaVM(...)
+            --> ifn->CreateJavaVM = (CreateJavaVM_t) dlsym(libjvm, "JNI_CreateJavaVM");
+    
+    call init jvm func in :
+        src/java.base/share/native/libjli/java.c
+            --> JavaMain(void* _args)
+                src/hotspot/share/prims/jni.cpp
+                --> _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM **vm, void **penv, void *args) {
+                    --> static jint JNI_CreateJavaVM_inner(JavaVM **vm, void **penv, void *args) {
+                    --> result = Threads::create_vm((JavaVMInitArgs*) args, &can_try_again);
+                    src/hotspot/share/runtime/thread.cpp
+                        --> jint Threads::create_vm(JavaVMInitArgs* args, bool* canTryAgain) {
+                            --> jint status = init_globals();
+                                src/hotspot/share/runtime/init.cpp
+                                --> init_globals() {
+                                --> stubRoutines_init1 OR 2
+                                src/hotspot/share/runtime/stubRoutines.cpp
+                                    --> stubRoutines_init1 OR 2
+                                        --> address StubRoutines::_call_stub_entry = NULL;
+                                        --> StubRoutines::initialize1()  OR StubRoutines::initialize2() 
+                                            src/hotspot/cpu/x86/stubGenerator_x86_64.cpp
+                                                --> StubGenerator_generate(CodeBuffer* code, bool all) {
+                                                    -->   void generate_initial() {
+                                                        StubRoutines::_call_stub_entry = generate_call_stub(StubRoutines::_call_stub_return_address);
+                                                        --> address generate_call_stub(address& return_address) {...asm code...}
