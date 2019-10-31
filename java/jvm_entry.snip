@@ -70,3 +70,6 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
                                                     -->   void generate_initial()
                                                         StubRoutines::_call_stub_entry = generate_call_stub(StubRoutines::_call_stub_return_address);
                                                         --> address generate_call_stub(address& return_address) {...asm code...}
+
+*) Thread relevant defintion in
+    src/hotspot/share/runtime/thread.hpp && src/hotspot/share/runtime/thread.cpp
