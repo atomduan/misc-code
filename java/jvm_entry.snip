@@ -73,3 +73,14 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
 
 *) Thread relevant defintion in
     src/hotspot/share/runtime/thread.hpp && src/hotspot/share/runtime/thread.cpp
+
+*) Mememory initialize 
+    src/hotspot/share/runtime/thread.cpp
+        --> jint Threads::create_vm(JavaVMInitArgs* args, bool* canTryAgain)
+            -->  vm_init_globals();
+                --> src/hotspot/share/runtime/init.cpp
+                    void vm_init_globals() {
+                        ......
+                        chunkpool_init(); --> Mememory Initialize
+                        ......
+                    }
