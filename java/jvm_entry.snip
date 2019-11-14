@@ -113,4 +113,10 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
                     src/hotspot/share/memory/allocation.hpp
                         #define METASPACE_OBJ_TYPES_DO(f) \ 定义了 mtInternal 枚举 mtInternal means "memory type internal"
                         通常引用方式: typedef MemoryType MEMFLAGS;
+            
+            new(ResourceObj::C_HEAP, mtInternal) 的实现在ResourceObj类 : src/hotspot/share/memory/allocation.cpp
+                具体方法 --> void* ResourceObj::operator new(size_t size, allocation_type type, MEMFLAGS flags) throw() {
+                其中的size_t size类似new 重载的系统参数，调用的时候可以忽略
+                分配的方式分为C_HEAP(调用malloc分配) 和 RESOURCE_AREA分配 (jvm 的堆上分配)
 
+            "technically UB" means "Undefined Behaviour" always means Bug.
