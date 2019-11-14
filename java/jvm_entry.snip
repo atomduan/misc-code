@@ -110,3 +110,5 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
                 void* operator new [](size_t size, const std::nothrow_t&  nothrow_constant,
                     allocation_type type, MEMFLAGS flags) throw();
                 ......
+                    src/hotspot/share/memory/allocation.hpp
+                        #define METASPACE_OBJ_TYPES_DO(f) \ 定义了 mtInternal 枚举 mtInternal means "memory type internal"
