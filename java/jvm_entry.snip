@@ -84,3 +84,11 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
                         chunkpool_init(); --> Mememory Initialize
                         ......
                     }
+
+*) TLS (Thread Local Storage 相关的) 
+    src/hotspot/os/posix/threadLocalStorage_posix.cpp
+    void ThreadLocalStorage::init();
+        使用的是pthreade_key相关特性实现的:
+            int rslt = pthread_key_create(&_thread_key, restore_thread_pointer);
+            void ThreadLocalStorage::set_thread(Thread* current), 会把当前线程的Thread结构数据保存在TLS中
+            Thread* ThreadLocalStorage::thread(), 会取出当前线程保存在TLS中的信息
