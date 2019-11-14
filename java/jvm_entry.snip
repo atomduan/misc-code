@@ -92,3 +92,21 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
             int rslt = pthread_key_create(&_thread_key, restore_thread_pointer);
             void ThreadLocalStorage::set_thread(Thread* current), 会把当前线程的Thread结构数据保存在TLS中
             Thread* ThreadLocalStorage::thread(), 会取出当前线程保存在TLS中的信息
+
+*)  ostream_init(); 的初始化过程
+    src/hotspot/share/utilities/ostream.cpp --> ostream_init() {...}
+        src/hotspot/share/utilities/defaultStream.hpp
+            src/hotspot/share/utilities/xmlstream.hpp
+                src/hotspot/share/utilities/ostream.hpp
+        //具体的初始化语句: 这里的new操作符被rewrite了
+        defaultStream::instance = new(ResourceObj::C_HEAP, mtInternal) defaultStream();
+            //new 操作符rewrite的位置在父类 class ResourceObj ALLOCATION_SUPER_CLASS_SPEC  中
+            //位置: src/hotspot/share/memory/allocation.hpp 
+             public:
+                void* operator new(size_t size, allocation_type type, MEMFLAGS flags) throw();
+                void* operator new [](size_t size, allocation_type type, MEMFLAGS flags) throw();
+                void* operator new(size_t size, const std::nothrow_t&  nothrow_constant,
+                    allocation_type type, MEMFLAGS flags) throw();
+                void* operator new [](size_t size, const std::nothrow_t&  nothrow_constant,
+                    allocation_type type, MEMFLAGS flags) throw();
+                ......
