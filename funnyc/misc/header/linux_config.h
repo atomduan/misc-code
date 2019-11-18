@@ -49,6 +49,8 @@
 #include <sys/utsname.h>
 #include <stdbool.h>
 
+#include <inttypes.h>
+
 /* use of dirname */
 #include <libgen.h>
 #include <dlfcn.h>
