@@ -129,3 +129,7 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
 
 *) 全局配置的存储位置: /share/runtime/globals.hpp
     diagnostic(bool, LogVMOutput, false, "Save VM output to LogFile")
+
+*) Jvmti mean "jvm tool interface": 可以写jvm相关的外挂程序，相当与plugin或者nginx的module的机制
+      JvmtiExport::enter_onload_phase();
+
