@@ -83,6 +83,7 @@ main(int argn, char **argv)
       return 2;
     }
  
+    printf("logical_cpu %d\n", logical_cpu);
     printf("used-->userTicks:%lu, niceTicks:%lu\n",userTicks,niceTicks);
     printf("usedKernel-->systemTicks:%lu, irqTicks:%lu, sirqTicks:%lu\n",systemTicks, irqTicks, sirqTicks);
     printf("total-->userTicks:%lu, niceTicks:%lu, systemTicks:%lu, idleTicks:%lu\n",userTicks, niceTicks, systemTicks, idleTicks);
