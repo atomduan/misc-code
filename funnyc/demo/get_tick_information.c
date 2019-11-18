@@ -34,7 +34,7 @@ next_line(FILE *f)
 int
 main(int argn, char **argv)
 {
-    int           which_logical_cpu = -1;
+    int           which_logical_cpu = 3;
     FILE*         fh;
     uint64_t      userTicks, niceTicks, systemTicks, idleTicks;
     // since at least kernel 2.6 : iowait: time waiting for I/O to complete
