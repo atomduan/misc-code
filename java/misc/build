@@ -1,0 +1,30 @@
+#!/bin/bash -
+
+curr=$(cd `dirname $(which $0)`; pwd)
+
+cd $curr
+
+name="$1"
+name=${name:-misc.c}
+name=$(echo $name | sed 's/\.c//g')
+name=$(echo $name | sed 's/\.//g')
+
+. compile $name
+
+if [ -x ${name}.bin ]; then
+cat << EOF
+
+
+---------------MISC RUN-----------------
+
+
+EOF
+    ./${name}.bin
+cat << EOF
+
+
+---------------MISC FIN-----------------
+
+
+EOF
+fi

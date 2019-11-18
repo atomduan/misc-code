@@ -1,0 +1,61 @@
+#!/bin/bash -
+
+curr=$(cd `dirname $(which $0)`; pwd)
+
+cd $curr
+
+name="$1"
+name=${name:-misc.c}
+name=$(echo $name | sed 's/\.c//g')
+name=$(echo $name | sed 's/\.//g')
+
+if [ -f "./Makefile" ]; then
+    rm Makefile
+fi
+
+cat <<END > Makefile
+CC = gcc
+CFLAGS = -c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
+
+LINK = \$(CC)
+
+BUILD_DEPS = ./header/misc_utils.h
+
+BUILD_INCS = -I ./ \\
+	-I ./lib \\
+	-I ./header
+
+END
+
+if [ ${name} != "misc_utils" ]; then
+cat <<END >> Makefile
+${name}:	${name}.o \\
+	misc_utils.o
+
+	\$(LINK) -o ${name}.bin ${name}.o \\
+	misc_utils.o \\
+	-ldl -lpthread -Wl,-E
+
+${name}.o:	\$(BUILD_DEPS)
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${name}.o ${name}.c
+
+END
+fi
+
+
+cat <<END >> Makefile
+misc_utils.o:	\$(BUILD_DEPS)
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o misc_utils.o ./lib/misc_utils.c
+
+END
+
+
+cat <<END >> Makefile
+.PHONY:clean
+clean:
+	rm -rf *.o *.bin core
+END
+
+make clean
+
+make
