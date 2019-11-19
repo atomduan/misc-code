@@ -131,5 +131,8 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
     diagnostic(bool, LogVMOutput, false, "Save VM output to LogFile")
 
 *) Jvmti mean "jvm tool interface": 可以写jvm相关的外挂程序，相当与plugin或者nginx的module的机制
-      JvmtiExport::enter_onload_phase();
+    JvmtiExport::enter_onload_phase();
 
+*) vm_init_globals & init_globals defined in: src/hotspot/share/runtime/init.cpp 
+    key states : (modules and structs) initialization. 
+    当前看只有main线程在做初始化工作，所以应该不涉及服务的初始化(service thread)
