@@ -139,11 +139,11 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
 
 *) bytecode相关的分类:src/hotspot/share/interpreter/bytecodes.hpp
     //1) operand stack相关
-    (const,push,ldc),(load),(store)
+    (const,push,ldc),(load),(store),dup,pop,swap
     //2) 运算相关
-    pop,dup,swap,add,sub,mul,div,rem,neg,shl,shr,and,or,xor,inc,cmp
+    add,sub,mul,div,rem,neg,shl,shr,and,or,xor,inc,cmp
     //3) Flow Control相关
-    ifeq,goto,return,goto,tableswitch,lookupswitch,throw,breakpoint
+    ifeq,goto,return,tableswitch,lookupswitch,throw,breakpoint
     //4) 对象操作相关
     new,arraylength,getstatic,putstatic,getfield,putfield,checkcast,instanceof
     //5) 系统能力及ld调用相关
