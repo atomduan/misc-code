@@ -136,3 +136,20 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
 *) vm_init_globals & init_globals defined in: src/hotspot/share/runtime/init.cpp 
     key states : (modules and structs) initialization. 
     当前看只有main线程在做初始化工作，所以应该不涉及服务的初始化(service thread)
+
+*) bytecode相关的分类:src/hotspot/share/interpreter/bytecodes.hpp
+    //1) 寄存器相关
+    nop,const,push,ldc,load,store
+    //2) 运算相关
+    pop,dup,swap,add,sub,mul,div,rem,neg,shl,shr,and,or,xor,inc,cmp
+    //3) Flow Control相关
+    ifeq,goto,return,goto,tableswitch,lookupswitch,throw,breakpoint
+    //4) 对象操作相关
+    new,arraylength,getstatic,putstatic,getfield,putfield,checkcast,instanceof
+    //5) 系统能力及ld调用相关
+    invokevirtual,invokespecial,invokestatic,invokeinterface,invokedynamic
+    //6) 其他指令
+    monitorenter,monitorexit,wide,illegal
+    //7) 已经废弃的指令
+    jsr,jsr_w,goto_w,ret
+
