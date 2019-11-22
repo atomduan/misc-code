@@ -52,7 +52,6 @@ Plugin 'python.vim'
 Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
-Plugin 'fatih/vim-go'
 Plugin 'Syntastic'
 "Plugin 'atom-java.vim'
 
