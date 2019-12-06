@@ -47,10 +47,6 @@ cat $conf_script_dir/configure.ac | ${AUTOCONF} -W all -I$conf_script_dir - > $g
 rm -rf autom4te.cache
 
 
-# Save the quoted command line
-CONFIGURE_COMMAND_LINE=""
-
-
 # Make configure exit with error on invalid options as default.
 # Can be overridden by --disable-option-checking, since we prepend our argument
 # and later options override earlier.
