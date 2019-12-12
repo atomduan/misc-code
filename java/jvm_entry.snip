@@ -160,3 +160,7 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
 *) 构造逻辑, 分为两个大的阶段:如下:
     1. configure --> 做配置检查并产出相关的环境相关的上下文信息 --> spec.gmk --> 在build下的相关目录
     2. Makefile --> Init.gmk --> Main.gmk 会引用步骤一中产出的spec.gmk进行实际的构造
+    ----------------
+    PS: 通过configure过程产出和环境相关的信息文件
+        (redis 是产出*.h文件，此处是产出gmk文件)
+        是在配置阶段很常见的做法
