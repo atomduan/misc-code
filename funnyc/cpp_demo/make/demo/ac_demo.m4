@@ -32,3 +32,4 @@ AC_DEFUN([AC_DEMO_FOO],
   fi
 ])
 
+AC_SUBST(VAR_TQ84, 'tq84')
