@@ -170,6 +170,7 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
 *) 解释器初始化及提供服务入口:
    src/hotspot/share/interpreter/interpreter.cpp 
        -->  void interpreter_init() {
+
          Interpreter::initialize(); Interpreter是CppInterpreter和TemplateInterpreter二选一具体如下, TemplateInterpreter为默认:
             src/hotspot/share/interpreter/interpreter.hpp 
                  --> typedef CC_INTERP_ONLY(CppInterpreter) NOT_CC_INTERP(TemplateInterpreter) Interpreter;
@@ -181,6 +182,24 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
                          #define CC_INTERP_ONLY(code)
                          #define NOT_CC_INTERP(code) code
                          #endif // CC_INTERP
-        TemplateInterpreter 查看其他资料是从 bytecodeInterpreter 转译成汇编码而来. 
+            #TemplateInterpreter 查看其他资料是从 bytecodeInterpreter 转译成汇编码而来.从CppInterpreter的实现可以看到其是以来bytecodeInterpreter. 
+          ....... 
+          BytecodeInterpreter start_msg(BytecodeInterpreter::initialize); // 初始化一个start_msg实例
+          if (JvmtiExport::can_post_interpreter_events())
+          BytecodeInterpreter::runWithChecks(&start_msg);
+          else
+          BytecodeInterpreter::run(&start_msg);//此处的run方法相当于事件的反应器, 当start_msg->msg是initialize的时候:
+             switch (istate->msg()) {
+                case initialize: {
+                      if (initialized++) ShouldNotReachHere(); // Only one initialize call.
+                      _compiling = (UseCompiler || CountCompiledCalls);
+                #ifdef VM_JVMTI
+                      _jvmti_interp_events = JvmtiExport::can_post_interpreter_events();
+                #endif
+                      return; //会直接返回，其他msg事件会继续往下执行，主要是bytecode的解析
+                    }
+                break;
+ 
+
 
  
