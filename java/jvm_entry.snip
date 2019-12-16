@@ -166,3 +166,21 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
         是在配置阶段很常见的做法
 
 *) bytecode的执行逻辑实现: ./share/interpreter/bytecodeInterpreter.cpp
+
+*) 解释器初始化及提供服务入口:
+   src/hotspot/share/interpreter/interpreter.cpp 
+       -->  void interpreter_init() {
+         Interpreter::initialize(); Interpreter是CppInterpreter和TemplateInterpreter二选一具体如下, TemplateInterpreter为默认:
+            src/hotspot/share/interpreter/interpreter.hpp 
+                 --> typedef CC_INTERP_ONLY(CppInterpreter) NOT_CC_INTERP(TemplateInterpreter) Interpreter;
+                     依赖宏CC_INTERP的定义
+                         #ifdef CC_INTERP
+                         #define CC_INTERP_ONLY(code) code
+                         #define NOT_CC_INTERP(code)
+                         #else
+                         #define CC_INTERP_ONLY(code)
+                         #define NOT_CC_INTERP(code) code
+                         #endif // CC_INTERP
+        TemplateInterpreter 查看其他资料是从 bytecodeInterpreter 转译成汇编码而来. 
+
+ 
