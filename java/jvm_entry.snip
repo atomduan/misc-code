@@ -73,6 +73,11 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
                                                         StubRoutines::_call_stub_entry = generate_call_stub(StubRoutines::_call_stub_return_address);
                                                         --> address generate_call_stub(address& return_address) {...asm code...}
 
+                    
+                      // _call_stub_entry 翻译之后的含义应该类似如下:
+                      Interpreter::invoke_method(method, entry_point, THREAD);
+
+
 *) Thread relevant defintion in
     src/hotspot/share/runtime/thread.hpp && src/hotspot/share/runtime/thread.cpp
 
@@ -199,7 +204,5 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
                       return; //会直接返回，其他msg事件会继续往下执行，主要是bytecode的解析
                     }
                 break;
- 
 
-
- 
+*) https://openjdk.java.net/projects/zero/ 相关介绍
