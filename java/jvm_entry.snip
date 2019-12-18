@@ -204,6 +204,18 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
                       return; //会直接返回，其他msg事件会继续往下执行，主要是bytecode的解析
                     }
                 break;
+        -----------------------------
+        如果使用Zero的解释器材，初始过程如下
+        *) zero解释器是通过cppInterpreter引入,对应的macro为ZERO
+            void CppInterpreter::initialize() {
+                -->    CppInterpreterGenerator g(_code);
+                    -->   generate_all();
+                        -->       entry_point = generate_normal_entry(synchronized);
+                            --> cppInterpreterGenerator_zero.cpp 
+                                    -->   return generate_entry((address) CppInterpreter::normal_entry);
+                                        这个就是zero解释器实际解析字节码的入口指针(address) CppInterpreter::normal_entry
+                                            --> mainloop(.....)最终会调用BytecodeInterpreter::run(...)进行解释
+
 
 *) https://openjdk.java.net/projects/zero/ 相关介绍
     src/hotspot/cpu/zero/cppInterpreter_zero.cpp main_loop属于虚拟机的一个类似验证版本的存在
