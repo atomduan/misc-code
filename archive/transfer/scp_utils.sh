@@ -20,7 +20,7 @@ echo "password is : $passwd"
 expect -c "
 spawn ${cmd}
 expect {
-\"password:\"       { send -- \"${passwd}\r\";}
-							        }
-									expect eof
-									"
+    \"password:\" { send -- \"${passwd}\r\";}
+}
+expect eof
+"
