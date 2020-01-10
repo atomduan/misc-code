@@ -1,8 +1,8 @@
 digraph G {
 
-size="16,6"
+size="30,10"
 ratio="fill"
-node [shape=box height=1 width=2.0 fontsize=25];
+node [shape=box height=1 width=8.0 fontsize=25];
 splines=spline
 splines=true
 
