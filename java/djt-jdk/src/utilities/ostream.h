@@ -1,7 +1,7 @@
 #ifndef DJT_UTILITIES_OSTREAM_H_
 #define DJT_UTILITIES_OSTREAM_H_
 
-#include "allocation.h"
+#include "allocation/allocation.h"
 #include "runtime/timer.h"
 #include "utilities/global_definitions.h"
 

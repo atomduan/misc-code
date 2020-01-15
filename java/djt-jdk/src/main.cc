@@ -1,7 +1,9 @@
 #include <iostream>
-#include "allocation.hpp"
-#include "breakpoint.hpp"
-#include "macros.hpp"
+
+#include "allocation/allocation.h"
+#include "utilities/breakpoint.h"
+#include "utilities/macros.h"
+#include "utilities/global_definitions.h"
 
 int main(int argc, char** argv) {
     std::cout << "Have " << argc << " arguments:" << std::endl;
