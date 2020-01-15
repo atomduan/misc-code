@@ -1,41 +1,15 @@
-/*
- * Copyright (c) 1997, 2019, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.
- *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
- *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
- *
- */
-
-#ifndef SHARE_UTILITIES_MACROS_HPP
-#define SHARE_UTILITIES_MACROS_HPP
+#ifndef DJT_UTILITIES_MACROS_H
+#define DJT_UTILITIES_MACROS_H
 
 // Use this to mark code that needs to be cleaned up (for development only)
 #define NEEDS_CLEANUP
-
 // Makes a string of the argument (which is not macro-expanded)
 #define STR(a)  #a
-
 // Makes a string of the macro expansion of a
 #define XSTR(a) STR(a)
-
 // Allow commas in macro arguments.
 #define COMMA ,
+
 
 // Apply pre-processor token pasting to the expansions of x and y.
 // The token pasting operator (##) prevents its arguments from being
@@ -46,8 +20,6 @@
 #define PASTE_TOKENS_AUX(x, y) PASTE_TOKENS_AUX2(x, y)
 #define PASTE_TOKENS_AUX2(x, y) x ## y
 
-// -DINCLUDE_<something>=0 | 1 can be specified on the command line to include
-// or exclude functionality.
 
 #ifndef INCLUDE_JVMTI
 #define INCLUDE_JVMTI 1
@@ -65,6 +37,7 @@
 #define NOT_JVMTI_RETURN_(code) { return code; }
 #endif // INCLUDE_JVMTI
 
+
 #ifndef INCLUDE_VM_STRUCTS
 #define INCLUDE_VM_STRUCTS 1
 #endif
@@ -76,6 +49,7 @@
 #define NOT_VM_STRUCTS_RETURN           {}
 #define NOT_VM_STRUCTS_RETURN_(code) { return code; }
 #endif // INCLUDE_VM_STRUCTS
+
 
 #ifndef INCLUDE_JNI_CHECK
 #define INCLUDE_JNI_CHECK 1
@@ -89,6 +63,7 @@
 #define NOT_JNI_CHECK_RETURN_(code) { return code; }
 #endif // INCLUDE_JNI_CHECK
 
+
 #ifndef INCLUDE_SERVICES
 #define INCLUDE_SERVICES 1
 #endif
@@ -100,6 +75,7 @@
 #define NOT_SERVICES_RETURN             {}
 #define NOT_SERVICES_RETURN_(code) { return code; }
 #endif // INCLUDE_SERVICES
+
 
 #ifndef INCLUDE_CDS
 #define INCLUDE_CDS 1
@@ -119,6 +95,7 @@
 #define NOT_CDS_RETURN_(code) { return code; }
 #endif // INCLUDE_CDS
 
+
 #ifndef INCLUDE_MANAGEMENT
 #define INCLUDE_MANAGEMENT 1
 #endif // INCLUDE_MANAGEMENT
@@ -130,6 +107,7 @@
 #define NOT_MANAGEMENT_RETURN        {}
 #define NOT_MANAGEMENT_RETURN_(code) { return code; }
 #endif // INCLUDE_MANAGEMENT
+
 
 #ifndef INCLUDE_EPSILONGC
 #define INCLUDE_EPSILONGC 1
@@ -149,6 +127,7 @@
 #define NOT_EPSILONGC_RETURN_(code) { return code; }
 #endif // INCLUDE_EPSILONGC
 
+
 #ifndef INCLUDE_G1GC
 #define INCLUDE_G1GC 1
 #endif // INCLUDE_G1GC
@@ -166,6 +145,7 @@
 #define NOT_G1GC_RETURN        {}
 #define NOT_G1GC_RETURN_(code) { return code; }
 #endif // INCLUDE_G1GC
+
 
 #ifndef INCLUDE_PARALLELGC
 #define INCLUDE_PARALLELGC 1
@@ -185,6 +165,7 @@
 #define NOT_PARALLELGC_RETURN_(code) { return code; }
 #endif // INCLUDE_PARALLELGC
 
+
 #ifndef INCLUDE_SERIALGC
 #define INCLUDE_SERIALGC 1
 #endif // INCLUDE_SERIALGC
@@ -202,6 +183,7 @@
 #define NOT_SERIALGC_RETURN        {}
 #define NOT_SERIALGC_RETURN_(code) { return code; }
 #endif // INCLUDE_SERIALGC
+
 
 #ifndef INCLUDE_SHENANDOAHGC
 #define INCLUDE_SHENANDOAHGC 1
@@ -221,6 +203,7 @@
 #define NOT_SHENANDOAHGC_RETURN_(code) { return code; }
 #endif // INCLUDE_SHENANDOAHGC
 
+
 #ifndef INCLUDE_ZGC
 #define INCLUDE_ZGC 1
 #endif // INCLUDE_ZGC
@@ -239,6 +222,7 @@
 #define NOT_ZGC_RETURN_(code) { return code; }
 #endif // INCLUDE_ZGC
 
+
 #ifndef INCLUDE_NMT
 #define INCLUDE_NMT 1
 #endif // INCLUDE_NMT
@@ -255,6 +239,7 @@
 #define NOT_NMT(x) x
 #endif // INCLUDE_NMT
 
+
 #ifndef INCLUDE_JFR
 #define INCLUDE_JFR 1
 #endif
@@ -267,18 +252,18 @@
 #define NOT_JFR_RETURN_(code) { return code; }
 #endif
 
+
 #ifndef INCLUDE_JVMCI
 #define INCLUDE_JVMCI 1
-#endif
+#endif // INCLUDE_JVMCI
 
 #ifndef INCLUDE_AOT
 #define INCLUDE_AOT 1
-#endif
+#endif //INCUDE_AOT
 
 #if INCLUDE_AOT && !INCLUDE_JVMCI
 #  error "Must have JVMCI for AOT"
 #endif
-
 #if INCLUDE_JVMCI
 #define JVMCI_ONLY(code) code
 #define NOT_JVMCI(code)
@@ -299,11 +284,13 @@
 #define NOT_AOT_RETURN {}
 #endif // INCLUDE_AOT
 
+
 // COMPILER1 variant
 #ifdef COMPILER1
 #ifdef COMPILER2
-  #define TIERED
+#define TIERED
 #endif
+
 #define COMPILER1_PRESENT(code) code
 #define NOT_COMPILER1(code)
 #else // COMPILER1
@@ -331,6 +318,7 @@
 #define NOT_COMPILER2_OR_JVMCI(code) code
 #endif
 
+
 #ifdef TIERED
 #define TIERED_ONLY(code) code
 #define NOT_TIERED(code)
@@ -357,6 +345,7 @@
 #define PRODUCT_RETURN_(code)  /*next token must be ;*/
 #endif // PRODUCT
 
+
 #ifdef CHECK_UNHANDLED_OOPS
 #define CHECK_UNHANDLED_OOPS_ONLY(code) code
 #define NOT_CHECK_UNHANDLED_OOPS(code)
@@ -365,6 +354,7 @@
 #define NOT_CHECK_UNHANDLED_OOPS(code)  code
 #endif // CHECK_UNHANDLED_OOPS
 
+
 #ifdef CC_INTERP
 #define CC_INTERP_ONLY(code) code
 #define NOT_CC_INTERP(code)
@@ -372,6 +362,7 @@
 #define CC_INTERP_ONLY(code)
 #define NOT_CC_INTERP(code) code
 #endif // CC_INTERP
+
 
 #ifdef ASSERT
 #define DEBUG_ONLY(code) code
@@ -386,6 +377,7 @@
 #define debug_only(code)
 #endif // ASSERT
 
+
 #ifdef  _LP64
 #define LP64_ONLY(code) code
 #define NOT_LP64(code)
@@ -393,6 +385,7 @@
 #define LP64_ONLY(code)
 #define NOT_LP64(code) code
 #endif // _LP64
+
 
 #ifdef LINUX
 #define LINUX_ONLY(code) code
@@ -402,6 +395,7 @@
 #define NOT_LINUX(code) code
 #endif
 
+
 #ifdef AIX
 #define AIX_ONLY(code) code
 #define NOT_AIX(code)
@@ -409,6 +403,7 @@
 #define AIX_ONLY(code)
 #define NOT_AIX(code) code
 #endif
+
 
 #ifdef SOLARIS
 #define SOLARIS_ONLY(code) code
@@ -418,6 +413,7 @@
 #define NOT_SOLARIS(code) code
 #endif
 
+
 #ifdef _WINDOWS
 #define WINDOWS_ONLY(code) code
 #define NOT_WINDOWS(code)
@@ -425,6 +421,7 @@
 #define WINDOWS_ONLY(code)
 #define NOT_WINDOWS(code) code
 #endif
+
 
 #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
 #ifndef BSD
@@ -437,6 +434,7 @@
 #define NOT_BSD(code) code
 #endif
 
+
 #ifdef _WIN64
 #define WIN64_ONLY(code) code
 #define NOT_WIN64(code)
@@ -445,6 +443,7 @@
 #define NOT_WIN64(code) code
 #endif
 
+
 #if defined(ZERO)
 #define ZERO_ONLY(code) code
 #define NOT_ZERO(code)
@@ -452,6 +451,7 @@
 #define ZERO_ONLY(code)
 #define NOT_ZERO(code) code
 #endif
+
 
 #if defined(IA32) || defined(AMD64)
 #define X86
@@ -463,6 +463,7 @@
 #define NOT_X86(code) code
 #endif
 
+
 #ifdef IA32
 #define IA32_ONLY(code) code
 #define NOT_IA32(code)
@@ -471,10 +472,10 @@
 #define NOT_IA32(code) code
 #endif
 
+
 // This is a REALLY BIG HACK, but on AIX <sys/systemcfg.h> unconditionally defines IA64.
 // At least on AIX 7.1 this is a real problem because 'systemcfg.h' is indirectly included
 // by 'pthread.h' and other common system headers.
-
 #if defined(IA64) && !defined(AIX)
 #define IA64_ONLY(code) code
 #define NOT_IA64(code)
@@ -482,6 +483,7 @@
 #define IA64_ONLY(code)
 #define NOT_IA64(code) code
 #endif
+
 
 #ifdef AMD64
 #define AMD64_ONLY(code) code
@@ -491,6 +493,7 @@
 #define NOT_AMD64(code) code
 #endif
 
+
 #ifdef S390
 #define S390_ONLY(code) code
 #define NOT_S390(code)
@@ -498,6 +501,7 @@
 #define S390_ONLY(code)
 #define NOT_S390(code) code
 #endif
+
 
 #ifdef SPARC
 #define SPARC_ONLY(code) code
@@ -507,10 +511,12 @@
 #define NOT_SPARC(code) code
 #endif
 
+
 #if defined(PPC32) || defined(PPC64)
 #ifndef PPC
 #define PPC
 #endif
+
 #define PPC_ONLY(code) code
 #define NOT_PPC(code)
 #else
@@ -518,6 +524,7 @@
 #define PPC_ONLY(code)
 #define NOT_PPC(code) code
 #endif
+
 
 #ifdef PPC32
 #define PPC32_ONLY(code) code
@@ -527,6 +534,7 @@
 #define NOT_PPC32(code) code
 #endif
 
+
 #ifdef PPC64
 #define PPC64_ONLY(code) code
 #define NOT_PPC64(code)
@@ -535,6 +543,7 @@
 #define NOT_PPC64(code) code
 #endif
 
+
 #ifdef E500V2
 #define E500V2_ONLY(code) code
 #define NOT_E500V2(code)
@@ -542,6 +551,7 @@
 #define E500V2_ONLY(code)
 #define NOT_E500V2(code) code
 #endif
+
 
 // Note: There are two ARM ports. They set the following in the makefiles:
 // 1. 32-bit port:   -DARM -DARM32 -DTARGET_ARCH_arm
@@ -554,6 +564,7 @@
 #define NOT_ARM(code) code
 #endif
 
+
 #ifdef ARM32
 #define ARM32_ONLY(code) code
 #define NOT_ARM32(code)
@@ -561,6 +572,7 @@
 #define ARM32_ONLY(code)
 #define NOT_ARM32(code) code
 #endif
+
 
 #ifdef AARCH64
 #define AARCH64_ONLY(code) code
@@ -570,6 +582,7 @@
 #define NOT_AARCH64(code) code
 #endif
 
+
 #ifdef VM_LITTLE_ENDIAN
 #define LITTLE_ENDIAN_ONLY(code) code
 #define BIG_ENDIAN_ONLY(code)
@@ -578,7 +591,9 @@
 #define BIG_ENDIAN_ONLY(code) code
 #endif
 
+
 #define define_pd_global(type, name, value) const type pd_##name = value;
+
 
 // Helper macros for constructing file names for includes.
 #define CPU_HEADER_STEM(basename) PASTE_TOKENS(basename, INCLUDE_SUFFIX_CPU)
@@ -586,29 +601,6 @@
 #define OS_CPU_HEADER_STEM(basename) PASTE_TOKENS(basename, PASTE_TOKENS(INCLUDE_SUFFIX_OS, INCLUDE_SUFFIX_CPU))
 #define COMPILER_HEADER_STEM(basename) PASTE_TOKENS(basename, INCLUDE_SUFFIX_COMPILER)
 
-// Include platform dependent files.
-//
-// This macro constructs from basename and INCLUDE_SUFFIX_OS /
-// INCLUDE_SUFFIX_CPU / INCLUDE_SUFFIX_COMPILER, which are set on
-// the command line, the name of platform dependent files to be included.
-// Example: INCLUDE_SUFFIX_OS=_linux / INCLUDE_SUFFIX_CPU=_sparc
-//   CPU_HEADER_INLINE(macroAssembler) --> macroAssembler_sparc.inline.hpp
-//   OS_CPU_HEADER(vmStructs)          --> vmStructs_linux_sparc.hpp
-//
-// basename<cpu>.hpp / basename<cpu>.inline.hpp
-#define CPU_HEADER_H(basename)         XSTR(CPU_HEADER_STEM(basename).h)
-#define CPU_HEADER(basename)           XSTR(CPU_HEADER_STEM(basename).hpp)
-#define CPU_HEADER_INLINE(basename)    XSTR(CPU_HEADER_STEM(basename).inline.hpp)
-// basename<os>.hpp / basename<os>.inline.hpp
-#define OS_HEADER_H(basename)          XSTR(OS_HEADER_STEM(basename).h)
-#define OS_HEADER(basename)            XSTR(OS_HEADER_STEM(basename).hpp)
-#define OS_HEADER_INLINE(basename)     XSTR(OS_HEADER_STEM(basename).inline.hpp)
-// basename<os><cpu>.hpp / basename<os><cpu>.inline.hpp
-#define OS_CPU_HEADER(basename)        XSTR(OS_CPU_HEADER_STEM(basename).hpp)
-#define OS_CPU_HEADER_INLINE(basename) XSTR(OS_CPU_HEADER_STEM(basename).inline.hpp)
-// basename<compiler>.hpp / basename<compiler>.inline.hpp
-#define COMPILER_HEADER(basename)        XSTR(COMPILER_HEADER_STEM(basename).hpp)
-#define COMPILER_HEADER_INLINE(basename) XSTR(COMPILER_HEADER_STEM(basename).inline.hpp)
 
 #if INCLUDE_CDS && INCLUDE_G1GC && defined(_LP64) && !defined(_WINDOWS)
 #define INCLUDE_CDS_JAVA_HEAP 1
@@ -624,4 +616,5 @@
 #define NOT_CDS_JAVA_HEAP_RETURN_(code) { return code; }
 #endif
 
-#endif // SHARE_UTILITIES_MACROS_HPP
+
+#endif // DJT_UTILITIES_MACROS_H
