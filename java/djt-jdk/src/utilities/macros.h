@@ -1,5 +1,5 @@
-#ifndef DJT_UTILITIES_MACROS_H
-#define DJT_UTILITIES_MACROS_H
+#ifndef DJT_UTILITIES_MACROS_H_
+#define DJT_UTILITIES_MACROS_H_
 
 // Use this to mark code that needs to be cleaned up (for development only)
 #define NEEDS_CLEANUP
@@ -617,4 +617,4 @@
 #endif
 
 
-#endif // DJT_UTILITIES_MACROS_H
+#endif // DJT_UTILITIES_MACROS_H_

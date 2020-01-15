@@ -1,5 +1,5 @@
-#ifndef DJT_UTILITIES_GLOBALD_EFINITIONS_GCC_H
-#define DJT_UTILITIES_GLOBALD_EFINITIONS_GCC_H
+#ifndef DJT_UTILITIES_GLOBALD_EFINITIONS_GCC_H_
+#define DJT_UTILITIES_GLOBALD_EFINITIONS_GCC_H_
 
 #include "jni.h"
 
@@ -249,4 +249,4 @@ inline int wcslen(const jchar* x) { return wcslen((const wchar_t*)x); }
 //
 #define ATTRIBUTE_ALIGNED(x) __attribute__((aligned((__typeof__(x))x+0)))
 
-#endif // DJT_UTILITIES_GLOBALD_EFINITIONS_GCC_H
+#endif // DJT_UTILITIES_GLOBALD_EFINITIONS_GCC_H_

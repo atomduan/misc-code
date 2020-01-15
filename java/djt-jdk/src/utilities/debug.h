@@ -1,5 +1,5 @@
-#ifndef DJT_UTILITIES_DEBUG_H
-#define DJT_UTILITIES_DEBUG_H
+#ifndef DJT_UTILITIES_DEBUG_H_
+#define DJT_UTILITIES_DEBUG_H_
 
 #include <stddef.h>
 
@@ -200,4 +200,4 @@ template<> struct STATIC_ASSERT_FAILURE<true> { enum { value = 1 }; };
 // out of memory reporting
 void report_java_out_of_memory(const char* message);
 
-#endif // DJT_UTILITIES_DEBUG_H
+#endif // DJT_UTILITIES_DEBUG_H_

@@ -1,5 +1,5 @@
-#ifndef DJT_UTILITIES_OSTREAM_H
-#define DJT_UTILITIES_OSTREAM_H
+#ifndef DJT_UTILITIES_OSTREAM_H_
+#define DJT_UTILITIES_OSTREAM_H_
 
 #include "allocation.h"
 #include "runtime/timer.h"
@@ -277,4 +277,4 @@ class networkStream : public bufferedStream {
 
 #endif
 
-#endif // DJT_UTILITIES_OSTREAM_H
+#endif // DJT_UTILITIES_OSTREAM_H_

@@ -1,5 +1,5 @@
-#ifndef DJT_ALLOCATION_H
-#define DJT_ALLOCATION_H
+#ifndef DJT_ALLOCATION_H_
+#define DJT_ALLOCATION_H_
 
 #include <new>
 
@@ -469,4 +469,4 @@ class MallocArrayAllocator : public AllStatic {
   static void free(E* addr);
 };
 
-#endif // DJT_ALLOCATION_H
+#endif // DJT_ALLOCATION_H_

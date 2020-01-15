@@ -1,13 +1,13 @@
-#ifndef DJT_UTILITIES_GLOBAL_DEFINITIONS_H
-#define DJT_UTILITIES_GLOBAL_DEFINITIONS_H
+#ifndef DJT_UTILITIES_GLOBAL_DEFINITIONS_H_
+#define DJT_UTILITIES_GLOBAL_DEFINITIONS_H_
 
 // Get constants like JVM_T_CHAR and JVM_SIGNATURE_INT, before pulling in <jvm.h>.
 #include "classfile_constants.h"
 
 #include "utilities/debug.h"
 #include "utilities/macros.h"
-#include "utilities/compiler_warnings.hpp"
-#include "utilities/global_definitions_gcc.hpp"
+#include "utilities/compiler_warnings.h"
+#include "utilities/global_definitions_gcc.h"
 
 
 // Defaults for macros that might be defined per compiler.
@@ -1164,5 +1164,4 @@ template<typename K> bool primitive_equals(const K& k0, const K& k1) {
 }
 
 
-#endif // DJT_UTILITIES_GLOBAL_DEFINITIONS_H
-
+#endif // DJT_UTILITIES_GLOBAL_DEFINITIONS_H_
