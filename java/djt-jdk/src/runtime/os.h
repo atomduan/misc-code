@@ -25,12 +25,12 @@ enum ThreadPriority {        // JLS 20.20.1-3
 // os::commit_memory_or_exit().
 const bool ExecMem = true;
 
-class os: AllStatic {
+class os: public AllStatic {
  public:
   enum { page_sizes_max = 9 }; // Size of _page_sizes array (8 plus a sentinel)
   // General allocation (must be MT-safe)
   static void* malloc(size_t size,
                       MEMFLAGS flags,
                       const NativeCallStack& stack);
-  static void free(void *memblock);
+  static void  free(void *memblock);
 };

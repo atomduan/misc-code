@@ -12,6 +12,10 @@ do {                                                                            
   BREAKPOINT;                                                                     \
 } while (0)
 
+#define ShouldNotReachHere()                                                       \
+do {                                                                              \
+  BREAKPOINT;                                                                     \
+} while (0)
 
 
 // types of VM error - originally in vmError.hpp

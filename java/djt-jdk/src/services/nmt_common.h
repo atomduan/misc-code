@@ -2,8 +2,8 @@
 #define DJT_SERVICES_NMTCOMMON_H_
 
 #include "memory/allocation.h"
-#include "utilities/align.hpp"
-#include "utilities/global_definitions.hpp"
+#include "utilities/align.h"
+#include "utilities/global_definitions.h"
 
 #define CALC_OBJ_SIZE_IN_TYPE(obj, type) (align_up_(sizeof(obj), sizeof(type))/sizeof(type))
 
