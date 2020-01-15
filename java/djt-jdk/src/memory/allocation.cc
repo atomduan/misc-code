@@ -25,6 +25,7 @@
 #include "runtime/os.h"
 #include "memory/allocation.h"
 #include "utilities/debug.h"
+#include "services/mem_tracker.h"
 
 
 // allocate using malloc; will fail if no memory available
@@ -34,7 +35,7 @@ char* allocateHeap(size_t size,
                    AllocFailType alloc_failmode /* = AllocFailStrategy::EXIT_OOM*/) {
   char* p = (char*) os::malloc(size, flags, stack);
   if (p == NULL && alloc_failmode == AllocFailStrategy::EXIT_OOM) {
-    vm_exit_out_of_memory(size, OOM_MALLOC_ERROR, "AllocateHeap");
+    vm_exit_out_of_memory(size, OOM_MALLOC_ERROR, "allocateHeap");
   }
   return p;
 }
@@ -44,47 +45,27 @@ void freeHeap(void* p) {
   os::free(p);
 }
 
-void* StackObj::operator new(size_t size)     throw() { ShouldNotCallThis(); return 0; }
-void  StackObj::operator delete(void* p)              { ShouldNotCallThis(); }
-void* StackObj::operator new [](size_t size)  throw() { ShouldNotCallThis(); return 0; }
-void  StackObj::operator delete [](void* p)           { ShouldNotCallThis(); }
-
-void* ResourceObj::operator new(size_t size, allocation_type type, MEMFLAGS flags) throw() {
-  address res = NULL;
-  switch (type) {
-   case C_HEAP:
-    res = (address)AllocateHeap(size, flags, CALLER_PC);
-    break;
-   case RESOURCE_AREA:
-    // new(size) sets allocation type RESOURCE_AREA.
-    res = (address)operator new(size);
-    break;
-   default:
-    ShouldNotReachHere();
-  }
-  return res;
+void* StackObj::operator new(size_t size) throw() {
+    UNUSED(size);
+    ShouldNotCallThis();
+    return 0;
+}
+void  StackObj::operator delete(void* p) {
+    UNUSED(p);
+    ShouldNotCallThis();
+}
+void* StackObj::operator new [](size_t size) throw() {
+    UNUSED(size);
+    ShouldNotCallThis();
+    return 0;
+}
+void  StackObj::operator delete [](void* p) {
+    UNUSED(p);
+    ShouldNotCallThis();
 }
 
 void* ResourceObj::operator new [](size_t size, allocation_type type, MEMFLAGS flags) throw() {
   return (address) operator new(size, type, flags);
-}
-
-void* ResourceObj::operator new(size_t size, const std::nothrow_t&  nothrow_constant,
-    allocation_type type, MEMFLAGS flags) throw() {
-  // should only call this with std::nothrow, use other operator new() otherwise
-  address res = NULL;
-  switch (type) {
-   case C_HEAP:
-    res = (address)AllocateHeap(size, flags, CALLER_PC, AllocFailStrategy::RETURN_NULL);
-    break;
-   case RESOURCE_AREA:
-    // new(size) sets allocation type RESOURCE_AREA.
-    res = (address)operator new(size, std::nothrow);
-    break;
-   default:
-    ShouldNotReachHere();
-  }
-  return res;
 }
 
 void* ResourceObj::operator new [](size_t size, const std::nothrow_t&  nothrow_constant,
@@ -157,6 +138,7 @@ ResourceObj::ResourceObj(const ResourceObj&) {
 }
 
 ResourceObj& ResourceObj::operator=(const ResourceObj& r) {
+  UNUSED(r);
   // Keep current _allocation_t value;
   return *this;
 }

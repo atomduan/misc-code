@@ -77,7 +77,10 @@ class outputStream : public ResourceObj {
   // flushing
   virtual void flush() {}
   virtual void write(const char* str, size_t len) = 0;
-  virtual void rotate_log(bool force, outputStream* out = NULL) {} // GC log rotation
+  virtual void rotate_log(bool force, outputStream* out = NULL) {
+      UNUSED(force);
+      UNUSED(out);
+  } // GC log rotation
   virtual ~outputStream() {}   // close properly on deletion
 
   // Caller may specify their own scratch buffer to use for printing; otherwise,
