@@ -120,6 +120,8 @@
 #define INTX_FORMAT_W(width)  "%" #width PRIdPTR
 #define UINTX_FORMAT_W(width) "%" #width PRIuPTR
 
+#define UNUSED(x) (void)(x)
+
 //----------------------------------------------------------------------------------------------------
 // Constants
 

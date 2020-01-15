@@ -11,6 +11,12 @@ class MemTracker : AllStatic {
                                     size_t size, 
                                     MEMFLAGS flag,
                                     const NativeCallStack& stack, 
-                                    NMT_TrackingLevel level) { return mem_base; }
+                                    NMT_TrackingLevel level) { 
+      UNUSED(size);
+      UNUSED(flag);
+      UNUSED(stack);
+      UNUSED(level);
+      return mem_base;
+  }
 };
 #endif // DJT_SERVICES_MEMTRACKER_H_

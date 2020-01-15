@@ -1,6 +1,9 @@
 #ifndef DJT_RUNTIME_OS_H_
 #define DJT_RUNTIME_OS_H_
 
+#include "memory/allocation.h"
+#include "utilities/native_call_stack.h"
+
 // Platform-independent error return values from OS functions
 enum OSReturn {
   OS_OK         =  0,        // Operation was successful
@@ -33,4 +36,8 @@ class os: public AllStatic {
                       MEMFLAGS flags,
                       const NativeCallStack& stack);
   static void  free(void *memblock);
+  static jlong elapsed_counter();
+  static jlong javaTimeNanos();
+  static jlong elapsed_frequency();
 };
+#endif // DJT_RUNTIME_OS_H_

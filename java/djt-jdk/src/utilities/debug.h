@@ -12,7 +12,12 @@ do {                                                                            
   BREAKPOINT;                                                                     \
 } while (0)
 
-#define ShouldNotReachHere()                                                       \
+#define ShouldNotReachHere()                                                      \
+do {                                                                              \
+  BREAKPOINT;                                                                     \
+} while (0)
+
+#define vm_exit_out_of_memory(size, vm_err_type, ...)                             \
 do {                                                                              \
   BREAKPOINT;                                                                     \
 } while (0)
