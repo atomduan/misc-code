@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "allocation/allocation.h"
+#include "memory/allocation.h"
 #include "utilities/breakpoint.h"
 #include "utilities/macros.h"
 #include "utilities/global_definitions.h"

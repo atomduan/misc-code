@@ -1,13 +1,20 @@
 #ifndef DJT_UTILITIES_GLOBAL_DEFINITIONS_H_
 #define DJT_UTILITIES_GLOBAL_DEFINITIONS_H_
 
+#ifndef LINUX
+#define LINUX
+#endif
+
+#ifndef ASSERT
+#define ASSERT
+#endif
+
 // Get constants like JVM_T_CHAR and JVM_SIGNATURE_INT, before pulling in <jvm.h>.
 #include "classfile_constants.h"
-
-#include "utilities/debug.h"
 #include "utilities/macros.h"
 #include "utilities/compiler_warnings.h"
 #include "utilities/global_definitions_gcc.h"
+#include "utilities/global_definitions_x86.h"
 
 
 // Defaults for macros that might be defined per compiler.
@@ -454,8 +461,6 @@ const  uint64_t KlassEncodingMetaspaceMax = (uint64_t(max_juint) + 1) << LogKlas
 // Allow targets to reduce the default size of the code cache.
 #define CODE_CACHE_DEFAULT_LIMIT CODE_CACHE_SIZE_LIMIT
 
-#include CPU_HEADER(globalDefinitions)
-
 // To assure the IRIW property on processors that are not multiple copy
 // atomic, sync instructions must be issued between volatile reads to
 // assure their ordering, instead of after volatile stores.
@@ -675,11 +680,7 @@ enum ArrayElementSize {
 };
 
 extern int _type2aelembytes[T_CONFLICT+1]; // maps a BasicType to nof bytes used by its array element
-#ifdef ASSERT
 extern int type2aelembytes(BasicType t, bool allow_address = false); // asserts
-#else
-inline int type2aelembytes(BasicType t, bool allow_address = false) { return _type2aelembytes[t]; }
-#endif
 
 
 // JavaValue serves as a container for arbitrary Java values.
@@ -969,35 +970,29 @@ inline int log2_intptr(intptr_t x) {
 }
 
 inline int log2_int(int x) {
-  STATIC_ASSERT(sizeof(int) <= sizeof(uintptr_t));
   return log2_intptr((uintptr_t)x);
 }
 
 inline int log2_jint(jint x) {
-  STATIC_ASSERT(sizeof(jint) <= sizeof(uintptr_t));
   return log2_intptr((uintptr_t)x);
 }
 
 inline int log2_uint(uint x) {
-  STATIC_ASSERT(sizeof(uint) <= sizeof(uintptr_t));
   return log2_intptr((uintptr_t)x);
 }
 
 //  A negative value of 'x' will return '63'
 inline int log2_jlong(jlong x) {
-  STATIC_ASSERT(sizeof(jlong) <= sizeof(julong));
   return log2_long((julong)x);
 }
 
 //* the argument must be exactly a power of 2
 inline int exact_log2(intptr_t x) {
-  assert(is_power_of_2(x), "x must be a power of 2: " INTPTR_FORMAT, x);
   return log2_intptr(x);
 }
 
 //* the argument must be exactly a power of 2
 inline int exact_log2_long(jlong x) {
-  assert(is_power_of_2_long(x), "x must be a power of 2: " JLONG_FORMAT, x);
   return log2_long(x);
 }
 
@@ -1097,7 +1092,6 @@ JAVA_INTEGER_OP(*, java_multiply, jlong, julong)
 #define JAVA_INTEGER_SHIFT_OP(OP, NAME, TYPE, XTYPE)    \
 inline TYPE NAME (TYPE lhs, jint rhs) {                 \
   const uint rhs_mask = (sizeof(TYPE) * 8) - 1;         \
-  STATIC_ASSERT(rhs_mask == 31 || rhs_mask == 63);      \
   XTYPE xres = static_cast<XTYPE>(lhs);                 \
   xres OP ## = (rhs & rhs_mask);                        \
   return reinterpret_cast<TYPE&>(xres);                 \

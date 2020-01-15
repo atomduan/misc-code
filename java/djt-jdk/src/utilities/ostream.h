@@ -1,7 +1,7 @@
 #ifndef DJT_UTILITIES_OSTREAM_H_
 #define DJT_UTILITIES_OSTREAM_H_
 
-#include "allocation/allocation.h"
+#include "memory/allocation.h"
 #include "runtime/timer.h"
 #include "utilities/global_definitions.h"
 
@@ -211,8 +211,6 @@ class fileStream : public outputStream {
   void flush();
 };
 
-CDS_ONLY(extern fileStream*   classlist_file;)
-
 // unlike fileStream, fdStream does unbuffered I/O by calling
 // open() and write() directly. It is async-safe, but output
 // from multiple thread may be mixed together. Used by fatal
@@ -256,25 +254,4 @@ class bufferedStream : public outputStream {
 };
 
 #define O_BUFLEN 2000   // max size of output of individual print() methods
-
-#ifndef PRODUCT
-
-class networkStream : public bufferedStream {
-
-  private:
-    int _socket;
-
-  public:
-    networkStream();
-    ~networkStream();
-
-    bool connect(const char *host, short port);
-    bool is_open() const { return _socket != -1; }
-    int read(char *buf, size_t len);
-    void close();
-    virtual void flush();
-};
-
-#endif
-
 #endif // DJT_UTILITIES_OSTREAM_H_
