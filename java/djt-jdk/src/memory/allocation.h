@@ -128,10 +128,7 @@ class ResourceObj {
   bool allocated_on_arena()    const { return get_allocation_type() == ARENA; }
 
   void* operator new(size_t size, allocation_type type, MEMFLAGS flags) throw();
-  void* operator new [](size_t size, allocation_type type, MEMFLAGS flags) throw();
   void* operator new(size_t size, const std::nothrow_t&  nothrow_constant,
-      allocation_type type, MEMFLAGS flags) throw();
-  void* operator new [](size_t size, const std::nothrow_t&  nothrow_constant,
       allocation_type type, MEMFLAGS flags) throw();
   void  operator delete(void* p);
   void  operator delete [](void* p);

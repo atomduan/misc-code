@@ -14,11 +14,11 @@ SRC      :=	$(wildcard src/memory/*.cc)			\
 			$(wildcard src/utilities/*.cc)		\
 			$(wildcard src/*.cc)
 
-OBJECTS := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
+OBJECTS := $(SRC:%.cc=$(OBJ_DIR)/%.o)
 
 all: build $(DST_DIR)/$(TARGET)
 
-$(OBJ_DIR)/%.o: %.cpp
+$(OBJ_DIR)/%.o: %.cc
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ -c $<
 

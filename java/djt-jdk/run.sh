@@ -1,5 +1,6 @@
 #!/bin/bash -
-make clean && make debug
+cp Makefile.mk Makefile
+make clean && make all
 if [ $? -eq 0 ]; then
 (cd build/dist; 
 cat << EOF
