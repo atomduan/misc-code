@@ -51,8 +51,8 @@
 #include <ucontext.h>
 #endif
 #ifdef __APPLE__
-  #include <AvailabilityMacros.h>
-  #include <mach/mach.h>
+    #include <AvailabilityMacros.h>
+    #include <mach/mach.h>
 #endif
 #include <sys/time.h>
 #endif // LINUX || _ALLBSD_SOURCE
@@ -75,14 +75,14 @@
 // whenever a system header file is included. Linux handles NULL correctly
 // through a special type '__null'.
 #ifdef SOLARIS
-  #ifdef _LP64
-    #undef NULL
-    #define NULL 0L
-  #else
-    #ifndef NULL
-      #define NULL 0
+    #ifdef _LP64
+        #undef NULL
+        #define NULL 0L
+    #else
+        #ifndef NULL
+            #define NULL 0
+        #endif
     #endif
-  #endif
 #endif
 
 // NULL vs NULL_WORD:
@@ -92,15 +92,15 @@
 // sizeof(void*), so here we want something which is integer type, but has the
 // same size as a pointer.
 #ifdef __GNUC__
-  #ifdef _LP64
-    #define NULL_WORD  0L
-  #else
-    // Cast 0 to intptr_t rather than int32_t since they are not the same type
-    // on platforms such as Mac OS X.
-    #define NULL_WORD  ((intptr_t)0)
-  #endif
+    #ifdef _LP64
+        #define NULL_WORD    0L
+    #else
+        // Cast 0 to intptr_t rather than int32_t since they are not the same type
+        // on platforms such as Mac OS X.
+        #define NULL_WORD    ((intptr_t)0)
+    #endif
 #else
-  #define NULL_WORD  NULL
+    #define NULL_WORD    NULL
 #endif
 
 #if !defined(LINUX) && !defined(_ALLBSD_SOURCE)
@@ -152,19 +152,19 @@ typedef uint64_t julong;
 // .hpp for the class (os:Solaris usually) that needs them.
 
 extern "C" {
-   typedef int (*int_fnP_thread_t_iP_uP_stack_tP_gregset_t)(thread_t, int*, unsigned *, stack_t*, gregset_t);
-   typedef int (*int_fnP_thread_t_i_gregset_t)(thread_t, int, gregset_t);
-   typedef int (*int_fnP_thread_t_i)(thread_t, int);
-   typedef int (*int_fnP_thread_t)(thread_t);
-
-   typedef int (*int_fnP_cond_tP_mutex_tP_timestruc_tP)(cond_t *cv, mutex_t *mx, timestruc_t *abst);
-   typedef int (*int_fnP_cond_tP_mutex_tP)(cond_t *cv, mutex_t *mx);
-
-   // typedef for missing API in libc
-   typedef int (*int_fnP_mutex_tP_i_vP)(mutex_t *, int, void *);
-   typedef int (*int_fnP_mutex_tP)(mutex_t *);
-   typedef int (*int_fnP_cond_tP_i_vP)(cond_t *cv, int scope, void *arg);
-   typedef int (*int_fnP_cond_tP)(cond_t *cv);
+    typedef int (*int_fnP_thread_t_iP_uP_stack_tP_gregset_t)(thread_t, int*, unsigned *, stack_t*, gregset_t);
+    typedef int (*int_fnP_thread_t_i_gregset_t)(thread_t, int, gregset_t);
+    typedef int (*int_fnP_thread_t_i)(thread_t, int);
+    typedef int (*int_fnP_thread_t)(thread_t);
+ 
+    typedef int (*int_fnP_cond_tP_mutex_tP_timestruc_tP)(cond_t *cv, mutex_t *mx, timestruc_t *abst);
+    typedef int (*int_fnP_cond_tP_mutex_tP)(cond_t *cv, mutex_t *mx);
+ 
+    // typedef for missing API in libc
+    typedef int (*int_fnP_mutex_tP_i_vP)(mutex_t *, int, void *);
+    typedef int (*int_fnP_mutex_tP)(mutex_t *);
+    typedef int (*int_fnP_cond_tP_i_vP)(cond_t *cv, int scope, void *arg);
+    typedef int (*int_fnP_cond_tP)(cond_t *cv);
 };
 #endif // SOLARIS
 
@@ -186,6 +186,7 @@ inline int g_isnan(double f) { return isnan(f); }
 #error "missing platform-specific definition here"
 #endif
 
+
 // GCC 4.3 does not allow 0.0/0.0 to produce a NAN value
 #if (__GNUC__ == 4) && (__GNUC_MINOR__ > 2)
 #define CAN_USE_NAN_DEFINE 1
@@ -193,13 +194,11 @@ inline int g_isnan(double f) { return isnan(f); }
 
 
 // Checking for finiteness
-
 inline int g_isfinite(jfloat  f)                 { return isfinite(f); }
 inline int g_isfinite(jdouble f)                 { return isfinite(f); }
 
 
 // Wide characters
-
 inline int wcslen(const jchar* x) { return wcslen((const wchar_t*)x); }
 
 
@@ -214,6 +213,7 @@ inline int wcslen(const jchar* x) { return wcslen((const wchar_t*)x); }
 #define FORMAT64_MODIFIER "ll"
 #endif // _LP64
 
+
 // HACK: gcc warns about applying offsetof() to non-POD object or calculating
 //       offset directly when base address is NULL. Use 16 to get around the
 //       warning. gcc-3.4 has an option -Wno-invalid-offsetof to suppress
@@ -221,7 +221,7 @@ inline int wcslen(const jchar* x) { return wcslen((const wchar_t*)x); }
 #define offset_of(klass,field) (size_t)((intx)&(((klass*)16)->field) - 16)
 
 #ifdef offsetof
-# undef offsetof
+#undef offsetof
 #endif
 #define offsetof(klass,field) offset_of(klass,field)
 

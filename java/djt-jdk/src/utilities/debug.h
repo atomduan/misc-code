@@ -9,25 +9,25 @@
 
 #define ShouldNotCallThis()                                                       \
 do {                                                                              \
-  BREAKPOINT;                                                                     \
+    BREAKPOINT;                                                                     \
 } while (0)
 
 #define ShouldNotReachHere()                                                      \
 do {                                                                              \
-  BREAKPOINT;                                                                     \
+    BREAKPOINT;                                                                     \
 } while (0)
 
 #define vm_exit_out_of_memory(size, vm_err_type, ...)                             \
 do {                                                                              \
-  BREAKPOINT;                                                                     \
+    BREAKPOINT;                                                                     \
 } while (0)
 
 
 // types of VM error - originally in vmError.hpp
 enum VMErrorType {
-  INTERNAL_ERROR   = 0xe0000000,
-  OOM_MALLOC_ERROR = 0xe0000001,
-  OOM_MMAP_ERROR   = 0xe0000002
+    INTERNAL_ERROR   = 0xe0000000,
+    OOM_MALLOC_ERROR = 0xe0000001,
+    OOM_MMAP_ERROR   = 0xe0000002
 };
 
 void report_should_not_call(const char* file, int line);

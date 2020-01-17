@@ -36,18 +36,18 @@
 // if PRINT_ASSEMBLY then PRINT_ABSTRACT_ASSEMBLY must be true as well
 // to have a fallback in case hsdis is not available.
 #if defined(PRODUCT)
-  #define SUPPORT_ABSTRACT_ASSEMBLY
-  #define SUPPORT_ASSEMBLY
-  #undef  SUPPORT_OPTO_ASSEMBLY      // Can't activate. In PRODUCT, many dump methods are missing.
-  #undef  SUPPORT_DATA_STRUCTS       // Of limited use. In PRODUCT, many print methods are empty.
+#define SUPPORT_ABSTRACT_ASSEMBLY
+#define SUPPORT_ASSEMBLY
+#undef  SUPPORT_OPTO_ASSEMBLY      // Can't activate. In PRODUCT, many dump methods are missing.
+#undef  SUPPORT_DATA_STRUCTS       // Of limited use. In PRODUCT, many print methods are empty.
 #else
-  #define SUPPORT_ABSTRACT_ASSEMBLY
-  #define SUPPORT_ASSEMBLY
-  #define SUPPORT_OPTO_ASSEMBLY
-  #define SUPPORT_DATA_STRUCTS
+#define SUPPORT_ABSTRACT_ASSEMBLY
+#define SUPPORT_ASSEMBLY
+#define SUPPORT_OPTO_ASSEMBLY
+#define SUPPORT_DATA_STRUCTS
 #endif
 #if defined(SUPPORT_ASSEMBLY) && !defined(SUPPORT_ABSTRACT_ASSEMBLY)
-  #define SUPPORT_ABSTRACT_ASSEMBLY
+#define SUPPORT_ABSTRACT_ASSEMBLY
 #endif
 
 // This file holds all globally used constants & types, class (forward)
@@ -203,7 +203,7 @@ const int LogHeapWordsPerLong = LogBytesPerLong - LogHeapWordSize;
 // The minimum number of native machine words necessary to contain "byte_size"
 // bytes.
 inline size_t heap_word_size(size_t byte_size) {
-  return (byte_size + (HeapWordSize-1)) >> LogHeapWordSize;
+    return (byte_size + (HeapWordSize-1)) >> LogHeapWordSize;
 }
 
 //-------------------------------------------
@@ -238,63 +238,63 @@ const jint  NANOSECS_PER_MILLISEC = 1000000;
 
 inline const char* proper_unit_for_byte_size(size_t s) {
 #ifdef _LP64
-  if (s >= 100*G) {
-    return "G";
-  }
+    if (s >= 100*G) {
+        return "G";
+    }
 #endif
-  if (s >= 100*M) {
-    return "M";
-  } else if (s >= 100*K) {
-    return "K";
-  } else {
-    return "B";
-  }
+    if (s >= 100*M) {
+        return "M";
+    } else if (s >= 100*K) {
+        return "K";
+    } else {
+        return "B";
+    }
 }
 
 template <class T>
 inline T byte_size_in_proper_unit(T s) {
 #ifdef _LP64
-  if (s >= 100*G) {
-    return (T)(s/G);
-  }
+    if (s >= 100*G) {
+        return (T)(s/G);
+    }
 #endif
-  if (s >= 100*M) {
-    return (T)(s/M);
-  } else if (s >= 100*K) {
-    return (T)(s/K);
-  } else {
-    return s;
-  }
+    if (s >= 100*M) {
+        return (T)(s/M);
+    } else if (s >= 100*K) {
+        return (T)(s/K);
+    } else {
+        return s;
+    }
 }
 
 inline const char* exact_unit_for_byte_size(size_t s) {
 #ifdef _LP64
-  if (s >= G && (s % G) == 0) {
-    return "G";
-  }
+    if (s >= G && (s % G) == 0) {
+        return "G";
+    }
 #endif
-  if (s >= M && (s % M) == 0) {
-    return "M";
-  }
-  if (s >= K && (s % K) == 0) {
-    return "K";
-  }
-  return "B";
+    if (s >= M && (s % M) == 0) {
+        return "M";
+    }
+    if (s >= K && (s % K) == 0) {
+        return "K";
+    }
+    return "B";
 }
 
 inline size_t byte_size_in_exact_unit(size_t s) {
 #ifdef _LP64
-  if (s >= G && (s % G) == 0) {
-    return s / G;
-  }
+    if (s >= G && (s % G) == 0) {
+        return s / G;
+    }
 #endif
-  if (s >= M && (s % M) == 0) {
-    return s / M;
-  }
-  if (s >= K && (s % K) == 0) {
-    return s / K;
-  }
-  return s;
+    if (s >= M && (s % M) == 0) {
+        return s / M;
+    }
+    if (s >= K && (s % K) == 0) {
+        return s / K;
+    }
+    return s;
 }
 
 // Memory size transition formatting.
@@ -365,16 +365,16 @@ inline address_word  castable_address(void* x)                { return address_w
 inline size_t pointer_delta(const volatile void* left,
                             const volatile void* right,
                             size_t element_size) {
-  return (((uintptr_t) left) - ((uintptr_t) right)) / element_size;
+    return (((uintptr_t) left) - ((uintptr_t) right)) / element_size;
 }
 
 // A version specialized for HeapWord*'s.
 inline size_t pointer_delta(const HeapWord* left, const HeapWord* right) {
-  return pointer_delta(left, right, sizeof(HeapWord));
+    return pointer_delta(left, right, sizeof(HeapWord));
 }
 // A version specialized for MetaWord*'s.
 inline size_t pointer_delta(const MetaWord* left, const MetaWord* right) {
-  return pointer_delta(left, right, sizeof(MetaWord));
+    return pointer_delta(left, right, sizeof(MetaWord));
 }
 
 //
@@ -498,28 +498,28 @@ const bool support_IRIW_for_not_multiple_copy_atomic_cpu = PPC64_ONLY(true) NOT_
 // convert the operand to double, avoiding a dependency on __fabsf which
 // doesn't exist in early versions of Solaris 8.
 inline double fabsd(double value) {
-  return fabs(value);
+    return fabs(value);
 }
 
 // Returns numerator/denominator as percentage value from 0 to 100. If denominator
 // is zero, return 0.0.
 template<typename T>
 inline double percent_of(T numerator, T denominator) {
-  return denominator != 0 ? (double)numerator / denominator * 100.0 : 0.0;
+    return denominator != 0 ? (double)numerator / denominator * 100.0 : 0.0;
 }
 
 //----------------------------------------------------------------------------------------------------
 // Special casts
 // Cast floats into same-size integers and vice-versa w/o changing bit-pattern
 typedef union {
-  jfloat f;
-  jint i;
+    jfloat f;
+    jint i;
 } FloatIntConv;
 
 typedef union {
-  jdouble d;
-  jlong l;
-  julong ul;
+    jdouble d;
+    jlong l;
+    julong ul;
 } DoubleLongConv;
 
 inline jint    jint_cast    (jfloat  x)  { return ((FloatIntConv*)&x)->i; }
@@ -541,15 +541,15 @@ inline void set_high(jlong* value, jint high)    { *value &= (jlong)(julong)(jui
                                                    *value |= (jlong)high       << 32; }
 
 inline jlong jlong_from(jint h, jint l) {
-  jlong result = 0; // initialization to avoid warning
-  set_high(&result, h);
-  set_low(&result,  l);
-  return result;
+    jlong result = 0; // initialization to avoid warning
+    set_high(&result, h);
+    set_low(&result,  l);
+    return result;
 }
 
 union jlong_accessor {
-  jint  words[2];
-  jlong long_value;
+    jint  words[2];
+    jlong long_value;
 };
 
 void basic_types_init(); // cannot define here; uses assert
@@ -557,70 +557,70 @@ void basic_types_init(); // cannot define here; uses assert
 
 // NOTE: replicated in SA in vm/agent/sun/jvm/hotspot/runtime/BasicType.java
 enum BasicType {
-// The values T_BOOLEAN..T_LONG (4..11) are derived from the JVMS.
-  T_BOOLEAN     = JVM_T_BOOLEAN,
-  T_CHAR        = JVM_T_CHAR,
-  T_FLOAT       = JVM_T_FLOAT,
-  T_DOUBLE      = JVM_T_DOUBLE,
-  T_BYTE        = JVM_T_BYTE,
-  T_SHORT       = JVM_T_SHORT,
-  T_INT         = JVM_T_INT,
-  T_LONG        = JVM_T_LONG,
-  // The remaining values are not part of any standard.
-  // T_OBJECT and T_VOID denote two more semantic choices
-  // for method return values.
-  // T_OBJECT and T_ARRAY describe signature syntax.
-  // T_ADDRESS, T_METADATA, T_NARROWOOP, T_NARROWKLASS describe
-  // internal references within the JVM as if they were Java
-  // types in their own right.
-  T_OBJECT      = 12,
-  T_ARRAY       = 13,
-  T_VOID        = 14,
-  T_ADDRESS     = 15,
-  T_NARROWOOP   = 16,
-  T_METADATA    = 17,
-  T_NARROWKLASS = 18,
-  T_CONFLICT    = 19, // for stack value type with conflicting contents
-  T_ILLEGAL     = 99
+    // The values T_BOOLEAN..T_LONG (4..11) are derived from the JVMS.
+    T_BOOLEAN     = JVM_T_BOOLEAN,
+    T_CHAR        = JVM_T_CHAR,
+    T_FLOAT       = JVM_T_FLOAT,
+    T_DOUBLE      = JVM_T_DOUBLE,
+    T_BYTE        = JVM_T_BYTE,
+    T_SHORT       = JVM_T_SHORT,
+    T_INT         = JVM_T_INT,
+    T_LONG        = JVM_T_LONG,
+    // The remaining values are not part of any standard.
+    // T_OBJECT and T_VOID denote two more semantic choices
+    // for method return values.
+    // T_OBJECT and T_ARRAY describe signature syntax.
+    // T_ADDRESS, T_METADATA, T_NARROWOOP, T_NARROWKLASS describe
+    // internal references within the JVM as if they were Java
+    // types in their own right.
+    T_OBJECT      = 12,
+    T_ARRAY       = 13,
+    T_VOID        = 14,
+    T_ADDRESS     = 15,
+    T_NARROWOOP   = 16,
+    T_METADATA    = 17,
+    T_NARROWKLASS = 18,
+    T_CONFLICT    = 19, // for stack value type with conflicting contents
+    T_ILLEGAL     = 99
 };
 
 inline bool is_java_primitive(BasicType t) {
-  return T_BOOLEAN <= t && t <= T_LONG;
+    return T_BOOLEAN <= t && t <= T_LONG;
 }
 
 inline bool is_subword_type(BasicType t) {
-  // these guys are processed exactly like T_INT in calling sequences:
-  return (t == T_BOOLEAN || t == T_CHAR || t == T_BYTE || t == T_SHORT);
+    // these guys are processed exactly like T_INT in calling sequences:
+    return (t == T_BOOLEAN || t == T_CHAR || t == T_BYTE || t == T_SHORT);
 }
 
 inline bool is_signed_subword_type(BasicType t) {
-  return (t == T_BYTE || t == T_SHORT);
+    return (t == T_BYTE || t == T_SHORT);
 }
 
 inline bool is_double_word_type(BasicType t) {
-  return (t == T_DOUBLE || t == T_LONG);
+    return (t == T_DOUBLE || t == T_LONG);
 }
 
 inline bool is_reference_type(BasicType t) {
-  return (t == T_OBJECT || t == T_ARRAY);
+    return (t == T_OBJECT || t == T_ARRAY);
 }
 
 // Convert a char from a classfile signature to a BasicType
 inline BasicType char2type(char c) {
-  switch( c ) {
-  case JVM_SIGNATURE_BYTE:    return T_BYTE;
-  case JVM_SIGNATURE_CHAR:    return T_CHAR;
-  case JVM_SIGNATURE_DOUBLE:  return T_DOUBLE;
-  case JVM_SIGNATURE_FLOAT:   return T_FLOAT;
-  case JVM_SIGNATURE_INT:     return T_INT;
-  case JVM_SIGNATURE_LONG:    return T_LONG;
-  case JVM_SIGNATURE_SHORT:   return T_SHORT;
-  case JVM_SIGNATURE_BOOLEAN: return T_BOOLEAN;
-  case JVM_SIGNATURE_VOID:    return T_VOID;
-  case JVM_SIGNATURE_CLASS:   return T_OBJECT;
-  case JVM_SIGNATURE_ARRAY:   return T_ARRAY;
-  }
-  return T_ILLEGAL;
+    switch( c ) {
+        case JVM_SIGNATURE_BYTE:    return T_BYTE;
+        case JVM_SIGNATURE_CHAR:    return T_CHAR;
+        case JVM_SIGNATURE_DOUBLE:  return T_DOUBLE;
+        case JVM_SIGNATURE_FLOAT:   return T_FLOAT;
+        case JVM_SIGNATURE_INT:     return T_INT;
+        case JVM_SIGNATURE_LONG:    return T_LONG;
+        case JVM_SIGNATURE_SHORT:   return T_SHORT;
+        case JVM_SIGNATURE_BOOLEAN: return T_BOOLEAN;
+        case JVM_SIGNATURE_VOID:    return T_VOID;
+        case JVM_SIGNATURE_CLASS:   return T_OBJECT;
+        case JVM_SIGNATURE_ARRAY:   return T_ARRAY;
+    }
+    return T_ILLEGAL;
 }
 
 extern char type2char_tab[T_CONFLICT+1];     // Map a BasicType to a jchar
@@ -637,19 +637,19 @@ extern size_t lcm(size_t a, size_t b);
 
 // NOTE: replicated in SA in vm/agent/sun/jvm/hotspot/runtime/BasicType.java
 enum BasicTypeSize {
-  T_BOOLEAN_size     = 1,
-  T_CHAR_size        = 1,
-  T_FLOAT_size       = 1,
-  T_DOUBLE_size      = 2,
-  T_BYTE_size        = 1,
-  T_SHORT_size       = 1,
-  T_INT_size         = 1,
-  T_LONG_size        = 2,
-  T_OBJECT_size      = 1,
-  T_ARRAY_size       = 1,
-  T_NARROWOOP_size   = 1,
-  T_NARROWKLASS_size = 1,
-  T_VOID_size        = 0
+    T_BOOLEAN_size     = 1,
+    T_CHAR_size        = 1,
+    T_FLOAT_size       = 1,
+    T_DOUBLE_size      = 2,
+    T_BYTE_size        = 1,
+    T_SHORT_size       = 1,
+    T_INT_size         = 1,
+    T_LONG_size        = 2,
+    T_OBJECT_size      = 1,
+    T_ARRAY_size       = 1,
+    T_NARROWOOP_size   = 1,
+    T_NARROWKLASS_size = 1,
+    T_VOID_size        = 0
 };
 
 
@@ -661,24 +661,24 @@ extern BasicType type2wfield[T_CONFLICT+1];
 
 // size in bytes
 enum ArrayElementSize {
-  T_BOOLEAN_aelem_bytes     = 1,
-  T_CHAR_aelem_bytes        = 2,
-  T_FLOAT_aelem_bytes       = 4,
-  T_DOUBLE_aelem_bytes      = 8,
-  T_BYTE_aelem_bytes        = 1,
-  T_SHORT_aelem_bytes       = 2,
-  T_INT_aelem_bytes         = 4,
-  T_LONG_aelem_bytes        = 8,
+    T_BOOLEAN_aelem_bytes     = 1,
+    T_CHAR_aelem_bytes        = 2,
+    T_FLOAT_aelem_bytes       = 4,
+    T_DOUBLE_aelem_bytes      = 8,
+    T_BYTE_aelem_bytes        = 1,
+    T_SHORT_aelem_bytes       = 2,
+    T_INT_aelem_bytes         = 4,
+    T_LONG_aelem_bytes        = 8,
 #ifdef _LP64
-  T_OBJECT_aelem_bytes      = 8,
-  T_ARRAY_aelem_bytes       = 8,
+    T_OBJECT_aelem_bytes      = 8,
+    T_ARRAY_aelem_bytes       = 8,
 #else
-  T_OBJECT_aelem_bytes      = 4,
-  T_ARRAY_aelem_bytes       = 4,
+    T_OBJECT_aelem_bytes      = 4,
+    T_ARRAY_aelem_bytes       = 4,
 #endif
-  T_NARROWOOP_aelem_bytes   = 4,
-  T_NARROWKLASS_aelem_bytes = 4,
-  T_VOID_aelem_bytes        = 0
+    T_NARROWOOP_aelem_bytes   = 4,
+    T_NARROWKLASS_aelem_bytes = 4,
+    T_VOID_aelem_bytes        = 0
 };
 
 extern int _type2aelembytes[T_CONFLICT+1]; // maps a BasicType to nof bytes used by its array element
@@ -688,53 +688,50 @@ extern int type2aelembytes(BasicType t, bool allow_address = false); // asserts
 // JavaValue serves as a container for arbitrary Java values.
 
 class JavaValue {
+    public:
+        typedef union JavaCallValue {
+            jfloat      f;
+            jdouble     d;
+            jint        i;
+            jlong       l;
+            jobject     h;
+        } JavaCallValue;
 
- public:
-  typedef union JavaCallValue {
-    jfloat   f;
-    jdouble  d;
-    jint     i;
-    jlong    l;
-    jobject  h;
-  } JavaCallValue;
+        JavaValue(BasicType t = T_ILLEGAL) { _type = t; }
 
- private:
-  BasicType _type;
-  JavaCallValue _value;
+        JavaValue(jfloat value) {
+            _type        = T_FLOAT;
+            _value.f = value;
+        }
 
- public:
-  JavaValue(BasicType t = T_ILLEGAL) { _type = t; }
+        JavaValue(jdouble value) {
+            _type        = T_DOUBLE;
+            _value.d = value;
+        }
 
-  JavaValue(jfloat value) {
-    _type    = T_FLOAT;
-    _value.f = value;
-  }
+        jfloat get_jfloat() const { return _value.f; }
+        jdouble get_jdouble() const { return _value.d; }
+        jint get_jint() const { return _value.i; }
+        jlong get_jlong() const { return _value.l; }
+        jobject get_jobject() const { return _value.h; }
+        JavaCallValue* get_value_addr() { return &_value; }
+        BasicType get_type() const { return _type; }
 
-  JavaValue(jdouble value) {
-    _type    = T_DOUBLE;
-    _value.d = value;
-  }
+        void set_jfloat(jfloat f) { _value.f = f;}
+        void set_jdouble(jdouble d) { _value.d = d;}
+        void set_jint(jint i) { _value.i = i;}
+        void set_jlong(jlong l) { _value.l = l;}
+        void set_jobject(jobject h) { _value.h = h;}
+        void set_type(BasicType t) { _type = t; }
 
- jfloat get_jfloat() const { return _value.f; }
- jdouble get_jdouble() const { return _value.d; }
- jint get_jint() const { return _value.i; }
- jlong get_jlong() const { return _value.l; }
- jobject get_jobject() const { return _value.h; }
- JavaCallValue* get_value_addr() { return &_value; }
- BasicType get_type() const { return _type; }
+        jboolean get_jboolean() const { return (jboolean) (_value.i);}
+        jbyte get_jbyte() const { return (jbyte) (_value.i);}
+        jchar get_jchar() const { return (jchar) (_value.i);}
+        jshort get_jshort() const { return (jshort) (_value.i);}
 
- void set_jfloat(jfloat f) { _value.f = f;}
- void set_jdouble(jdouble d) { _value.d = d;}
- void set_jint(jint i) { _value.i = i;}
- void set_jlong(jlong l) { _value.l = l;}
- void set_jobject(jobject h) { _value.h = h;}
- void set_type(BasicType t) { _type = t; }
-
- jboolean get_jboolean() const { return (jboolean) (_value.i);}
- jbyte get_jbyte() const { return (jbyte) (_value.i);}
- jchar get_jchar() const { return (jchar) (_value.i);}
- jshort get_jshort() const { return (jshort) (_value.i);}
-
+    private:
+        BasicType _type;
+        JavaCallValue _value;
 };
 
 
@@ -755,54 +752,53 @@ class JavaValue {
 // of stack (in memory) and thus not cached. The atos state corresponds to the itos
 // state when it comes to machine representation but is used separately for (oop)
 // type specific operations (e.g. verification code).
-
-enum TosState {         // describes the tos cache contents
-  btos = 0,             // byte, bool tos cached
-  ztos = 1,             // byte, bool tos cached
-  ctos = 2,             // char tos cached
-  stos = 3,             // short tos cached
-  itos = 4,             // int tos cached
-  ltos = 5,             // long tos cached
-  ftos = 6,             // float tos cached
-  dtos = 7,             // double tos cached
-  atos = 8,             // object cached
-  vtos = 9,             // tos not cached
-  number_of_states,
-  ilgl                  // illegal state: should not occur
+enum TosState {           // describes the tos cache contents
+    btos = 0,             // byte, bool tos cached
+    ztos = 1,             // byte, bool tos cached
+    ctos = 2,             // char tos cached
+    stos = 3,             // short tos cached
+    itos = 4,             // int tos cached
+    ltos = 5,             // long tos cached
+    ftos = 6,             // float tos cached
+    dtos = 7,             // double tos cached
+    atos = 8,             // object cached
+    vtos = 9,             // tos not cached
+    number_of_states,
+    ilgl                  // illegal state: should not occur
 };
 
 
 inline TosState as_TosState(BasicType type) {
-  switch (type) {
-    case T_BYTE   : return btos;
-    case T_BOOLEAN: return ztos;
-    case T_CHAR   : return ctos;
-    case T_SHORT  : return stos;
-    case T_INT    : return itos;
-    case T_LONG   : return ltos;
-    case T_FLOAT  : return ftos;
-    case T_DOUBLE : return dtos;
-    case T_VOID   : return vtos;
-    case T_ARRAY  : // fall through
-    case T_OBJECT : return atos;
-    default       : return ilgl;
-  }
+    switch (type) {
+        case T_BYTE   : return btos;
+        case T_BOOLEAN: return ztos;
+        case T_CHAR   : return ctos;
+        case T_SHORT  : return stos;
+        case T_INT    : return itos;
+        case T_LONG   : return ltos;
+        case T_FLOAT  : return ftos;
+        case T_DOUBLE : return dtos;
+        case T_VOID   : return vtos;
+        case T_ARRAY  : // fall through
+        case T_OBJECT : return atos;
+        default       : return ilgl;
+    }
 }
 
 inline BasicType as_BasicType(TosState state) {
-  switch (state) {
-    case btos : return T_BYTE;
-    case ztos : return T_BOOLEAN;
-    case ctos : return T_CHAR;
-    case stos : return T_SHORT;
-    case itos : return T_INT;
-    case ltos : return T_LONG;
-    case ftos : return T_FLOAT;
-    case dtos : return T_DOUBLE;
-    case atos : return T_OBJECT;
-    case vtos : return T_VOID;
-    default   : return T_ILLEGAL;
-  }
+    switch (state) {
+        case btos : return T_BYTE;
+        case ztos : return T_BOOLEAN;
+        case ctos : return T_CHAR;
+        case stos : return T_SHORT;
+        case itos : return T_INT;
+        case ltos : return T_LONG;
+        case ftos : return T_FLOAT;
+        case dtos : return T_DOUBLE;
+        case atos : return T_OBJECT;
+        case vtos : return T_VOID;
+        default   : return T_ILLEGAL;
+    }
 }
 
 
@@ -828,18 +824,18 @@ TosState as_TosState(BasicType type);
 // Given a state, the xxxx_trans state can always be found by adding 1.
 //
 enum JavaThreadState {
-  _thread_uninitialized     =  0, // should never happen (missing initialization)
-  _thread_new               =  2, // just starting up, i.e., in process of being initialized
-  _thread_new_trans         =  3, // corresponding transition state (not used, included for completness)
-  _thread_in_native         =  4, // running in native code
-  _thread_in_native_trans   =  5, // corresponding transition state
-  _thread_in_vm             =  6, // running in VM
-  _thread_in_vm_trans       =  7, // corresponding transition state
-  _thread_in_Java           =  8, // running in Java or in stub code
-  _thread_in_Java_trans     =  9, // corresponding transition state (not used, included for completness)
-  _thread_blocked           = 10, // blocked in vm
-  _thread_blocked_trans     = 11, // corresponding transition state
-  _thread_max_state         = 12  // maximum thread state+1 - used for statistics allocation
+    _thread_uninitialized     =  0, // should never happen (missing initialization)
+    _thread_new               =  2, // just starting up, i.e., in process of being initialized
+    _thread_new_trans         =  3, // corresponding transition state (not used, included for completness)
+    _thread_in_native         =  4, // running in native code
+    _thread_in_native_trans   =  5, // corresponding transition state
+    _thread_in_vm             =  6, // running in VM
+    _thread_in_vm_trans       =  7, // corresponding transition state
+    _thread_in_Java           =  8, // running in Java or in stub code
+    _thread_in_Java_trans     =  9, // corresponding transition state (not used, included for completness)
+    _thread_blocked           = 10, // blocked in vm
+    _thread_blocked_trans     = 11, // corresponding transition state
+    _thread_max_state         = 12  // maximum thread state+1 - used for statistics allocation
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -931,71 +927,71 @@ template<class T> inline T ABS(T x)                 { return (x > 0) ? x : -x; }
 
 // true if x is a power of 2, false otherwise
 inline bool is_power_of_2(intptr_t x) {
-  return ((x != NoBits) && (mask_bits(x, x - 1) == NoBits));
+    return ((x != NoBits) && (mask_bits(x, x - 1) == NoBits));
 }
 
 // long version of is_power_of_2
 inline bool is_power_of_2_long(jlong x) {
-  return ((x != NoLongBits) && (mask_long_bits(x, x - 1) == NoLongBits));
+    return ((x != NoLongBits) && (mask_long_bits(x, x - 1) == NoLongBits));
 }
 
 // Returns largest i such that 2^i <= x.
 // If x == 0, the function returns -1.
 inline int log2_intptr(uintptr_t x) {
-  int i = -1;
-  uintptr_t p = 1;
-  while (p != 0 && p <= x) {
-    // p = 2^(i+1) && p <= x (i.e., 2^(i+1) <= x)
-    i++; p *= 2;
-  }
-  // p = 2^(i+1) && x < p (i.e., 2^i <= x < 2^(i+1))
-  // If p = 0, overflow has occurred and i = 31 or i = 63 (depending on the machine word size).
-  return i;
+    int i = -1;
+    uintptr_t p = 1;
+    while (p != 0 && p <= x) {
+        // p = 2^(i+1) && p <= x (i.e., 2^(i+1) <= x)
+        i++; p *= 2;
+    }
+    // p = 2^(i+1) && x < p (i.e., 2^i <= x < 2^(i+1))
+    // If p = 0, overflow has occurred and i = 31 or i = 63 (depending on the machine word size).
+    return i;
 }
 
 //* largest i such that 2^i <= x
 inline int log2_long(julong x) {
-  int i = -1;
-  julong p =  1;
-  while (p != 0 && p <= x) {
-    // p = 2^(i+1) && p <= x (i.e., 2^(i+1) <= x)
-    i++; p *= 2;
-  }
-  // p = 2^(i+1) && x < p (i.e., 2^i <= x < 2^(i+1))
-  // (if p = 0 then overflow occurred and i = 63)
-  return i;
+    int i = -1;
+    julong p =    1;
+    while (p != 0 && p <= x) {
+        // p = 2^(i+1) && p <= x (i.e., 2^(i+1) <= x)
+        i++; p *= 2;
+    }
+    // p = 2^(i+1) && x < p (i.e., 2^i <= x < 2^(i+1))
+    // (if p = 0 then overflow occurred and i = 63)
+    return i;
 }
 
 // If x < 0, the function returns 31 on a 32-bit machine and 63 on a 64-bit machine.
 inline int log2_intptr(intptr_t x) {
-  return log2_intptr((uintptr_t)x);
+    return log2_intptr((uintptr_t)x);
 }
 
 inline int log2_int(int x) {
-  return log2_intptr((uintptr_t)x);
+    return log2_intptr((uintptr_t)x);
 }
 
 inline int log2_jint(jint x) {
-  return log2_intptr((uintptr_t)x);
+    return log2_intptr((uintptr_t)x);
 }
 
 inline int log2_uint(uint x) {
-  return log2_intptr((uintptr_t)x);
+    return log2_intptr((uintptr_t)x);
 }
 
-//  A negative value of 'x' will return '63'
+//    A negative value of 'x' will return '63'
 inline int log2_jlong(jlong x) {
-  return log2_long((julong)x);
+    return log2_long((julong)x);
 }
 
 //* the argument must be exactly a power of 2
 inline int exact_log2(intptr_t x) {
-  return log2_intptr(x);
+    return log2_intptr(x);
 }
 
 //* the argument must be exactly a power of 2
 inline int exact_log2_long(jlong x) {
-  return log2_long(x);
+    return log2_long(x);
 }
 
 inline bool is_odd (intx x) { return x & 1;      }
@@ -1004,75 +1000,75 @@ inline bool is_even(intx x) { return !is_odd(x); }
 // abs methods which cannot overflow and so are well-defined across
 // the entire domain of integer types.
 static inline unsigned int uabs(unsigned int n) {
-  union {
-    unsigned int result;
-    int value;
-  };
-  result = n;
-  if (value < 0) result = 0-result;
-  return result;
+    union {
+        unsigned int result;
+        int value;
+    };
+    result = n;
+    if (value < 0) result = 0-result;
+    return result;
 }
 static inline julong uabs(julong n) {
-  union {
-    julong result;
-    jlong value;
-  };
-  result = n;
-  if (value < 0) result = 0-result;
-  return result;
+    union {
+        julong result;
+        jlong value;
+    };
+    result = n;
+    if (value < 0) result = 0-result;
+    return result;
 }
 static inline julong uabs(jlong n) { return uabs((julong)n); }
 static inline unsigned int uabs(int n) { return uabs((unsigned int)n); }
 
 // "to" should be greater than "from."
 inline intx byte_size(void* from, void* to) {
-  return (address)to - (address)from;
+    return (address)to - (address)from;
 }
 
 
 // Pack and extract shorts to/from ints:
 
 inline int extract_low_short_from_int(jint x) {
-  return x & 0xffff;
+    return x & 0xffff;
 }
 
 inline int extract_high_short_from_int(jint x) {
-  return (x >> 16) & 0xffff;
+    return (x >> 16) & 0xffff;
 }
 
 inline int build_int_from_shorts( jushort low, jushort high ) {
-  return ((int)((unsigned int)high << 16) | (unsigned int)low);
+    return ((int)((unsigned int)high << 16) | (unsigned int)low);
 }
 
 // Convert pointer to intptr_t, for use in printing pointers.
 inline intptr_t p2i(const void * p) {
-  return (intptr_t) p;
+    return (intptr_t) p;
 }
 
 // swap a & b
 template<class T> static void swap(T& a, T& b) {
-  T tmp = a;
-  a = b;
-  b = tmp;
+    T tmp = a;
+    a = b;
+    b = tmp;
 }
 
 #define ARRAY_SIZE(array) (sizeof(array)/sizeof((array)[0]))
 
 //----------------------------------------------------------------------------------------------------
 // Sum and product which can never overflow: they wrap, just like the
-// Java operations.  Note that we don't intend these to be used for
+// Java operations.    Note that we don't intend these to be used for
 // general-purpose arithmetic: their purpose is to emulate Java
 // operations.
 
 // The goal of this code to avoid undefined or implementation-defined
-// behavior.  The use of an lvalue to reference cast is explicitly
-// permitted by Lvalues and rvalues [basic.lval].  [Section 3.10 Para
+// behavior.    The use of an lvalue to reference cast is explicitly
+// permitted by Lvalues and rvalues [basic.lval].    [Section 3.10 Para
 // 15 in C++03]
-#define JAVA_INTEGER_OP(OP, NAME, TYPE, UNSIGNED_TYPE)  \
-inline TYPE NAME (TYPE in1, TYPE in2) {                 \
-  UNSIGNED_TYPE ures = static_cast<UNSIGNED_TYPE>(in1); \
-  ures OP ## = static_cast<UNSIGNED_TYPE>(in2);         \
-  return reinterpret_cast<TYPE&>(ures);                 \
+#define JAVA_INTEGER_OP(OP, NAME, TYPE, UNSIGNED_TYPE)                  \
+inline TYPE NAME (TYPE in1, TYPE in2) {                                 \
+    UNSIGNED_TYPE ures = static_cast<UNSIGNED_TYPE>(in1);               \
+    ures OP ## = static_cast<UNSIGNED_TYPE>(in2);                       \
+    return reinterpret_cast<TYPE&>(ures);                               \
 }
 
 JAVA_INTEGER_OP(+, java_add, jint, juint)
@@ -1091,12 +1087,12 @@ JAVA_INTEGER_OP(*, java_multiply, jlong, julong)
 // No undefined or implementation defined behavior for shifting negative
 // values; left shift discards bits, right shift sign extends.  We use
 // the same safe conversion technique as above for java_add and friends.
-#define JAVA_INTEGER_SHIFT_OP(OP, NAME, TYPE, XTYPE)    \
-inline TYPE NAME (TYPE lhs, jint rhs) {                 \
-  const uint rhs_mask = (sizeof(TYPE) * 8) - 1;         \
-  XTYPE xres = static_cast<XTYPE>(lhs);                 \
-  xres OP ## = (rhs & rhs_mask);                        \
-  return reinterpret_cast<TYPE&>(xres);                 \
+#define JAVA_INTEGER_SHIFT_OP(OP, NAME, TYPE, XTYPE)        \
+inline TYPE NAME (TYPE lhs, jint rhs) {                     \
+    const uint rhs_mask = (sizeof(TYPE) * 8) - 1;           \
+    XTYPE xres = static_cast<XTYPE>(lhs);                   \
+    xres OP ## = (rhs & rhs_mask);                          \
+    return reinterpret_cast<TYPE&>(xres);                   \
 }
 
 JAVA_INTEGER_SHIFT_OP(<<, java_shift_left, jint, juint)
@@ -1113,16 +1109,16 @@ JAVA_INTEGER_SHIFT_OP(>>, java_shift_right_unsigned, jlong, julong)
 //----------------------------------------------------------------------------------------------------
 // The goal of this code is to provide saturating operations for int/uint.
 // Checks overflow conditions and saturates the result to min_jint/max_jint.
-#define SATURATED_INTEGER_OP(OP, NAME, TYPE1, TYPE2) \
-inline int NAME (TYPE1 in1, TYPE2 in2) {             \
-  jlong res = static_cast<jlong>(in1);               \
-  res OP ## = static_cast<jlong>(in2);               \
-  if (res > max_jint) {                              \
-    res = max_jint;                                  \
-  } else if (res < min_jint) {                       \
-    res = min_jint;                                  \
-  }                                                  \
-  return static_cast<int>(res);                      \
+#define SATURATED_INTEGER_OP(OP, NAME, TYPE1, TYPE2)   \
+inline int NAME (TYPE1 in1, TYPE2 in2) {               \
+    jlong res = static_cast<jlong>(in1);               \
+    res OP ## = static_cast<jlong>(in2);               \
+    if (res > max_jint) {                              \
+        res = max_jint;                                \
+    } else if (res < min_jint) {                       \
+        res = min_jint;                                \
+    }                                                  \
+    return static_cast<int>(res);                      \
 }
 
 SATURATED_INTEGER_OP(+, saturated_add, int, int)
@@ -1137,7 +1133,7 @@ SATURATED_INTEGER_OP(+, saturated_add, uint, uint)
 // word.  If there are exceptions, this function needs to be made compiler
 // specific.
 static inline void* dereference_vptr(const void* addr) {
-  return *(void**)addr;
+    return *(void**)addr;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -1151,13 +1147,11 @@ typedef const char* ccstrlist;   // represents string arguments which accumulate
 // Default hash/equals functions used by ResourceHashtable and KVHashtable
 
 template<typename K> unsigned primitive_hash(const K& k) {
-  unsigned hash = (unsigned)((uintptr_t)k);
-  return hash ^ (hash >> 3); // just in case we're dealing with aligned ptrs
+    unsigned hash = (unsigned)((uintptr_t)k);
+    return hash ^ (hash >> 3); // just in case we're dealing with aligned ptrs
 }
 
 template<typename K> bool primitive_equals(const K& k0, const K& k1) {
-  return k0 == k1;
+    return k0 == k1;
 }
-
-
 #endif // DJT_UTILITIES_GLOBAL_DEFINITIONS_H_

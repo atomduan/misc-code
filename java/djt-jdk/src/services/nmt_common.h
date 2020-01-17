@@ -9,11 +9,11 @@
 
 // Native memory tracking level
 enum NMT_TrackingLevel {
-  NMT_unknown = 0xFF,
-  NMT_off     = 0x00,
-  NMT_minimal = 0x01,
-  NMT_summary = 0x02,
-  NMT_detail  = 0x03
+    NMT_unknown = 0xFF,
+    NMT_off     = 0x00,
+    NMT_minimal = 0x01,
+    NMT_summary = 0x02,
+    NMT_detail  = 0x03
 };
 
 // Number of stack frames to capture. This is a

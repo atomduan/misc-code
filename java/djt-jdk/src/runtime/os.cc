@@ -3,7 +3,7 @@
 
 
 jlong os::elapsed_counter() {
-  return javaTimeNanos() - 0;
+    return javaTimeNanos() - 0;
 }
 
 jlong os::javaTimeNanos() {
@@ -14,23 +14,23 @@ jlong os::javaTimeNanos() {
 }
 
 void* os::malloc(size_t size, MEMFLAGS memflags, const NativeCallStack& stack) {
-  UNUSED(memflags);
-  UNUSED(stack);
-  if (size == 0) {
-    // return a valid pointer if size is zero
-    // if NULL is returned the calling functions assume out of memory.
-    size = 1;
-  }
-  u_char* ptr;
-  ptr = (u_char*)::malloc(size);
-  if (ptr == NULL) {
-    return NULL;
-  }
-  return (address)ptr;
+    UNUSED(memflags);
+    UNUSED(stack);
+    if (size == 0) {
+        // return a valid pointer if size is zero
+        // if NULL is returned the calling functions assume out of memory.
+        size = 1;
+    }
+    u_char* ptr;
+    ptr = (u_char*)::malloc(size);
+    if (ptr == NULL) {
+        return NULL;
+    }
+    return (address)ptr;
 }
 
 // handles NULL pointers
 void os::free(void *memblock) {
-  if (memblock == NULL) return;
-  ::free(memblock);
+    if (memblock == NULL) return;
+    ::free(memblock);
 }

@@ -22,76 +22,76 @@
 // Temporary declaration until this file has been restructured.
 template <typename T>
 bool is_power_of_2_t(T x) {
-  return (x != T(0)) && ((x & (x - 1)) == T(0));
+    return (x != T(0)) && ((x & (x - 1)) == T(0));
 }
 
 // Helpers to align sizes and check for alignment
 
 template <typename T, typename A>
 inline T align_up(T size, A alignment) {
-  T ret = align_up_(size, alignment);
-  return ret;
+    T ret = align_up_(size, alignment);
+    return ret;
 }
 
 template <typename T, typename A>
 inline T align_down(T size, A alignment) {
-  T ret = align_down_(size, alignment);
-  return ret;
+    T ret = align_down_(size, alignment);
+    return ret;
 }
 
 template <typename T, typename A>
 inline bool is_aligned(T size, A alignment) {
-  return is_aligned_(size, alignment);
+    return is_aligned_(size, alignment);
 }
 
 // Align down with a lower bound. If the aligning results in 0, return 'alignment'.
 template <typename T, typename A>
 inline T align_down_bounded(T size, A alignment) {
-  A aligned_size = align_down(size, alignment);
-  return aligned_size > 0 ? aligned_size : alignment;
+    A aligned_size = align_down(size, alignment);
+    return aligned_size > 0 ? aligned_size : alignment;
 }
 
 // Helpers to align pointers and check for alignment.
 
 template <typename T, typename A>
 inline T* align_up(T* ptr, A alignment) {
-  return (T*)align_up((uintptr_t)ptr, alignment);
+    return (T*)align_up((uintptr_t)ptr, alignment);
 }
 
 template <typename T, typename A>
 inline T* align_down(T* ptr, A alignment) {
-  return (T*)align_down((uintptr_t)ptr, alignment);
+    return (T*)align_down((uintptr_t)ptr, alignment);
 }
 
 template <typename T, typename A>
 inline bool is_aligned(T* ptr, A alignment) {
-  return is_aligned((uintptr_t)ptr, alignment);
+    return is_aligned((uintptr_t)ptr, alignment);
 }
 
 // Align metaspace objects by rounding up to natural word boundary
 template <typename T>
 inline T align_metadata_size(T size) {
-  return align_up(size, 1);
+    return align_up(size, 1);
 }
 
 // Align objects in the Java Heap by rounding up their size, in HeapWord units.
 template <typename T>
 inline T align_object_size(T word_size) {
-  return align_up(word_size, MinObjAlignment);
+    return align_up(word_size, MinObjAlignment);
 }
 
 inline bool is_object_aligned(size_t word_size) {
-  return is_aligned(word_size, MinObjAlignment);
+    return is_aligned(word_size, MinObjAlignment);
 }
 
 inline bool is_object_aligned(const void* addr) {
-  return is_aligned(addr, MinObjAlignmentInBytes);
+    return is_aligned(addr, MinObjAlignmentInBytes);
 }
 
 // Pad out certain offsets to jlong alignment, in HeapWord units.
 template <typename T>
 inline T align_object_offset(T offset) {
-  return align_up(offset, HeapWordsPerLong);
+    return align_up(offset, HeapWordsPerLong);
 }
 
 // Clamp an address to be within a specific page
@@ -100,16 +100,16 @@ inline T align_object_offset(T offset) {
 // 3. Otherwise, if addr is below the page_address the start of the page will be returned
 template <typename T>
 inline T* clamp_address_in_page(T* addr, T* page_address, size_t page_size) {
-  if (align_down(addr, page_size) == align_down(page_address, page_size)) {
-    // address is in the specified page, just return it as is
-    return addr;
-  } else if (addr > page_address) {
-    // address is above specified page, return start of next page
-    return align_down(page_address, page_size) + page_size;
-  } else {
-    // address is below specified page, return start of page
-    return align_down(page_address, page_size);
-  }
+    if (align_down(addr, page_size) == align_down(page_address, page_size)) {
+        // address is in the specified page, just return it as is
+        return addr;
+    } else if (addr > page_address) {
+        // address is above specified page, return start of next page
+        return align_down(page_address, page_size) + page_size;
+    } else {
+        // address is below specified page, return start of page
+        return align_down(page_address, page_size);
+    }
 }
 
 #endif // DJT_UTILITIES_ALIGN_H_

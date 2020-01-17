@@ -16,202 +16,201 @@
 // This allows for redirection via -XX:+DisplayVMOutputToStdout and
 // -XX:+DisplayVMOutputToStderr
 class OutputStream : public ResourceObj {
- public:
-  // creation
-  OutputStream(int width = 80);
-  OutputStream(int width, bool has_time_stamps);
-
-  // indentation
-  OutputStream& indent();
-  void inc() { _indentation++; };
-  void dec() { _indentation--; };
-  void inc(int n) { _indentation += n; };
-  void dec(int n) { _indentation -= n; };
-  int  indentation() const    { return _indentation; }
-  void set_indentation(int i) { _indentation = i;    }
-  void fill_to(int col);
-  void move_to(int col, int slop = 6, int min_space = 2);
-
-  // sizing
-  int width()    const { return _width;    }
-  int position() const { return _position; }
-  int newlines() const { return _newlines; }
-  julong count() const { return _precount + _position; }
-  void set_count(julong count) { _precount = count - _position; }
-  void set_position(int pos)   { _position = pos; }
-
-  // printing
-  void print(const char* format, ...) ATTRIBUTE_PRINTF(2, 3);
-  void print_cr(const char* format, ...) ATTRIBUTE_PRINTF(2, 3);
-  void vprint(const char *format, va_list argptr) ATTRIBUTE_PRINTF(2, 0);
-  void vprint_cr(const char* format, va_list argptr) ATTRIBUTE_PRINTF(2, 0);
-  void print_raw(const char* str)            { write(str, strlen(str)); }
-  void print_raw(const char* str, int len)   { write(str,         len); }
-  void print_raw_cr(const char* str)         { write(str, strlen(str)); cr(); }
-  void print_raw_cr(const char* str, int len){ write(str,         len); cr(); }
-  void print_data(void* data, size_t len, bool with_ascii);
-  void put(char ch);
-  void sp(int count = 1);
-  void cr();
-  void cr_indent();
-  void bol() { if (_position > 0)  cr(); }
-
-  // Time stamp
-  TimeStamp& time_stamp() { return _stamp; }
-  void stamp();
-  void stamp(bool guard, const char* prefix, const char* suffix);
-  void stamp(bool guard) {
-    stamp(guard, "", ": ");
-  }
-  // Date stamp
-  void date_stamp(bool guard, const char* prefix, const char* suffix);
-  // A simplified call that includes a suffix of ": "
-  void date_stamp(bool guard) {
-    date_stamp(guard, "", ": ");
-  }
-
-  // portable printing of 64 bit integers
-  void print_jlong(jlong value);
-  void print_julong(julong value);
-
-  // flushing
-  virtual void flush() {}
-  virtual void write(const char* str, size_t len) = 0;
-  virtual void rotate_log(bool force, OutputStream* out = NULL) {
-      UNUSED(force);
-      UNUSED(out);
-  } // GC log rotation
-  virtual ~OutputStream() {}   // close properly on deletion
-
-  // Caller may specify their own scratch buffer to use for printing; otherwise,
-  // an automatic buffer on the stack (with O_BUFLEN len) is used.
-  void set_scratch_buffer(char* p, size_t len) { _scratch = p; _scratch_len = len; }
-  void dec_cr() { dec(); cr(); }
-  void inc_cr() { inc(); cr(); }
-
- protected:
-  int _indentation; // current indentation
-  int _width;       // width of the page
-  int _position;    // position on the current line
-  int _newlines;    // number of '\n' output so far
-  julong _precount; // number of chars output, less _position
-  TimeStamp _stamp; // for time stamps
-  char* _scratch;   // internal scratch buffer for printf
-  size_t _scratch_len; // size of internal scratch buffer
-
-  void update_position(const char* s, size_t len);
-  static const char* do_vsnprintf(char* buffer, size_t buflen,
-                                  const char* format, va_list ap,
-                                  bool add_cr,
-                                  size_t& result_len)  ATTRIBUTE_PRINTF(3, 0);
-
-  // calls do_vsnprintf and writes output to stream; uses an on-stack buffer.
-  void do_vsnprintf_and_write_with_automatic_buffer(const char* format, va_list ap, bool add_cr) ATTRIBUTE_PRINTF(2, 0);
-  // calls do_vsnprintf and writes output to stream; uses the user-provided buffer;
-  void do_vsnprintf_and_write_with_scratch_buffer(const char* format, va_list ap, bool add_cr) ATTRIBUTE_PRINTF(2, 0);
-  // calls do_vsnprintf, then writes output to stream.
-  void do_vsnprintf_and_write(const char* format, va_list ap, bool add_cr) ATTRIBUTE_PRINTF(2, 0);
-
- private:
-  OutputStream(const OutputStream&);
-  OutputStream& operator=(const OutputStream&);
+    public:
+        // creation
+        OutputStream(int width = 80);
+        OutputStream(int width, bool has_time_stamps);
+   
+        // indentation
+        OutputStream& indent();
+        void inc() { _indentation++; };
+        void dec() { _indentation--; };
+        void inc(int n) { _indentation += n; };
+        void dec(int n) { _indentation -= n; };
+        int  indentation() const    { return _indentation; }
+        void set_indentation(int i) { _indentation = i;    }
+        void fill_to(int col);
+        void move_to(int col, int slop = 6, int min_space = 2);
+   
+        // sizing
+        int width()    const { return _width;    }
+        int position() const { return _position; }
+        int newlines() const { return _newlines; }
+        julong count() const { return _precount + _position; }
+        void set_count(julong count) { _precount = count - _position; }
+        void set_position(int pos)   { _position = pos; }
+   
+        // printing
+        void print(const char* format, ...) ATTRIBUTE_PRINTF(2, 3);
+        void print_cr(const char* format, ...) ATTRIBUTE_PRINTF(2, 3);
+        void vprint(const char *format, va_list argptr) ATTRIBUTE_PRINTF(2, 0);
+        void vprint_cr(const char* format, va_list argptr) ATTRIBUTE_PRINTF(2, 0);
+        void print_raw(const char* str)            { write(str, strlen(str)); }
+        void print_raw(const char* str, int len)   { write(str,         len); }
+        void print_raw_cr(const char* str)         { write(str, strlen(str)); cr(); }
+        void print_raw_cr(const char* str, int len){ write(str,         len); cr(); }
+        void print_data(void* data, size_t len, bool with_ascii);
+        void put(char ch);
+        void sp(int count = 1);
+        void cr();
+        void cr_indent();
+        void bol() { if (_position > 0)  cr(); }
+   
+        // Time stamp
+        TimeStamp& time_stamp() { return _stamp; }
+        void stamp();
+        void stamp(bool guard, const char* prefix, const char* suffix);
+        void stamp(bool guard) {
+          stamp(guard, "", ": ");
+        }
+        // Date stamp
+        void date_stamp(bool guard, const char* prefix, const char* suffix);
+        // A simplified call that includes a suffix of ": "
+        void date_stamp(bool guard) {
+          date_stamp(guard, "", ": ");
+        }
+   
+        // portable printing of 64 bit integers
+        void print_jlong(jlong value);
+        void print_julong(julong value);
+   
+        // flushing
+        virtual void flush() {}
+        virtual void write(const char* str, size_t len) = 0;
+        virtual void rotate_log(bool force, OutputStream* out = NULL) {
+            UNUSED(force);
+            UNUSED(out);
+        } // GC log rotation
+        virtual ~OutputStream() {}   // close properly on deletion
+   
+        // Caller may specify their own scratch buffer to use for printing; otherwise,
+        // an automatic buffer on the stack (with O_BUFLEN len) is used.
+        void set_scratch_buffer(char* p, size_t len) { _scratch = p; _scratch_len = len; }
+        void dec_cr() { dec(); cr(); }
+        void inc_cr() { inc(); cr(); }
+   
+    protected:
+        int _indentation; // current indentation
+        int _width;       // width of the page
+        int _position;    // position on the current line
+        int _newlines;    // number of '\n' output so far
+        julong _precount; // number of chars output, less _position
+        TimeStamp _stamp; // for time stamps
+        char* _scratch;   // internal scratch buffer for printf
+        size_t _scratch_len; // size of internal scratch buffer
+   
+        void update_position(const char* s, size_t len);
+        static const char* do_vsnprintf(char* buffer, size_t buflen,
+                                        const char* format, va_list ap,
+                                        bool add_cr,
+                                        size_t& result_len)  ATTRIBUTE_PRINTF(3, 0);
+   
+        // calls do_vsnprintf and writes output to stream; uses an on-stack buffer.
+        void do_vsnprintf_and_write_with_automatic_buffer(const char* format, va_list ap, bool add_cr) ATTRIBUTE_PRINTF(2, 0);
+        // calls do_vsnprintf and writes output to stream; uses the user-provided buffer;
+        void do_vsnprintf_and_write_with_scratch_buffer(const char* format, va_list ap, bool add_cr) ATTRIBUTE_PRINTF(2, 0);
+        // calls do_vsnprintf, then writes output to stream.
+        void do_vsnprintf_and_write(const char* format, va_list ap, bool add_cr) ATTRIBUTE_PRINTF(2, 0);
+   
+    private:
+        OutputStream(const OutputStream&);
+        OutputStream& operator=(const OutputStream&);
 };
-
+   
 // standard output
 // ANSI C++ name collision
 extern OutputStream* tty;           // tty output
 
 class StreamIndentor : public StackObj {
- private:
-  OutputStream* _str;
-  int _amount;
-
- public:
-  StreamIndentor(OutputStream* str, int amt = 2) : _str(str), _amount(amt) {
-    _str->inc(_amount);
-  }
-  ~StreamIndentor() { _str->dec(_amount); }
+    private:
+        OutputStream* _str;
+        int _amount;
+   
+    public:
+        StreamIndentor(OutputStream* str, int amt = 2) : _str(str), _amount(amt) {
+            _str->inc(_amount);
+        }
+        ~StreamIndentor() { _str->dec(_amount); }
 };
 
 // advisory locking for the shared tty stream:
 class TtyLocker: StackObj {
-  friend class ttyUnlocker;
- private:
-  intx _holder;
+    friend class ttyUnlocker;
+    public:
+        static intx  hold_tty();                // returns a "holder" token
+        static void  release_tty(intx holder);  // must witness same token
+        static bool  release_tty_if_locked();   // returns true if lock was released
+        static void  break_tty_lock_for_safepoint(intx holder);
 
- public:
-  static intx  hold_tty();                // returns a "holder" token
-  static void  release_tty(intx holder);  // must witness same token
-  static bool  release_tty_if_locked();   // returns true if lock was released
-  static void  break_tty_lock_for_safepoint(intx holder);
-
-  TtyLocker()  { _holder = hold_tty(); }
-  ~TtyLocker() { release_tty(_holder); }
+        TtyLocker()  { _holder = hold_tty(); }
+        ~TtyLocker() { release_tty(_holder); }
+    private:
+        intx _holder;
 };
 
 // Release the tty lock if it's held and reacquire it if it was
 // locked.  Used to avoid lock ordering problems.
 class ttyUnlocker: StackObj {
- private:
-  bool _was_locked;
- public:
-  ttyUnlocker()  {
-    _was_locked = TtyLocker::release_tty_if_locked();
-  }
-  ~ttyUnlocker() {
-    if (_was_locked) {
-      TtyLocker::hold_tty();
-    }
-  }
+    public:
+        ttyUnlocker()  {
+            _was_locked = TtyLocker::release_tty_if_locked();
+        }
+        ~ttyUnlocker() {
+            if (_was_locked) {
+                TtyLocker::hold_tty();
+            }
+        }
+    private:
+        bool _was_locked;
 };
 
 // for writing to strings; buffer will expand automatically.
 // Buffer will always be zero-terminated.
 class StringStream : public OutputStream {
- protected:
-  char*  buffer;
-  size_t buffer_pos;
-  size_t buffer_length;
-  bool   buffer_fixed;
+    public:
+        // Create a StringStream using an internal buffer of initially initial_bufsize size;
+        // will be enlarged on demand. There is no maximum cap.
+        StringStream(size_t initial_bufsize = 256);
+        // Creates a StringStream using a caller-provided buffer. Will truncate silently if
+        // it overflows.
+        StringStream(char* fixed_buffer, size_t fixed_buffer_size);
+        ~StringStream();
+        virtual void write(const char* c, size_t len);
+        // Return number of characters written into buffer, excluding terminating zero and
+        // subject to truncation in static buffer mode.
+        size_t      size() const { return buffer_pos; }
+        const char* base() const { return buffer; }
+        void  reset();
+        char* as_string() const;
 
-  // zero terminate at buffer_pos.
-  void zero_terminate();
-
- public:
-  // Create a StringStream using an internal buffer of initially initial_bufsize size;
-  // will be enlarged on demand. There is no maximum cap.
-  StringStream(size_t initial_bufsize = 256);
-  // Creates a StringStream using a caller-provided buffer. Will truncate silently if
-  // it overflows.
-  StringStream(char* fixed_buffer, size_t fixed_buffer_size);
-  ~StringStream();
-  virtual void write(const char* c, size_t len);
-  // Return number of characters written into buffer, excluding terminating zero and
-  // subject to truncation in static buffer mode.
-  size_t      size() const { return buffer_pos; }
-  const char* base() const { return buffer; }
-  void  reset();
-  char* as_string() const;
+    protected:
+        char*  buffer;
+        size_t buffer_pos;
+        size_t buffer_length;
+        bool   buffer_fixed;
+   
+        // zero terminate at buffer_pos.
+        void zero_terminate();
 };
 
 class FileStream : public OutputStream {
- protected:
-  FILE* _file;
-  bool  _need_close;
- public:
-  FileStream() { _file = NULL; _need_close = false; }
-  FileStream(const char* file_name);
-  FileStream(const char* file_name, const char* opentype);
-  FileStream(FILE* file, bool need_close = false) { _file = file; _need_close = need_close; }
-  ~FileStream();
-  bool is_open() const { return _file != NULL; }
-  virtual void write(const char* c, size_t len);
-  size_t read(void *data, size_t size, size_t count) { return ::fread(data, size, count, _file); }
-  char* readln(char *data, int count);
-  int eof() { return feof(_file); }
-  long fileSize();
-  void rewind() { ::rewind(_file); }
-  void flush();
+    public:
+        FileStream() { _file = NULL; _need_close = false; }
+        FileStream(const char* file_name);
+        FileStream(const char* file_name, const char* opentype);
+        FileStream(FILE* file, bool need_close = false) { _file = file; _need_close = need_close; }
+        ~FileStream();
+        bool is_open() const { return _file != NULL; }
+        virtual void write(const char* c, size_t len);
+        size_t read(void *data, size_t size, size_t count) { return ::fread(data, size, count, _file); }
+        char* readln(char *data, int count);
+        int eof() { return feof(_file); }
+        long fileSize();
+        void rewind() { ::rewind(_file); }
+        void flush();
+    protected:
+        FILE* _file;
+        bool  _need_close;
 };
 
 // unlike FileStream, FdStream does unbuffered I/O by calling
@@ -219,15 +218,15 @@ class FileStream : public OutputStream {
 // from multiple thread may be mixed together. Used by fatal
 // error handler.
 class FdStream : public OutputStream {
- protected:
-  int  _fd;
- public:
-  FdStream(int fd = -1) : _fd(fd) { }
-  bool is_open() const { return _fd != -1; }
-  void set_fd(int fd) { _fd = fd; }
-  int fd() const { return _fd; }
-  virtual void write(const char* c, size_t len);
-  void flush() {};
+    public:
+        FdStream(int fd = -1) : _fd(fd) { }
+        bool is_open() const { return _fd != -1; }
+        void set_fd(int fd) { _fd = fd; }
+        int fd() const { return _fd; }
+        virtual void write(const char* c, size_t len);
+        void flush() {};
+    protected:
+        int  _fd;
 };
 
 void ostream_init();
@@ -238,22 +237,22 @@ void ostream_abort();
 // In the non-fixed buffer case an underlying buffer will be created and
 // managed in C heap. Not MT-safe.
 class BufferedStream : public OutputStream {
- protected:
-  char*  buffer;
-  size_t buffer_pos;
-  size_t buffer_max;
-  size_t buffer_length;
-  bool   buffer_fixed;
-  bool   truncated;
- public:
-  BufferedStream(size_t initial_bufsize = 256, size_t bufmax = 1024*1024*10);
-  BufferedStream(char* fixed_buffer, size_t fixed_buffer_size, size_t bufmax = 1024*1024*10);
-  ~BufferedStream();
-  virtual void write(const char* c, size_t len);
-  size_t      size() { return buffer_pos; }
-  const char* base() { return buffer; }
-  void  reset() { buffer_pos = 0; _precount = 0; _position = 0; }
-  char* as_string();
+    protected:
+        char*  buffer;
+        size_t buffer_pos;
+        size_t buffer_max;
+        size_t buffer_length;
+        bool   buffer_fixed;
+        bool   truncated;
+    public:
+        BufferedStream(size_t initial_bufsize = 256, size_t bufmax = 1024*1024*10);
+        BufferedStream(char* fixed_buffer, size_t fixed_buffer_size, size_t bufmax = 1024*1024*10);
+        ~BufferedStream();
+        virtual void write(const char* c, size_t len);
+        size_t      size() { return buffer_pos; }
+        const char* base() { return buffer; }
+        void  reset() { buffer_pos = 0; _precount = 0; _position = 0; }
+        char* as_string();
 };
 
 #define O_BUFLEN 2000   // max size of output of individual print() methods

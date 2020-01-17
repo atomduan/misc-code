@@ -29,47 +29,46 @@
  */
 
 class NativeCallStack : public StackObj {
- public:
-  NativeCallStack(int toSkip = 0, bool fillStack = false);
-  NativeCallStack(address* pc, int frameCount);
+    public:
+        NativeCallStack(int toSkip = 0, bool fillStack = false);
+        NativeCallStack(address* pc, int frameCount);
 
-  static inline const NativeCallStack& empty_stack() {
-    static const NativeCallStack EMPTY_STACK(0, false);
-    return EMPTY_STACK;
-  }
+        static inline const NativeCallStack& empty_stack() {
+            static const NativeCallStack EMPTY_STACK(0, false);
+            return EMPTY_STACK;
+        }
 
-  // if it is an empty stack
-  inline bool is_empty() const {
-    return _stack[0] == NULL;
-  }
+        // if it is an empty stack
+        inline bool is_empty() const {
+            return _stack[0] == NULL;
+        }
 
-  // number of stack frames captured
-  int frames() const;
+        // number of stack frames captured
+        int frames() const;
 
-  inline int compare(const NativeCallStack& other) const {
-    return memcmp(_stack, other._stack, sizeof(_stack));
-  }
+        inline int compare(const NativeCallStack& other) const {
+            return memcmp(_stack, other._stack, sizeof(_stack));
+        }
 
-  inline bool equals(const NativeCallStack& other) const {
-    // compare hash values
-    if (hash() != other.hash()) return false;
-    // compare each frame
-    return compare(other) == 0;
-  }
+        inline bool equals(const NativeCallStack& other) const {
+            // compare hash values
+            if (hash() != other.hash()) return false;
+            // compare each frame
+            return compare(other) == 0;
+        }
 
-  inline address get_frame(int index) const {
-    return _stack[index];
-  }
+        inline address get_frame(int index) const {
+            return _stack[index];
+        }
 
-  // Hash code. Any better algorithm?
-  unsigned int hash() const;
+        // Hash code. Any better algorithm?
+        unsigned int hash() const;
 
-  void print_on(OutputStream* out) const;
-  void print_on(OutputStream* out, int indent) const;
- private:
-  address       _stack[NMT_TrackingStackDepth];
-  unsigned int  _hash_value;
-
+        void print_on(OutputStream* out) const;
+        void print_on(OutputStream* out, int indent) const;
+    private:
+        address             _stack[NMT_TrackingStackDepth];
+        unsigned int    _hash_value;
 };
 
 #endif // DJT_UTILITIES_NATIVECALLSTACK_H_
