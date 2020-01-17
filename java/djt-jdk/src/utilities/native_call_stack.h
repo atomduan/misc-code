@@ -64,8 +64,8 @@ class NativeCallStack : public StackObj {
   // Hash code. Any better algorithm?
   unsigned int hash() const;
 
-  void print_on(outputStream* out) const;
-  void print_on(outputStream* out, int indent) const;
+  void print_on(OutputStream* out) const;
+  void print_on(OutputStream* out, int indent) const;
  private:
   address       _stack[NMT_TrackingStackDepth];
   unsigned int  _hash_value;

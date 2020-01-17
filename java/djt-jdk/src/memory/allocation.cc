@@ -39,6 +39,19 @@ void  StackObj::operator delete [](void* p) {
     UNUSED(p);
     ShouldNotCallThis();
 }
+void* ResourceObj::operator new(size_t size, allocation_type type, MEMFLAGS flags) throw() {
+    UNUSED(size);
+    UNUSED(flags);
+    address res = NULL;
+    switch (type) {
+        case C_HEAP:
+            break;
+        default:
+            ShouldNotReachHere();
+    }
+  return res;
+}
+
 
 void ResourceObj::operator delete(void* p) {
   freeHeap(p);

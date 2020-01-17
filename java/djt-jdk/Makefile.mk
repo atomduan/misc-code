@@ -5,9 +5,11 @@ BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 DST_DIR  := $(BUILD)/dist
 TARGET   :=	target.bin 
+
 INCLUDE  := -Iinclude/							\
 			-Iinclude/linux/					\
 			-Isrc/
+
 SRC      :=	$(wildcard src/memory/*.cc)			\
 			$(wildcard src/runtime/*.cc)		\
 			$(wildcard src/services/*.cc)		\

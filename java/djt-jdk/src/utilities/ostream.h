@@ -15,14 +15,14 @@
 //     jio_fprintf(defaultStream::output_stream(), "Message");
 // This allows for redirection via -XX:+DisplayVMOutputToStdout and
 // -XX:+DisplayVMOutputToStderr
-class outputStream : public ResourceObj {
+class OutputStream : public ResourceObj {
  public:
   // creation
-  outputStream(int width = 80);
-  outputStream(int width, bool has_time_stamps);
+  OutputStream(int width = 80);
+  OutputStream(int width, bool has_time_stamps);
 
   // indentation
-  outputStream& indent();
+  OutputStream& indent();
   void inc() { _indentation++; };
   void dec() { _indentation--; };
   void inc(int n) { _indentation += n; };
@@ -77,11 +77,11 @@ class outputStream : public ResourceObj {
   // flushing
   virtual void flush() {}
   virtual void write(const char* str, size_t len) = 0;
-  virtual void rotate_log(bool force, outputStream* out = NULL) {
+  virtual void rotate_log(bool force, OutputStream* out = NULL) {
       UNUSED(force);
       UNUSED(out);
   } // GC log rotation
-  virtual ~outputStream() {}   // close properly on deletion
+  virtual ~OutputStream() {}   // close properly on deletion
 
   // Caller may specify their own scratch buffer to use for printing; otherwise,
   // an automatic buffer on the stack (with O_BUFLEN len) is used.
@@ -113,28 +113,28 @@ class outputStream : public ResourceObj {
   void do_vsnprintf_and_write(const char* format, va_list ap, bool add_cr) ATTRIBUTE_PRINTF(2, 0);
 
  private:
-  outputStream(const outputStream&);
-  outputStream& operator=(const outputStream&);
+  OutputStream(const OutputStream&);
+  OutputStream& operator=(const OutputStream&);
 };
 
 // standard output
 // ANSI C++ name collision
-extern outputStream* tty;           // tty output
+extern OutputStream* tty;           // tty output
 
-class streamIndentor : public StackObj {
+class StreamIndentor : public StackObj {
  private:
-  outputStream* _str;
+  OutputStream* _str;
   int _amount;
 
  public:
-  streamIndentor(outputStream* str, int amt = 2) : _str(str), _amount(amt) {
+  StreamIndentor(OutputStream* str, int amt = 2) : _str(str), _amount(amt) {
     _str->inc(_amount);
   }
-  ~streamIndentor() { _str->dec(_amount); }
+  ~StreamIndentor() { _str->dec(_amount); }
 };
 
 // advisory locking for the shared tty stream:
-class ttyLocker: StackObj {
+class TtyLocker: StackObj {
   friend class ttyUnlocker;
  private:
   intx _holder;
@@ -145,8 +145,8 @@ class ttyLocker: StackObj {
   static bool  release_tty_if_locked();   // returns true if lock was released
   static void  break_tty_lock_for_safepoint(intx holder);
 
-  ttyLocker()  { _holder = hold_tty(); }
-  ~ttyLocker() { release_tty(_holder); }
+  TtyLocker()  { _holder = hold_tty(); }
+  ~TtyLocker() { release_tty(_holder); }
 };
 
 // Release the tty lock if it's held and reacquire it if it was
@@ -156,18 +156,18 @@ class ttyUnlocker: StackObj {
   bool _was_locked;
  public:
   ttyUnlocker()  {
-    _was_locked = ttyLocker::release_tty_if_locked();
+    _was_locked = TtyLocker::release_tty_if_locked();
   }
   ~ttyUnlocker() {
     if (_was_locked) {
-      ttyLocker::hold_tty();
+      TtyLocker::hold_tty();
     }
   }
 };
 
 // for writing to strings; buffer will expand automatically.
 // Buffer will always be zero-terminated.
-class stringStream : public outputStream {
+class StringStream : public OutputStream {
  protected:
   char*  buffer;
   size_t buffer_pos;
@@ -178,13 +178,13 @@ class stringStream : public outputStream {
   void zero_terminate();
 
  public:
-  // Create a stringStream using an internal buffer of initially initial_bufsize size;
+  // Create a StringStream using an internal buffer of initially initial_bufsize size;
   // will be enlarged on demand. There is no maximum cap.
-  stringStream(size_t initial_bufsize = 256);
-  // Creates a stringStream using a caller-provided buffer. Will truncate silently if
+  StringStream(size_t initial_bufsize = 256);
+  // Creates a StringStream using a caller-provided buffer. Will truncate silently if
   // it overflows.
-  stringStream(char* fixed_buffer, size_t fixed_buffer_size);
-  ~stringStream();
+  StringStream(char* fixed_buffer, size_t fixed_buffer_size);
+  ~StringStream();
   virtual void write(const char* c, size_t len);
   // Return number of characters written into buffer, excluding terminating zero and
   // subject to truncation in static buffer mode.
@@ -194,16 +194,16 @@ class stringStream : public outputStream {
   char* as_string() const;
 };
 
-class fileStream : public outputStream {
+class FileStream : public OutputStream {
  protected:
   FILE* _file;
   bool  _need_close;
  public:
-  fileStream() { _file = NULL; _need_close = false; }
-  fileStream(const char* file_name);
-  fileStream(const char* file_name, const char* opentype);
-  fileStream(FILE* file, bool need_close = false) { _file = file; _need_close = need_close; }
-  ~fileStream();
+  FileStream() { _file = NULL; _need_close = false; }
+  FileStream(const char* file_name);
+  FileStream(const char* file_name, const char* opentype);
+  FileStream(FILE* file, bool need_close = false) { _file = file; _need_close = need_close; }
+  ~FileStream();
   bool is_open() const { return _file != NULL; }
   virtual void write(const char* c, size_t len);
   size_t read(void *data, size_t size, size_t count) { return ::fread(data, size, count, _file); }
@@ -214,15 +214,15 @@ class fileStream : public outputStream {
   void flush();
 };
 
-// unlike fileStream, fdStream does unbuffered I/O by calling
+// unlike FileStream, FdStream does unbuffered I/O by calling
 // open() and write() directly. It is async-safe, but output
 // from multiple thread may be mixed together. Used by fatal
 // error handler.
-class fdStream : public outputStream {
+class FdStream : public OutputStream {
  protected:
   int  _fd;
  public:
-  fdStream(int fd = -1) : _fd(fd) { }
+  FdStream(int fd = -1) : _fd(fd) { }
   bool is_open() const { return _fd != -1; }
   void set_fd(int fd) { _fd = fd; }
   int fd() const { return _fd; }
@@ -237,7 +237,7 @@ void ostream_abort();
 
 // In the non-fixed buffer case an underlying buffer will be created and
 // managed in C heap. Not MT-safe.
-class bufferedStream : public outputStream {
+class BufferedStream : public OutputStream {
  protected:
   char*  buffer;
   size_t buffer_pos;
@@ -246,9 +246,9 @@ class bufferedStream : public outputStream {
   bool   buffer_fixed;
   bool   truncated;
  public:
-  bufferedStream(size_t initial_bufsize = 256, size_t bufmax = 1024*1024*10);
-  bufferedStream(char* fixed_buffer, size_t fixed_buffer_size, size_t bufmax = 1024*1024*10);
-  ~bufferedStream();
+  BufferedStream(size_t initial_bufsize = 256, size_t bufmax = 1024*1024*10);
+  BufferedStream(char* fixed_buffer, size_t fixed_buffer_size, size_t bufmax = 1024*1024*10);
+  ~BufferedStream();
   virtual void write(const char* c, size_t len);
   size_t      size() { return buffer_pos; }
   const char* base() { return buffer; }
