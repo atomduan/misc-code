@@ -15,11 +15,8 @@
 #define align_mask(alignment) ((alignment) - 1)
 #define widen_to_type_of(what, type_carrier) (true ? (what) : (type_carrier))
 #define align_mask_widened(alignment, type_carrier) widen_to_type_of(align_mask(alignment), (type_carrier))
-
 #define align_down_(size, alignment) ((size) & ~align_mask_widened((alignment), (size)))
-
 #define align_up_(size, alignment) (align_down_((size) + align_mask(alignment), (alignment)))
-
 #define is_aligned_(size, alignment) (((size) & align_mask(alignment)) == 0)
 
 // Temporary declaration until this file has been restructured.
