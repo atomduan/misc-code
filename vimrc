@@ -32,7 +32,7 @@ nnoremap <leader>x :NERDTreeFind<cr>*
 nnoremap <leader>j 8j
 nnoremap <leader>k 8k
 
-let NERDTreeWinSize=32
+let NERDTreeWinSize=24
 let NERDTreeIgnore=['\.o$','\.bin$', '\.pyc$', '\.jar$']
 
 
