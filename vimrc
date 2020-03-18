@@ -52,7 +52,6 @@ Plugin 'python.vim'
 Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
-Plugin 'Syntastic'
 "Plugin 'atom-java.vim'
 
 ""Need more learning
@@ -87,20 +86,7 @@ let g:go_highlight_functions = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 
-
-""Syntastic config begin
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-""Syntastic config end 
-
-
 nnoremap <F3> :ConqueTermVSplit bash<cr>
-
 nnoremap * *N
 
 "auto open nertree
