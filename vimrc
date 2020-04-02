@@ -27,14 +27,17 @@ let mapleader=","
 highlight Search term=reverse ctermfg=Black guifg=Yellow
 
 nnoremap <F4> :NERDTree<cr>
+nnoremap <leader>b :Bookmark<cr>
 nnoremap <leader>z :nohl<cr>
 nnoremap <leader>x :NERDTreeFind<cr>*
-nnoremap <leader>j 8j
-nnoremap <leader>k 8k
+nnoremap <leader>j 12j
+nnoremap <leader>k 12k
+
+"let NERDTreeShowHidden=1
 
 let NERDTreeWinSize=24
-let NERDTreeIgnore=['\.o$','\.bin$', '\.pyc$', '\.jar$']
-
+let NERDTreeIgnore=['\.o$','\.bin$', '\.swp$', '\.pyc$', '\.jar$']
+"let NERDTreeShowBookmarks=1
 
 filetype plugin indent on
 
