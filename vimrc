@@ -29,7 +29,7 @@ highlight Search term=reverse ctermfg=Black guifg=Yellow
 nnoremap <F4> :NERDTree<cr>
 nnoremap <leader>b :Bookmark<cr>
 nnoremap <leader>z :nohl<cr>
-nnoremap <leader>x :NERDTreeFind<cr>*
+nnoremap <leader>x :NERDTreeFind<cr>*0n
 nnoremap <leader>j 12j
 nnoremap <leader>k 12k
 
