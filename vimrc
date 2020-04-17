@@ -35,7 +35,7 @@ nnoremap <leader>k 12k
 
 "let NERDTreeShowHidden=1
 
-let NERDTreeWinSize=24
+let NERDTreeWinSize=28
 let NERDTreeIgnore=['\.o$','\.bin$', '\.swp$', '\.pyc$', '\.jar$']
 "let NERDTreeShowBookmarks=1
 
