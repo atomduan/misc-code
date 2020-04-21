@@ -49,7 +49,6 @@ BUILD_INCS = -I ./ -I ../includes
 END
 
 cat <<END >> Makefile
-
 misc_parser: ${yy_name}.tab.o \\
 END
 if [ -f "${yy_name}.c" ]; then
