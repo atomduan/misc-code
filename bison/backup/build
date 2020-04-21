@@ -37,13 +37,12 @@ fi
 rm Makefile
 
 cat <<END > Makefile
-CC=clang 
-CFLAGS=-c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
-LDFLAGS=-L/usr/local/opt/bison/lib
+CC = clang 
+CFLAGS = -c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 
 LINK = \$(CC)
 
-BUILD_DEPS = ../includes/config.h misc_parser.h ${yy_header} ${yy_tab_header}
+BUILD_DEPS = ../includes/linux_config.h misc_parser.h ${yy_header} ${yy_tab_header}
 BUILD_INCS = -I ./ \\
 	-I ../includes
 
@@ -71,7 +70,7 @@ END
 fi
 cat <<END >> Makefile
 	misc_parser.o \\
-	-ldl -lpthread -lm -Wl,-E \$(LDFLAGS)
+	-ldl -lpthread -lm -Wl,-E
 
 ${yy_name}.tab.c:
 	bison -d ${yy_name}.y

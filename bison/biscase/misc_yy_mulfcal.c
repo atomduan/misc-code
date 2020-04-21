@@ -1,4 +1,3 @@
-#include <linux_config.h>
 #include <misc_parser.h>
 #include <misc_yy_mulfcal.h>
 
