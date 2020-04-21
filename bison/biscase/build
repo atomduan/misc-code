@@ -43,9 +43,8 @@ LDFLAGS=-L/usr/local/opt/bison/lib
 
 LINK = \$(CC)
 
-BUILD_DEPS = ../includes/config.h misc_parser.h ${yy_header} ${yy_tab_header}
-BUILD_INCS = -I ./ \\
-	-I ../includes
+BUILD_DEPS = ../includes/misc_config.h misc_parser.h ${yy_header} ${yy_tab_header}
+BUILD_INCS = -I ./ -I ../includes
 
 END
 
@@ -60,7 +59,6 @@ END
 fi
 cat <<END >> Makefile
 	misc_parser.o
-
 	\$(LINK) -o misc_parser.bin ${yy_name}.tab.o \\
 END
 
@@ -71,12 +69,13 @@ END
 fi
 cat <<END >> Makefile
 	misc_parser.o \\
-	-ldl -lpthread -lm -Wl,-E \$(LDFLAGS)
+	-ldl -lpthread -lm -Wl \$(LDFLAGS)
 
 ${yy_name}.tab.c:
 	bison -d ${yy_name}.y
 
-${yy_name}.tab.o: ${yy_name}.tab.c
+${yy_name}.tab.o: \$(BUILD_DEPS)  \\
+    ${yy_name}.tab.c
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}.tab.o ${yy_name}.tab.c
 END
 if [ -f "${yy_name}.c" ]; then
