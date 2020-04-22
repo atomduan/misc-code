@@ -58,14 +58,17 @@ void init_table();
 /* Declarations Section */
 %defines "misc_yy_gen.h"
 %define api.value.type union
+
 %token  <double>        NUM
 %token  <symrec*>       VAR FNCT
 %type   <double>        exp
+
 %left '-' '+'
 %left '*' '/'
 %precedence NEG
 %right '^'
 %expect 5
+
 %glr-parser
 
 /* --------------------------------------------------------------------- */
