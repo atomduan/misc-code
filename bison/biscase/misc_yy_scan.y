@@ -1,3 +1,4 @@
+/* --------------------------------------------------------------------- */
 %code top {
 #include <misc_parser.h>
 #define YYDEBUG 1
@@ -23,6 +24,7 @@ symrec *putsym(char const *, int);
 symrec *getsym(char const *);
 }
 
+/* --------------------------------------------------------------------- */
 /** 
  * writing dependency code for YYSTYPE and YYLTYPE, 
  * should prefer %code requires over %code top
@@ -38,10 +40,12 @@ typedef struct YYLTYPE {
 } YYLTYPE; 
 }
 
+/* --------------------------------------------------------------------- */
 %code provides {
 void trace_token(enum yytokentype token, YYLTYPE loc);
 }
 
+/* --------------------------------------------------------------------- */
 %code {
 void print_token(FILE *file, int token, YYSTYPE val);
 int yylex(void);
@@ -49,7 +53,8 @@ void yyerror(char const *);
 void init_table();
 }
 
-/* ------------------------------------------------- */
+/* --------------------------------------------------------------------- */
+
 /* Declarations Section */
 %defines "misc_yy_gen.h"
 %define api.value.type union
@@ -63,7 +68,7 @@ void init_table();
 %expect 5
 %glr-parser
 
-/* ------------------------------------------------- */
+/* --------------------------------------------------------------------- */
 /* Grammar Rules Section */ 
 %%
 input:
@@ -113,7 +118,7 @@ exp:
 ;
 %%
 
-/* ------------------------------------------------- */
+/* --------------------------------------------------------------------- */
 /* Epilogue Begin */
 symrec *sym_table;
 
