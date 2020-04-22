@@ -21,8 +21,7 @@ struct symrec_s {
 /* The symbol table: a chain of 'struct symrec'.  */
 symrec *putsym(char const *, int);
 symrec *getsym(char const *);
-
-}//end of code top block
+}
 
 /** 
  * writing dependency code for YYSTYPE and YYLTYPE, 
@@ -37,18 +36,18 @@ typedef struct YYLTYPE {
     int last_column; 
     char *filename;
 } YYLTYPE; 
-}//end of code requires block
+}
 
 %code provides {
 void trace_token(enum yytokentype token, YYLTYPE loc);
-}//end of code provides block
+}
 
 %code {
 void print_token(FILE *file, int token, YYSTYPE val);
 int yylex(void);
 void yyerror(char const *);
 void init_table();
-}//end of code block
+}
 
 /* ------------------------------------------------- */
 /* Declarations Section */
