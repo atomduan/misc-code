@@ -81,7 +81,7 @@ void init_table();
 /* Grammar Rules Section */ 
 %%
 input:
-    %empty
+    %empty                          /*If you don’t specify an action for a rule, Bison supplies a default: $$ = $1.*/
 |   input line
 ;
 
