@@ -66,7 +66,7 @@ void init_table();
 %define api.value.type {union YYSTYPE}
 
 %token  <DNUM>        NUM
-%token  <FUNC_PTR>          VAR FNCT
+%token  <FUNC_PTR>    VAR FNCT
 %nterm  <DNUM>        exp
 
 %left '-' '+'
