@@ -71,7 +71,7 @@ cat <<END >> Makefile
 	-ldl -lpthread -lm -Wl \$(LDFLAGS)
 
 ${yy_name}.tab.c:
-	bison -d ${yy_name}.y
+	bison --debug --report=stat --report-file=stat.report --graph=automaton.dot -d ${yy_name}.y
 
 ${yy_name}.tab.o: \$(BUILD_DEPS)  \\
     ${yy_name}.tab.c
@@ -95,9 +95,15 @@ cat <<END >> Makefile
 
 .PHONY:clean
 clean:
-	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h
+	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h stat.report automaton.dot automaton.svg
 END
 
 make clean
-
 make
+
+if [ -f "automaton.dot" ]; then
+    if [ -f "automaton.svg" ]; then
+        rm automaton.svg
+    fi
+    dot -T svg automaton.dot > automaton.svg
+fi
