@@ -38,6 +38,12 @@ typedef struct YYLTYPE {
     int last_column; 
     char *filename;
 } YYLTYPE; 
+
+/**/
+union YYSTYPE {
+    double double_tag;    
+    symrec *func_ptr;
+};
 }
 
 /* --------------------------------------------------------------------- */
@@ -57,11 +63,11 @@ void init_table();
 
 /* Declarations Section */
 %defines "misc_yy_gen.h"
-%define api.value.type union
+%define api.value.type {union YYSTYPE}
 
-%token  <double>        NUM
-%token  <symrec*>       VAR FNCT
-%type   <double>        exp
+%token  <double_tag>        NUM
+%token  <func_ptr>          VAR FNCT
+%nterm  <double_tag>        exp
 
 %left '-' '+'
 %left '*' '/'
@@ -193,7 +199,7 @@ int yylex (void)
     /* Char starts a number => parse the number. */
     if (c == '.' || isdigit(c)) {
         ungetc(c, stdin);
-        scanf("%lf", &yylval.NUM);
+        scanf("%lf", &yylval.double_tag);
         return NUM;
     }
     /* Char starts an identifier => read the name. */
