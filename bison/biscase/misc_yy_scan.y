@@ -87,43 +87,43 @@ input:
 
 line:
     '\n'
-|   exp '\n'                { printf("%.10g\n", $1); }
-|   error '\n'              { yyerrok; }
+|   exp '\n'                        { printf("%.10g\n", $1); }
+|   error '\n'                      { yyerrok; }
 ;
 
 exp:
-    NUM                     { $$ = $1; }
-|   VAR                     { 
-                                if ($1->has_init == 1) {
-                                    $$ = $1->value.var; 
-                                } else {
-                                    printf("use uninit VAR name %s\n", $1->name);
-                                    yyerror("use uninit VAR error\n");
-                                }
-                            }
-|   VAR '=' exp             { 
-                                $$ = $3; 
-                                $1->value.var = $3;
-                                $1->has_init = 1;
-                            }
-|   FNCT '(' exp ')'        { $$ = (*($1->value.fnctptr))($3); }
-|   exp '+' exp             { $$ = $1 + $3; }
-|   exp '-' exp             { $$ = $1 - $3; }
-|   exp '*' exp             { $$ = $1 * $3; }
-|   exp '/' exp             { 
-                                if ($3 != 0) {
-                                    $$ = $1 / $3;
-                                } else {
-                                    $$ = 1;
-                                    fprintf(stderr,"(%d,%d)-(%d,%d): division bu zero\n",
-                                            @3.first_line,@3.first_column,
-                                            @3.last_line,@3.last_column);
-                                    yyerror("zero error\n");
-                                }
-                            }
-|   '-' exp  %prec NEG      { $$ = -$2; }
-|   exp '^' exp             { $$ = pow($1, $3); }
-|   '(' exp ')'             { $$ = $2; }
+    NUM                             { $$ = $1; }
+|   VAR[var]                        { 
+                                        if ($var->has_init == 1) {
+                                            $$ = $var->value.var; 
+                                        } else {
+                                            printf("use uninit VAR name %s\n", $var->name);
+                                            yyerror("use uninit VAR error\n");
+                                        }
+                                    }
+|   VAR[var] '=' exp                { 
+                                        $$ = $3; 
+                                        $var->value.var = $3;
+                                        $var->has_init = 1;
+                                    }
+|   FNCT[func] '(' exp ')'          { $$ = (*($func->value.fnctptr))($3); }
+|   exp[left] '+' exp[right]        { $$ = $left + $right; }
+|   exp[left] '-' exp[right]        { $$ = $left - $right; }
+|   exp[left] '*' exp[right]        { $$ = $left * $right; }
+|   exp[left] '/' exp[right]        { 
+                                        if ($right != 0) {
+                                            $$ = $left / $right;
+                                        } else {
+                                            $$ = 1;
+                                            fprintf(stderr,"(%d,%d)-(%d,%d): division bu zero\n",
+                                                    @right.first_line,@right.first_column,
+                                                    @right.last_line,@right.last_column);
+                                            yyerror("zero error\n");
+                                        }
+                                    }
+|   '-' exp %prec NEG               { $$ = -$2; }
+|   exp[base] '^' exp[factor]       { $$ = pow($base, $factor); }
+|   '(' exp ')'                     { $$ =  $2; }
 ;
 %%
 
