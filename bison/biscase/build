@@ -42,6 +42,7 @@ CFLAGS=-c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 LDFLAGS=-L/usr/local/opt/bison/lib
 
 LINK = \$(CC)
+BISON = /usr/local/opt/bison/bin/bison
 
 BUILD_DEPS = ../includes/misc_config.h misc_parser.h ${yy_header} ${yy_tab_header}
 BUILD_INCS = -I ./ -I ../includes
@@ -71,7 +72,7 @@ cat <<END >> Makefile
 	-ldl -lpthread -lm -Wl \$(LDFLAGS)
 
 ${yy_name}.tab.c:
-	bison --debug --report=stat --report-file=stat.report --graph=automaton.dot -d ${yy_name}.y
+	\$(BISON) -Wmidrule-value --debug --report=stat --report-file=stat.report --graph=automaton.dot -d ${yy_name}.y
 
 ${yy_name}.tab.o: \$(BUILD_DEPS)  \\
     ${yy_name}.tab.c
