@@ -106,5 +106,5 @@ if [ -f "automaton.dot" ]; then
     if [ -f "automaton.svg" ]; then
         rm automaton.svg
     fi
-    dot -T svg automaton.dot > automaton.svg
+    #dot -T svg automaton.dot > automaton.svg
 fi
