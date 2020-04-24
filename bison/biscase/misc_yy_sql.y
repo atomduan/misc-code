@@ -1,15 +1,29 @@
+%code top {
+#include <misc_parser.h>
+#define YYDEBUG 1
+}
+
 %union {
     int intval;
     double floatval;
     char *strval;
     int subtok;
 }
+
+%code {
+void init_table();
+int yylex(void);
+void yyerror(char const *);
+}
+
+/* Declarations Section */
+%defines "misc_yy_gen.h"
     
 %token NAME
 %token STRING
 %token INTNUM APPROXNUM
 
-    /* operators */
+/* operators */
 
 %left OR
 %left AND
@@ -19,8 +33,7 @@
 %left '*' '/'
 %nonassoc UMINUS
 
-    /* literal keyword tokens */
-
+/* literal keyword tokens */
 %token ALL AMMSC ANY AS ASC AUTHORIZATION BETWEEN BY
 %token CHARACTER CHECK CLOSE COMMIT CONTINUE CREATE CURRENT
 %token CURSOR DECIMAL DECLARE DEFAULT DELETE DESC DISTINCT DOUBLE
@@ -34,15 +47,14 @@
 %token COBOL FORTRAN PASCAL PLI C ADA
 
 %%
-
 sql_list:
         sql ';'
     |   sql_list sql ';'
     ;
 
 
-    /* schema definition language */
-    /* Note: other ``sql:'' rules appear later in the grammar */
+/* schema definition language */
+/* Note: other ``sql:'' rules appear later in the grammar */
 sql:        schema
     ;
     
@@ -618,3 +630,32 @@ when_action:    GOTO NAME
     ;
 %%
 
+/* --------------------------------------------------------------------- */
+/* Epilogue */
+void init_table(void)
+{
+    /* do nothing */
+}
+
+int yylex (void)
+{
+    /* TODO should be integrated with flex al any lexer else */
+    return 0;
+}
+
+void yyerror(const char *s)
+{
+    /* TODO should be integrated with flex al any lexer else */
+    fprintf(stderr,"%s\n",s);
+}
+
+int process_yy(int argc,char **argv)
+{
+    int i;
+    /* Enable parse traces on option -x.  */
+    for (i = 1; i < argc; ++i)
+        if (strcmp(argv[i],"-x") == 0)
+            yydebug = 1;
+    init_table ();
+    return yyparse();
+}
