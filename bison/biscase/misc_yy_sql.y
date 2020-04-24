@@ -3,7 +3,8 @@
 #define YYDEBUG 1
 }
 
-%union {
+/*TODO how to change to YYSTYPE*/
+%union  {
     int intval;
     double floatval;
     char *strval;

@@ -39,7 +39,6 @@ typedef struct YYLTYPE {
     char *filename;
 } YYLTYPE; 
 
-/**/
 union YYSTYPE {
     double  DNUM;    
     symrec *FUNC_PTR;
