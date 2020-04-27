@@ -1,4 +1,4 @@
-ent]
+[client]
 default-character-set = utf8mb4
 port            = 3306
 socket          = /var/yx/var/data/mysql/mysql.sock
