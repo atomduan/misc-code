@@ -3,12 +3,13 @@
 #define YYDEBUG 1
 }
 
-/*TODO how to change to YYSTYPE*/
-%union  {
+%code requires {
+union YYSTYPE {
     int intval;
     double floatval;
     char *strval;
     int subtok;
+};
 }
 
 %code {
@@ -19,6 +20,7 @@ void yyerror(char const *);
 
 /* Declarations Section */
 %defines "misc_yy_gen.h"
+%define api.value.type {union YYSTYPE}
     
 %token NAME
 %token STRING
