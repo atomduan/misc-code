@@ -15,6 +15,7 @@ void init_table();
 %defines "misc_yy_gen.h"
 
 %define api.value.type union
+/* use %union or YYSTYPE can set type alias to target type */
 %token  <double>        NUM
 %token  <symrec*>       VAR FNCT
 %type   <double>        exp
@@ -27,6 +28,10 @@ void init_table();
 %right '^'        /* exponentiation */
 
 %expect 5   /* Means we expect 5 s-r conflicts */
+
+%destructor { printf("dsctructor double, do nothing.\n"); } <double>
+%destructor { printf("Discarding tagless symbol.\n"); } <>
+%destructor { free($$); } <*>
 
 /* Grammar rules begin */
 %%
