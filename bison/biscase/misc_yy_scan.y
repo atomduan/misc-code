@@ -64,6 +64,7 @@ void init_table();
 /* Declarations Section */
 %defines "misc_yy_gen.h"
 %define api.value.type {union YYSTYPE}
+%define parse.trace
 
 %token  <DNUM>        NUM
 %token  <FUNC_PTR>    VAR FNCT
@@ -75,9 +76,14 @@ void init_table();
 %right '^'
 %expect 5
 
-%destructor { printf("DNUM dsctructor, do nothing.\n"); } <DNUM>
+%destructor { printf("DNUM dsctructor, do nothing\n"); } <DNUM>
+%destructor { printf("FUNC_PTR dsctructor\n"); free($$); } <FUNC_PTR>
 %destructor { free($$); } <*>
 %destructor { printf("Discarding tagless symbol.\n"); } <>
+
+%printer { printf("FUNC_PTR, name:%s\n", $$->name); } <FUNC_PTR>
+%printer { /*do nothing*/ } <*>
+%printer { /*do nothing*/ } <>
 
 %glr-parser
 
