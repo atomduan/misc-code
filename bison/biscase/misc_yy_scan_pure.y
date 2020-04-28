@@ -1,4 +1,5 @@
 /* --------------------------------------------------------------------- */
+/* TODO coredump now! */
 %code top {
 #include <misc_parser.h>
 #define YYDEBUG 1
@@ -54,8 +55,8 @@ void trace_token(enum yytokentype token, YYLTYPE loc);
 /* --------------------------------------------------------------------- */
 %code {
 void print_token(FILE *file, int token, YYSTYPE val);
-int yylex(void);
-void yyerror(char const *msg);
+int yylex(YYSTYPE *yylval, YYLTYPE *yylloc);
+void yyerror(YYLTYPE *locp, char const *msg);
 void init_table();
 }
 
@@ -64,7 +65,7 @@ void init_table();
 /* Declarations Section */
 %defines "misc_yy_gen.h"
 %define api.value.type {union YYSTYPE}
-%define api.pure false
+%define api.pure true
 
 %token  <DNUM>        NUM
 %token  <FUNC_PTR>    VAR FNCT
@@ -108,7 +109,7 @@ exp:
                                             $$ = $[var]->value.var; 
                                         } else {
                                             printf("use uninit VAR name %s\n", $[var]->name);
-                                            yyerror("use uninit VAR error\n");
+                                            yyerror(yylocp,"use uninit VAR error\n");
                                         }
                                     }
 |   VAR[var] '=' exp                { 
@@ -128,7 +129,7 @@ exp:
                                             fprintf(stderr,"(%d,%d)-(%d,%d): division bu zero\n",
                                                     @[right].first_line,@[right].first_column,
                                                     @[right].last_line,@[right].last_column);
-                                            yyerror("zero error\n");
+                                            yyerror(yylocp,"zero error\n");
                                         }
                                     }
 |   '-' exp %prec NEG               { $$ = -$2; }
@@ -199,8 +200,9 @@ void print_token(FILE *file, int token, YYSTYPE val)
  * whose definition is the appropriate number. 
  * In this example, therefore, NUM becomes a macro for yylex to use.
  */
-int yylex(void)
+int yylex(YYSTYPE *yylval, YYLTYPE *yylloc)
 {
+    USE(yylloc);
     int c;
     /* Ignore white space, get first nonwhite character. */
     while ((c=getchar())==' ' || c=='\t')
@@ -209,7 +211,7 @@ int yylex(void)
     /* Char starts a number => parse the number. */
     if (c == '.' || isdigit(c)) {
         ungetc(c, stdin);
-        scanf("%lf", &yylval.DNUM);
+        scanf("%lf", &yylval->DNUM);
         return NUM;
     }
     /* Char starts an identifier => read the name. */
@@ -248,8 +250,9 @@ int yylex(void)
     return c;
 }
 
-void yyerror(char const *msg)
+void yyerror(YYLTYPE *locp, char const *msg)
 {
+    USE(locp);
     fprintf(stderr,"%s\n",msg);
 }
 
