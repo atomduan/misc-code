@@ -93,35 +93,35 @@ line:
 exp:
     NUM                             { $$ = $1; }
 |   VAR[var]                        { 
-                                        if ($var->has_init == 1) {
-                                            $$ = $var->value.var; 
+                                        if ($[var]->has_init == 1) {
+                                            $$ = $[var]->value.var; 
                                         } else {
-                                            printf("use uninit VAR name %s\n", $var->name);
+                                            printf("use uninit VAR name %s\n", $[var]->name);
                                             yyerror("use uninit VAR error\n");
                                         }
                                     }
 |   VAR[var] '=' exp                { 
                                         $$ = $3; 
-                                        $var->value.var = $3;
-                                        $var->has_init = 1;
+                                        $[var]->value.var = $3;
+                                        $[var]->has_init = 1;
                                     }
-|   FNCT[func] '(' exp ')'          { $$ = (*($func->value.fnctptr))($3); }
-|   exp[left] '+' exp[right]        { $$ = $left + $right; }
-|   exp[left] '-' exp[right]        { $$ = $left - $right; }
-|   exp[left] '*' exp[right]        { $$ = $left * $right; }
+|   FNCT[func] '(' exp ')'          { $$ = (*($[func]->value.fnctptr))($3); }
+|   exp[left] '+' exp[right]        { $$ = $[left] + $[right]; }
+|   exp[left] '-' exp[right]        { $$ = $[left] - $[right]; }
+|   exp[left] '*' exp[right]        { $$ = $[left] * $[right]; }
 |   exp[left] '/' exp[right]        { 
-                                        if ($right != 0) {
-                                            $$ = $left / $right;
+                                        if ($[right] != 0) {
+                                            $$ = $[left] / $[right];
                                         } else {
                                             $$ = 1;
                                             fprintf(stderr,"(%d,%d)-(%d,%d): division bu zero\n",
-                                                    @right.first_line,@right.first_column,
-                                                    @right.last_line,@right.last_column);
+                                                    @[right].first_line,@[right].first_column,
+                                                    @[right].last_line,@[right].last_column);
                                             yyerror("zero error\n");
                                         }
                                     }
 |   '-' exp %prec NEG               { $$ = -$2; }
-|   exp[base] '^' exp[factor]       { $$ =  pow($base,$factor); }
+|   exp[base] '^' exp[factor]       { $$ =  pow($[base],$[factor]); }
 |   '(' exp ')'                     { $$ =  $2; }
 ;
 %%
