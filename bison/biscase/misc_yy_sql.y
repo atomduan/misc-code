@@ -49,6 +49,11 @@ void yyerror(char const *);
 %token UNIQUE UPDATE USER VALUES VIEW WHENEVER WHERE WITH WORK
 %token COBOL FORTRAN PASCAL PLI C ADA
 
+%destructor { printf("destructor intval, do nothing.\n"); } <intval>
+%destructor { printf("destructor floatval, do nothing.\n"); } <floatval>
+%destructor { printf("destructor subtok, do nothing.\n"); } <subtok>
+%destructor { printf("Discarding tagless symbol.\n"); } <>
+%destructor { free($$); } <*>
 %%
 sql_list:
         sql ';'

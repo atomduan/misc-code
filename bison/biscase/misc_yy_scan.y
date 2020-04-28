@@ -2,6 +2,7 @@
 %code top {
 #include <misc_parser.h>
 #define YYDEBUG 1
+#define USE(VALUE) /*empty*/
 
 /* Function type.  */
 typedef double (*func_t)(double);
@@ -73,6 +74,10 @@ void init_table();
 %precedence NEG
 %right '^'
 %expect 5
+
+%destructor { printf("DNUM dsctructor, do nothing.\n"); } <DNUM>
+%destructor { free($$); } <*>
+%destructor { printf("Discarding tagless symbol.\n"); } <>
 
 %glr-parser
 
