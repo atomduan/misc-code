@@ -55,7 +55,7 @@ void trace_token(enum yytokentype token, YYLTYPE loc);
 %code {
 void print_token(FILE *file, int token, YYSTYPE val);
 int yylex(void);
-void yyerror(char const *msg);
+void yyerror(int argc, char **argv, char const *msg);
 void init_table();
 }
 
@@ -65,6 +65,7 @@ void init_table();
 %defines "misc_yy_gen.h"
 %define api.value.type {union YYSTYPE}
 %define api.pure false
+%parse-param {int argc} {char **argv}
 
 %token  <DNUM>        NUM
 %token  <FUNC_PTR>    VAR FNCT
@@ -108,7 +109,7 @@ exp:
                                             $$ = $[var]->value.var; 
                                         } else {
                                             printf("use uninit VAR name %s\n", $[var]->name);
-                                            yyerror("use uninit VAR error\n");
+                                            yyerror(argc,argv,"use uninit VAR error\n");
                                         }
                                     }
 |   VAR[var] '=' exp                { 
@@ -128,7 +129,7 @@ exp:
                                             fprintf(stderr,"(%d,%d)-(%d,%d): division bu zero\n",
                                                     @[right].first_line,@[right].first_column,
                                                     @[right].last_line,@[right].last_column);
-                                            yyerror("zero error\n");
+                                            yyerror(argc,argv,"zero error\n");
                                         }
                                     }
 |   '-' exp %prec NEG               { $$ = -$2; }
@@ -248,8 +249,10 @@ int yylex(void)
     return c;
 }
 
-void yyerror(char const *msg)
+void yyerror(int argc, char **argv, char const *msg)
 {
+    USE(argc);
+    USE(argv);
     fprintf(stderr,"%s\n",msg);
 }
 
@@ -270,5 +273,5 @@ int process_yy(int argc,char **argv)
         if (strcmp(argv[i],"-x") == 0)
             yydebug = 1;
     init_table ();
-    return yyparse();
+    return yyparse(argc,argv);
 }
