@@ -26,7 +26,8 @@ set ruler
 let mapleader=","
 
 "hi Search term=reverse ctermfg=Black guifg=Yellow
-hi StatusLine ctermbg=4 ctermfg=1
+"hi StatusLine ctermbg=4 ctermfg=1
+hi StatusLine term=reverse ctermbg=0 ctermfg=64
 
 nnoremap <F4> :NERDTree<cr>
 nnoremap <leader>b :Bookmark<cr>
