@@ -84,6 +84,7 @@ void init_table();
 %defines "misc_yy_gen.h"
 %define api.value.type {union YYSTYPE}
 %define api.pure false
+%define parse.error verbose
 %parse-param {int argc} {char **argv}
 
 %token  <DNUM>        NUM

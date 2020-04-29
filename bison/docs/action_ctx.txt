@@ -1,0 +1,111 @@
+--------------
+$$                              [Variable]
+Acts like a variable that contains the semantic value for the grouping made by 
+the current rule. See Section 3.4.6 [Actions], page 60.
+
+--------------
+$n                              [Variable] 
+Acts like a variable that contains the semantic value for the nth component of 
+the current rule. See Section 3.4.6 [Actions], page 60.
+
+--------------
+$<typealt>$                     [Variable] 
+Like $$ but specifies alternative typealt in the union 
+specified by the %union decla- ration. See Section 3.4.7 [Data Types of Values 
+in Actions], page 61.
+
+--------------
+$<typealt>n                     [Variable] 
+Like $n but specifies alternative typealt in the union 
+specified by the %union decla- ration. See Section 3.4.7 [Data Types of Values 
+in Actions], page 61.
+
+--------------
+YYABORT ;                       [Macro] 
+Return immediately from yyparse, indicating failure. See 
+Section 4.1 [The Parser Function yyparse], page 96.
+
+--------------
+YYACCEPT ;                      [Macro] 
+Return immediately from yyparse, indicating success. See 
+Section 4.1 [The Parser Function yyparse], page 96.
+
+--------------
+YYBACKUP (token, value);        [Macro] 
+Unshift a token. This macro is allowed only 
+for rules that reduce a single value, and only when there is no lookahead 
+token. It is also disallowed in GLR parsers. It installs a lookahead token with 
+token type token and semantic value value; then it discards the value that was 
+going to be reduced by this rule.  If the macro is used when it is not valid, 
+such as when there is a lookahead token already, then it reports a syntax error 
+with a message ‘cannot back up’ and performs ordinary error recovery.  In 
+either case, the rest of the action is not executed.
+
+--------------
+YYEMPTY                         [Macro]
+Value stored in yychar when there is no lookahead token.
+
+--------------
+YYEOF                           [Macro]
+Value stored in yychar when the lookahead is the end of the input stream.
+
+--------------
+YYERROR                         [Macro]
+Cause an immediate syntax error. This statement initiates error recovery just 
+as if the parser itself had detected an error; however, it does not call 
+yyerror, and does not print any message. If you want to print an error message, 
+call yyerror explicitly before the ‘YYERROR;’ statement. See Chapter 6 [Error 
+Recovery], page 125.
+
+--------------
+YYRECOVERING                    [Macro] 
+The expression YYRECOVERING () yields 1 when the parser is 
+recovering from a syntax error, and 0 otherwise. See Chapter 6 [Error 
+Recovery], page 125.
+
+--------------
+yychar                          [Variable] 
+Variable containing either the lookahead token, or YYEOF when 
+the lookahead is the end of the input stream, or YYEMPTY when no lookahead has 
+been performed so the next token is not yet known. Do not modify yychar in a 
+deferred semantic action (see Section 1.5.3 [GLR Semantic Actions], page 22). 
+See Section 5.1 [Lookahead Tokens], page 106.
+
+--------------
+yyclearin ;                     [Macro] 
+Discard the current lookahead token. This is useful 
+primarily in error rules. Do not invoke yyclearin in a deferred semantic action 
+(see Section 1.5.3 [GLR Semantic Actions], page 22). See Chapter 6 [Error 
+Recovery], page 125.
+
+--------------
+yyerrok ;                       [Macro] 
+Resume generating error messages immediately for subsequent 
+syntax errors. This is useful primarily in error rules. See Chapter 6 [Error 
+Recovery], page 125.
+
+--------------
+yylloc                          [Variable] 
+Variable containing the lookahead token location when yychar 
+is not set to YYEMPTY or YYEOF. Do not modify yylloc in a deferred semantic 
+action (see Section 1.5.3 [GLR Semantic Actions], page 22). See Section 3.5.2 
+[Actions and Locations], page 67.
+
+--------------
+yylval                          [Variable] 
+Variable containing the lookahead token semantic value when 
+yychar is not set to YYEMPTY or YYEOF. Do not modify yylval in a deferred 
+semantic action (see Section 1.5.3 [GLR Semantic Actions], page 22). See 
+Section 3.4.6 [Actions], page 60.
+
+--------------
+@$                              [Value] 
+Acts like a structure variable containing information on the textual 
+location of the grouping made by the current rule. See Section 3.5 [Tracking 
+Locations], page 67.
+
+--------------
+@n                              [Value] 
+Acts like a structure variable containing information on the textual 
+location of the nth component of the current rule. See Section 3.5 [Tracking 
+Locations], page 67.
