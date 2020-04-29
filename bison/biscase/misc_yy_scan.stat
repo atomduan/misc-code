@@ -1,0 +1,445 @@
+State 23 conflicts: 5 shift/reduce
+
+
+Grammar
+
+    0 $accept: input $end
+
+    1 input: %empty
+    2      | input line
+
+    3 line: '\n'
+    4     | exp '\n'
+    5     | error '\n'
+
+    6 exp: NUM
+    7    | VAR
+    8    | VAR '=' exp
+    9    | FNCT '(' exp ')'
+   10    | exp '+' exp
+   11    | exp '-' exp
+   12    | exp '*' exp
+   13    | exp '/' exp
+   14    | '-' exp
+   15    | exp '^' exp
+   16    | '(' exp ')'
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '\n' (10) 3 4 5
+    '(' (40) 9 16
+    ')' (41) 9 16
+    '*' (42) 12
+    '+' (43) 10
+    '-' (45) 11 14
+    '/' (47) 13
+    '=' (61) 8
+    '^' (94) 15
+    error (256) 5
+    NUM <DNUM> (258) 6
+    VAR <FUNC_PTR> (259) 7 8
+    FNCT <FUNC_PTR> (260) 9
+    NEG (261)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (16)
+        on left: 0
+    exp <DNUM> (17)
+        on left: 6 7 8 9 10 11 12 13 14 15 16
+        on right: 4 8 9 10 11 12 13 14 15 16
+    input (18)
+        on left: 1 2
+        on right: 0 2
+    line (19)
+        on left: 3 4 5
+        on right: 2
+
+
+State 0
+
+    0 $accept: . input $end
+
+    $default  reduce using rule 1 (input)
+
+    input  go to state 1
+
+
+State 1
+
+    0 $accept: input . $end
+    2 input: input . line
+
+    $end   shift, and go to state 2
+    error  shift, and go to state 3
+    NUM    shift, and go to state 4
+    VAR    shift, and go to state 5
+    FNCT   shift, and go to state 6
+    '-'    shift, and go to state 7
+    '\n'   shift, and go to state 8
+    '('    shift, and go to state 9
+
+    exp   go to state 10
+    line  go to state 11
+
+
+State 2
+
+    0 $accept: input $end .
+
+    $default  accept
+
+
+State 3
+
+    5 line: error . '\n'
+
+    '\n'  shift, and go to state 12
+
+
+State 4
+
+    6 exp: NUM .
+
+    $default  reduce using rule 6 (exp)
+
+
+State 5
+
+    7 exp: VAR .
+    8    | VAR . '=' exp
+
+    '='  shift, and go to state 13
+
+    $default  reduce using rule 7 (exp)
+
+
+State 6
+
+    9 exp: FNCT . '(' exp ')'
+
+    '('  shift, and go to state 14
+
+
+State 7
+
+   14 exp: '-' . exp
+
+    NUM   shift, and go to state 4
+    VAR   shift, and go to state 5
+    FNCT  shift, and go to state 6
+    '-'   shift, and go to state 7
+    '('   shift, and go to state 9
+
+    exp  go to state 15
+
+
+State 8
+
+    3 line: '\n' .
+
+    $default  reduce using rule 3 (line)
+
+
+State 9
+
+   16 exp: '(' . exp ')'
+
+    NUM   shift, and go to state 4
+    VAR   shift, and go to state 5
+    FNCT  shift, and go to state 6
+    '-'   shift, and go to state 7
+    '('   shift, and go to state 9
+
+    exp  go to state 16
+
+
+State 10
+
+    4 line: exp . '\n'
+   10 exp: exp . '+' exp
+   11    | exp . '-' exp
+   12    | exp . '*' exp
+   13    | exp . '/' exp
+   15    | exp . '^' exp
+
+    '-'   shift, and go to state 17
+    '+'   shift, and go to state 18
+    '*'   shift, and go to state 19
+    '/'   shift, and go to state 20
+    '^'   shift, and go to state 21
+    '\n'  shift, and go to state 22
+
+
+State 11
+
+    2 input: input line .
+
+    $default  reduce using rule 2 (input)
+
+
+State 12
+
+    5 line: error '\n' .
+
+    $default  reduce using rule 5 (line)
+
+
+State 13
+
+    8 exp: VAR '=' . exp
+
+    NUM   shift, and go to state 4
+    VAR   shift, and go to state 5
+    FNCT  shift, and go to state 6
+    '-'   shift, and go to state 7
+    '('   shift, and go to state 9
+
+    exp  go to state 23
+
+
+State 14
+
+    9 exp: FNCT '(' . exp ')'
+
+    NUM   shift, and go to state 4
+    VAR   shift, and go to state 5
+    FNCT  shift, and go to state 6
+    '-'   shift, and go to state 7
+    '('   shift, and go to state 9
+
+    exp  go to state 24
+
+
+State 15
+
+   10 exp: exp . '+' exp
+   11    | exp . '-' exp
+   12    | exp . '*' exp
+   13    | exp . '/' exp
+   14    | '-' exp .
+   15    | exp . '^' exp
+
+    '^'  shift, and go to state 21
+
+    $default  reduce using rule 14 (exp)
+
+
+State 16
+
+   10 exp: exp . '+' exp
+   11    | exp . '-' exp
+   12    | exp . '*' exp
+   13    | exp . '/' exp
+   15    | exp . '^' exp
+   16    | '(' exp . ')'
+
+    '-'  shift, and go to state 17
+    '+'  shift, and go to state 18
+    '*'  shift, and go to state 19
+    '/'  shift, and go to state 20
+    '^'  shift, and go to state 21
+    ')'  shift, and go to state 25
+
+
+State 17
+
+   11 exp: exp '-' . exp
+
+    NUM   shift, and go to state 4
+    VAR   shift, and go to state 5
+    FNCT  shift, and go to state 6
+    '-'   shift, and go to state 7
+    '('   shift, and go to state 9
+
+    exp  go to state 26
+
+
+State 18
+
+   10 exp: exp '+' . exp
+
+    NUM   shift, and go to state 4
+    VAR   shift, and go to state 5
+    FNCT  shift, and go to state 6
+    '-'   shift, and go to state 7
+    '('   shift, and go to state 9
+
+    exp  go to state 27
+
+
+State 19
+
+   12 exp: exp '*' . exp
+
+    NUM   shift, and go to state 4
+    VAR   shift, and go to state 5
+    FNCT  shift, and go to state 6
+    '-'   shift, and go to state 7
+    '('   shift, and go to state 9
+
+    exp  go to state 28
+
+
+State 20
+
+   13 exp: exp '/' . exp
+
+    NUM   shift, and go to state 4
+    VAR   shift, and go to state 5
+    FNCT  shift, and go to state 6
+    '-'   shift, and go to state 7
+    '('   shift, and go to state 9
+
+    exp  go to state 29
+
+
+State 21
+
+   15 exp: exp '^' . exp
+
+    NUM   shift, and go to state 4
+    VAR   shift, and go to state 5
+    FNCT  shift, and go to state 6
+    '-'   shift, and go to state 7
+    '('   shift, and go to state 9
+
+    exp  go to state 30
+
+
+State 22
+
+    4 line: exp '\n' .
+
+    $default  reduce using rule 4 (line)
+
+
+State 23
+
+    8 exp: VAR '=' exp .
+   10    | exp . '+' exp
+   11    | exp . '-' exp
+   12    | exp . '*' exp
+   13    | exp . '/' exp
+   15    | exp . '^' exp
+
+    '-'  shift, and go to state 17
+    '+'  shift, and go to state 18
+    '*'  shift, and go to state 19
+    '/'  shift, and go to state 20
+    '^'  shift, and go to state 21
+
+    '-'       [reduce using rule 8 (exp)]
+    '+'       [reduce using rule 8 (exp)]
+    '*'       [reduce using rule 8 (exp)]
+    '/'       [reduce using rule 8 (exp)]
+    '^'       [reduce using rule 8 (exp)]
+    $default  reduce using rule 8 (exp)
+
+
+State 24
+
+    9 exp: FNCT '(' exp . ')'
+   10    | exp . '+' exp
+   11    | exp . '-' exp
+   12    | exp . '*' exp
+   13    | exp . '/' exp
+   15    | exp . '^' exp
+
+    '-'  shift, and go to state 17
+    '+'  shift, and go to state 18
+    '*'  shift, and go to state 19
+    '/'  shift, and go to state 20
+    '^'  shift, and go to state 21
+    ')'  shift, and go to state 31
+
+
+State 25
+
+   16 exp: '(' exp ')' .
+
+    $default  reduce using rule 16 (exp)
+
+
+State 26
+
+   10 exp: exp . '+' exp
+   11    | exp . '-' exp
+   11    | exp '-' exp .
+   12    | exp . '*' exp
+   13    | exp . '/' exp
+   15    | exp . '^' exp
+
+    '*'  shift, and go to state 19
+    '/'  shift, and go to state 20
+    '^'  shift, and go to state 21
+
+    $default  reduce using rule 11 (exp)
+
+
+State 27
+
+   10 exp: exp . '+' exp
+   10    | exp '+' exp .
+   11    | exp . '-' exp
+   12    | exp . '*' exp
+   13    | exp . '/' exp
+   15    | exp . '^' exp
+
+    '*'  shift, and go to state 19
+    '/'  shift, and go to state 20
+    '^'  shift, and go to state 21
+
+    $default  reduce using rule 10 (exp)
+
+
+State 28
+
+   10 exp: exp . '+' exp
+   11    | exp . '-' exp
+   12    | exp . '*' exp
+   12    | exp '*' exp .
+   13    | exp . '/' exp
+   15    | exp . '^' exp
+
+    '^'  shift, and go to state 21
+
+    $default  reduce using rule 12 (exp)
+
+
+State 29
+
+   10 exp: exp . '+' exp
+   11    | exp . '-' exp
+   12    | exp . '*' exp
+   13    | exp . '/' exp
+   13    | exp '/' exp .
+   15    | exp . '^' exp
+
+    '^'  shift, and go to state 21
+
+    $default  reduce using rule 13 (exp)
+
+
+State 30
+
+   10 exp: exp . '+' exp
+   11    | exp . '-' exp
+   12    | exp . '*' exp
+   13    | exp . '/' exp
+   15    | exp . '^' exp
+   15    | exp '^' exp .
+
+    '^'  shift, and go to state 21
+
+    $default  reduce using rule 15 (exp)
+
+
+State 31
+
+    9 exp: FNCT '(' exp ')' .
+
+    $default  reduce using rule 9 (exp)
