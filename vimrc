@@ -19,12 +19,14 @@ set nu
 set nowrap
 set scrolloff=6
 set incsearch
+set ruler
 "set foldmethod=syntax
 "set cursorline
 
 let mapleader=","
 
-highlight Search term=reverse ctermfg=Black guifg=Yellow
+"hi Search term=reverse ctermfg=Black guifg=Yellow
+hi StatusLine ctermbg=4 ctermfg=1
 
 nnoremap <F4> :NERDTree<cr>
 nnoremap <leader>b :Bookmark<cr>
