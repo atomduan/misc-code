@@ -136,3 +136,5 @@ nnoremap <leader>fe :vert scs find e <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fi :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nnoremap <leader>fd :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fa :vert scs find a <C-R>=expand("<cword>")<CR><CR>
+
+au BufRead,BufNewFile todo set filetype=todo
