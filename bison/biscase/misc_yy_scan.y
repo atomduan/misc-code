@@ -1,12 +1,20 @@
 /* --------------------------------------------------------------------- */
 %code top {
 #include <misc_parser.h>
+}
+
+/* --------------------------------------------------------------------- */
+/** 
+ * writing dependency code for YYSTYPE and YYLTYPE, 
+ * should prefer %code requires over %code top
+ * if some file depend on misc_yy_gen.h, then all staff should define in %code requires
+ */
+%code requires {
 #define YYDEBUG 1
 #define USE(VALUE) /*empty*/
 
 /* Function type.  */
 typedef double (*func_t)(double);
-
 /* Data type for links in the chain of symbols.  */
 typedef struct symrec_s symrec;
 struct symrec_s {
@@ -20,17 +28,6 @@ struct symrec_s {
     symrec *next;  /* link field */
 };
 
-/* The symbol table: a chain of 'struct symrec'.  */
-symrec *putsym(char const *, int);
-symrec *getsym(char const *);
-}
-
-/* --------------------------------------------------------------------- */
-/** 
- * writing dependency code for YYSTYPE and YYLTYPE, 
- * should prefer %code requires over %code top
- */
-%code requires {
 #define YYLTYPE YYLTYPE
 typedef struct YYLTYPE {
     int first_line; 
@@ -44,6 +41,28 @@ union YYSTYPE {
     double  DNUM;    
     symrec *FUNC_PTR;
 };
+
+symrec *sym_table;
+typedef struct init_fnct_s init_fnct;
+struct init_fnct_s {
+    char const *fname;
+    double (*fnct) (double);
+};
+
+static const init_fnct arith_fncts[] =
+{
+    { "atan", atan },
+    { "cos",  cos  },
+    { "exp",  exp  },
+    { "ln",   log  },
+    { "sin",  sin  },
+    { "sqrt", sqrt },
+    { 0, 0 },
+};
+
+/* The symbol table: a chain of 'struct symrec'.  */
+symrec *putsym(char const *, int);
+symrec *getsym(char const *);
 }
 
 /* --------------------------------------------------------------------- */
@@ -140,25 +159,6 @@ exp:
 
 /* --------------------------------------------------------------------- */
 /* Epilogue Begin */
-symrec *sym_table;
-
-typedef struct init_fnct_s init_fnct;
-struct init_fnct_s {
-    char const *fname;
-    double (*fnct) (double);
-};
-
-static const init_fnct arith_fncts[] =
-{
-    { "atan", atan },
-    { "cos",  cos  },
-    { "exp",  exp  },
-    { "ln",   log  },
-    { "sin",  sin  },
-    { "sqrt", sqrt },
-    { 0, 0 },
-};
-
 symrec * putsym(const char *sym_name, int sym_type)
 {
     symrec *ptr = (symrec*) malloc(sizeof(symrec));
@@ -187,66 +187,6 @@ symrec * getsym(const char *sym_name)
 void print_token(FILE *file, int token, YYSTYPE val)
 {
     //do nothing...
-}
-
-/**
- * The lexical analyzer’s job is low-level parsing: converting characters or sequences of char- acters into tokens.
- * This works in two ways. 
- * If the token type is a character literal, 
- * then its numeric code is that of the character; 
- * you can use the same character literal in the lexical analyzer to express the number. 
- * If the token type is an identifier, 
- * that identifier is defined by Bison as a C macro 
- * whose definition is the appropriate number. 
- * In this example, therefore, NUM becomes a macro for yylex to use.
- */
-int yylex(void)
-{
-    int c;
-    /* Ignore white space, get first nonwhite character. */
-    while ((c=getchar())==' ' || c=='\t')
-        continue;
-    if (c == EOF) return 0;
-    /* Char starts a number => parse the number. */
-    if (c == '.' || isdigit(c)) {
-        ungetc(c, stdin);
-        scanf("%lf", &yylval.DNUM);
-        return NUM;
-    }
-    /* Char starts an identifier => read the name. */
-    if (isalpha(c)) {
-        /* Initially make the buffer long enough
-         for a 40-character symbol name. */
-        static size_t length = 40;
-        static char *symbuf = 0;
-        symrec *s;
-        size_t i;
-        if (!symbuf)
-            symbuf = (char*)malloc(length+1);
-        i = 0;
-        do {
-            /* If buffer is full, make it bigger. */
-            if (i == length) {
-                length *= 2;
-                symbuf = (char*)realloc(symbuf,length+1);
-            }
-            /* Add this character to the buffer. */
-            symbuf[i++] = c;
-            /* Get another character. */
-            c = getchar();
-        } while (isalnum(c));
-
-        ungetc(c,stdin);
-        symbuf[i] = '\0';
-
-        s = getsym(symbuf);
-        /* If s is not NULL, it is inited to a FNCT already in init_table() */
-        if (s == 0) s = putsym(symbuf,VAR);
-        *((symrec**) &yylval) = s;
-        return s->type;
-    }
-    /* Any other character is a token by itself. */
-    return c;
 }
 
 void yyerror(int argc, char **argv, char const *msg)

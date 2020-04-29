@@ -57,6 +57,11 @@ cat <<END >> Makefile
     ${yy_name}.o \\
 END
 fi
+if [ -f "${yy_name}_lex.c" ]; then
+cat <<END >> Makefile
+    ${yy_name}_lex.o \\
+END
+fi
 cat <<END >> Makefile
 	misc_parser.o
 	\$(LINK) -o misc_parser.bin ${yy_name}.tab.o \\
@@ -65,6 +70,11 @@ END
 if [ -f "${yy_name}.c" ]; then
 cat <<END >> Makefile
 	${yy_name}.o \\
+END
+fi
+if [ -f "${yy_name}_lex.c" ]; then
+cat <<END >> Makefile
+	${yy_name}_lex.o \\
 END
 fi
 cat <<END >> Makefile
@@ -83,6 +93,13 @@ cat <<END >> Makefile
 
 ${yy_name}.o:	\$(BUILD_DEPS)
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}.o ${yy_name}.c
+END
+fi
+if [ -f "${yy_name}_lex.c" ]; then
+cat <<END >> Makefile
+
+${yy_name}_lex.o:	\$(BUILD_DEPS)
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}_lex.o ${yy_name}_lex.c
 END
 fi
 cat <<END >> Makefile
