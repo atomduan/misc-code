@@ -14,7 +14,7 @@ syn             match           todoKeyWord         "\c^[ ]*\(info:\|sub:\|branc
 syn             match           todoTitle           "\(COMPLETED TASK:\|CURRENT TASK:\|BACK_LOG TASKS:\|INFO ENTRY:\)"
 syn             match           todoWeek            "\c^\(week:\)"
 syn             match           todoTaskInfo        "\c^[ ]*\(product:\|staging:\|[^ ]\+user:\|[^ ]\+password:\|user:\|password:\|database:\|table:\|sql:\)"
-syn             match           todoTaskTitle       "^\*).*$" 
+syn             match           todoTaskTitle       "^\*)[ ]*[^ ]*" 
 syn             match           todoTaskTODO        "\c\(-->\)\(TODO\)"
 syn             match           todoTaskDelimit     "^[ ]*-\+[ ]*$"
 syn             match           todoTaskDone        "\c\(-->\)\(DONE\)"
