@@ -15,15 +15,17 @@ syn             match           todoTitle           "\(COMPLETED TASK:\|CURRENT 
 syn             match           todoWeek            "\c^\(week:\)"
 syn             match           todoTaskInfo        "\c^[ ]*\(product:\|staging:\|[^ ]\+user:\|[^ ]\+password:\|user:\|password:\|database:\|table:\|sql:\)"
 syn             match           todoTaskTitle       "^\*).*$" 
-syn             match           todoTaskState       "\c\(-->\)\(TODO\|PENDING\|SCHEDULE\|INVALID\)"
+syn             match           todoTaskTODO        "\c\(-->\)\(TODO\)"
 syn             match           todoTaskDelimit     "^[ ]*-\+[ ]*$"
 syn             match           todoTaskDone        "\c\(-->\)\(DONE\)"
+syn             match           todoTaskDing        "\c\(-->\)\(DOING\|PENDING\|SCHEDULE\|INVALID\)"
 
 hi def link todoKeyWord         Special 
 hi def link todoTitle           Comment 
 hi def link todoWeek            String 
 hi def link todoTaskInfo        Function
 hi def link todoTaskTitle       Comment
-hi def link todoTaskState       String 
+hi def link todoTaskTODO        Function 
 hi def link todoTaskDelimit     Delimiter 
 hi def link todoTaskDone        Type 
+hi def link todoTaskDing        String 
