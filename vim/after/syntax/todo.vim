@@ -18,7 +18,9 @@ syn             match           todoTaskTitle       "^\*)[ ]*[^ ]*"
 syn             match           todoTaskTODO        "\c\(-->\)\(TODO\)"
 syn             match           todoTaskDelimit     "^[ ]*-\+[ ]*$"
 syn             match           todoTaskDone        "\c\(-->\)\(DONE\)"
-syn             match           todoTaskDing        "\c\(-->\)\(DOING\|PENDING\|SCHEDULE\|INVALID\)"
+syn             match           todoTaskInvalid     "\c\(-->\)\(INVALID\)"
+syn             match           todoTaskDing        "\c\(-->\)\(PENDING\|SCHEDULE\)"
+syn             match           todoTaskDOING       "\c\(-->\)\(DOING\)"
 
 hi def link todoKeyWord         Special 
 hi def link todoTitle           Comment 
@@ -28,4 +30,6 @@ hi def link todoTaskTitle       Comment
 hi def link todoTaskTODO        Function 
 hi def link todoTaskDelimit     Delimiter 
 hi def link todoTaskDone        Type 
+hi def link todoTaskInvalid     Special 
 hi def link todoTaskDing        String 
+hi def link todoTaskDOING       Todo 
