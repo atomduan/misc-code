@@ -1,6 +1,5 @@
 /* Infix notation calculator.  */
 %{
-#include <linux_config.h>
 #include <misc_parser.h>
 
 int yylex(void);
@@ -20,6 +19,7 @@ void yyerror(char const *);
 %precedence NEG   /* negation--unary minus, also has a precedence, Context-Dependent Precedence */
 %right '^'        /* exponentiation */
 
+%glr-parser
 /* Grammar rules begin */
 %%
 input:
@@ -62,6 +62,19 @@ exp:
 %%
 
 /* Epilogue Begin */
+/**
+ * The lexical analyzer’s job is low-level parsing: converting characters or sequences of char- acters into tokens.
+ */
+/**
+ * This works in two ways. 
+ * If the token type is a character literal, 
+ * then its numeric code is that of the character; 
+ * you can use the same character literal in the lexical analyzer to express the number. 
+ * If the token type is an identifier, 
+ * that identifier is defined by Bison as a C macro 
+ * whose definition is the appropriate number. 
+ * In this example, therefore, NUM becomes a macro for yylex to use.
+ */
 int
 yylex (void)
 {

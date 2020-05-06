@@ -1,7 +1,6 @@
 /* Reverse Polish Notation calculator. */
 %{
 /* Prologue begin */
-#include <linux_config.h>
 #include <misc_parser.h>
 
 int yylex(void);

@@ -1,6 +1,5 @@
 /* Infix notation calculator.  */
 /* code will be order to top --> requires --> provide --> norm*/
-
 %code  {
 #code norm 1
 }

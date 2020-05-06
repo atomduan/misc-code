@@ -19,22 +19,27 @@ set nu
 set nowrap
 set scrolloff=6
 set incsearch
+set ruler
 "set foldmethod=syntax
 "set cursorline
 
 let mapleader=","
 
-highlight Search term=reverse ctermfg=Black guifg=Yellow
+hi Search term=reverse ctermfg=Black guifg=Yellow
+hi StatusLine term=reverse ctermbg=0 ctermfg=30
 
 nnoremap <F4> :NERDTree<cr>
+nnoremap <leader>b :Bookmark<cr>
 nnoremap <leader>z :nohl<cr>
-nnoremap <leader>x :NERDTreeFind<cr>*
-nnoremap <leader>j 8j
-nnoremap <leader>k 8k
+nnoremap <leader>x :NERDTreeFind<cr>*0n
+nnoremap <leader>j 12j
+nnoremap <leader>k 12k
 
-let NERDTreeWinSize=32
-let NERDTreeIgnore=['\.o$','\.bin$', '\.pyc$', '\.jar$']
+"let NERDTreeShowHidden=1
 
+let NERDTreeWinSize=28
+let NERDTreeIgnore=['\.o$','\.bin$', '\.swp$', '\.pyc$', '\.jar$']
+"let NERDTreeShowBookmarks=1
 
 filetype plugin indent on
 
@@ -52,7 +57,6 @@ Plugin 'python.vim'
 Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
-Plugin 'Syntastic'
 "Plugin 'atom-java.vim'
 
 ""Need more learning
@@ -87,20 +91,7 @@ let g:go_highlight_functions = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 
-
-""Syntastic config begin
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-""Syntastic config end 
-
-
 nnoremap <F3> :ConqueTermVSplit bash<cr>
-
 nnoremap * *N
 
 "auto open nertree
@@ -114,7 +105,7 @@ nnoremap <leader>cy "+yy
 
 "cscope config
 if has("cscope")
-	set csprg=/usr/bin/cscope
+	set csprg=/usr/local/bin/cscope
 	set csto=0
 	set cst
 	set nocsverb
@@ -145,3 +136,5 @@ nnoremap <leader>fe :vert scs find e <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fi :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nnoremap <leader>fd :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fa :vert scs find a <C-R>=expand("<cword>")<CR><CR>
+
+au BufRead,BufNewFile todo set filetype=todo

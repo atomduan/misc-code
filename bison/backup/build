@@ -37,19 +37,19 @@ fi
 rm Makefile
 
 cat <<END > Makefile
-CC=clang 
-CFLAGS=-c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
-LDFLAGS=-L/usr/local/opt/bison/lib
+CC = clang 
+CFLAGS = -c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 
 LINK = \$(CC)
-BISON = /usr/local/opt/bison/bin/bison
 
-BUILD_DEPS = ../includes/misc_config.h misc_parser.h ${yy_header} ${yy_tab_header}
-BUILD_INCS = -I ./ -I ../includes
+BUILD_DEPS = ../includes/linux_config.h misc_parser.h ${yy_header} ${yy_tab_header}
+BUILD_INCS = -I ./ \\
+	-I ../includes
 
 END
 
 cat <<END >> Makefile
+
 misc_parser: ${yy_name}.tab.o \\
 END
 if [ -f "${yy_name}.c" ]; then
@@ -57,13 +57,9 @@ cat <<END >> Makefile
     ${yy_name}.o \\
 END
 fi
-if [ -f "${yy_name}_lex.c" ]; then
-cat <<END >> Makefile
-    ${yy_name}_lex.o \\
-END
-fi
 cat <<END >> Makefile
 	misc_parser.o
+
 	\$(LINK) -o misc_parser.bin ${yy_name}.tab.o \\
 END
 
@@ -72,20 +68,14 @@ cat <<END >> Makefile
 	${yy_name}.o \\
 END
 fi
-if [ -f "${yy_name}_lex.c" ]; then
-cat <<END >> Makefile
-	${yy_name}_lex.o \\
-END
-fi
 cat <<END >> Makefile
 	misc_parser.o \\
-	-ldl -lpthread -lm -Wl \$(LDFLAGS)
+	-ldl -lpthread -lm -Wl,-E
 
 ${yy_name}.tab.c:
-	\$(BISON) -v -Wmidrule-value -Wno-other --debug --report=stat --report-file=stat.report --graph=automaton.dot -d ${yy_name}.y
+	bison -d ${yy_name}.y
 
-${yy_name}.tab.o: \$(BUILD_DEPS)  \\
-    ${yy_name}.tab.c
+${yy_name}.tab.o: ${yy_name}.tab.c
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}.tab.o ${yy_name}.tab.c
 END
 if [ -f "${yy_name}.c" ]; then
@@ -93,13 +83,6 @@ cat <<END >> Makefile
 
 ${yy_name}.o:	\$(BUILD_DEPS)
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}.o ${yy_name}.c
-END
-fi
-if [ -f "${yy_name}_lex.c" ]; then
-cat <<END >> Makefile
-
-${yy_name}_lex.o:	\$(BUILD_DEPS)
-	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}_lex.o ${yy_name}_lex.c
 END
 fi
 cat <<END >> Makefile
@@ -113,15 +96,9 @@ cat <<END >> Makefile
 
 .PHONY:clean
 clean:
-	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h stat.report automaton.dot automaton.svg *.output
+	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h
 END
 
 make clean
-make
 
-if [ -f "automaton.dot" ]; then
-    if [ -f "automaton.svg" ]; then
-        rm automaton.svg
-    fi
-    #dot -T svg automaton.dot > automaton.svg
-fi
+make
