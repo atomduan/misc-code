@@ -14,6 +14,8 @@ package_filter = [];
 #package_filter = ['hadoop'];
 #package_filter = ['antlr'];
 #package_filter = ['unirest-java'];
+#package_filter = ['unirest-java'];
+#package_filter = ['thrift'];
 #package_filter = ['cache-api'];
 
 
