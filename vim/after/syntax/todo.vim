@@ -17,7 +17,7 @@ syn             match           todoTaskInfo        "\c^[ ]*\(product:\|staging:
 syn             match           todoTaskTitle       "^\*)[ ]*[^ ]*" 
 syn             match           todoTaskTODO        "\c\(-->\)\(TODO\)"
 syn             match           todoTaskDelimit     "^[ ]*-\+[ ]*$"
-syn             match           todoTaskDone        "\c\(-->\)\(DONE\)"
+syn             match           todoTaskDone        "\c\(-->\)\(DONE\|FORK\)"
 syn             match           todoTaskInvalid     "\c\(-->\)\(INVALID\)"
 syn             match           todoTaskDing        "\c\(-->\)\(PENDING\|SCHEDULE\)"
 syn             match           todoTaskDOING       "\c\(-->\)\(DOING\)"
