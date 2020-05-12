@@ -92,7 +92,10 @@ void init_table();
 
 %token  <DNUM>        NUM
 %token  <FUNC_PTR>    VAR FNCT
+/*
 %nterm  <DNUM>        exp
+*/
+%type   <DNUM>        exp
 
 %left '-' '+'
 %left '*' '/'
