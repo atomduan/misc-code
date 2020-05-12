@@ -81,10 +81,13 @@ void init_table();
 /* --------------------------------------------------------------------- */
 
 /* Declarations Section */
+%verbose
 %defines "misc_yy_gen.h"
+%define parse.trace
+%define parse.error verbose
+%define lr.keep-unreachable-state true
 %define api.value.type {union YYSTYPE}
 %define api.pure false
-%define parse.error verbose
 %parse-param {int argc} {char **argv}
 
 %token  <DNUM>        NUM

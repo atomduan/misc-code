@@ -82,7 +82,7 @@ cat <<END >> Makefile
 	-ldl -lpthread -lm -Wl \$(LDFLAGS)
 
 ${yy_name}.tab.c:
-	\$(BISON) -v -Wmidrule-value -Wno-other --debug --report=stat --report-file=stat.report --graph=automaton.dot -d ${yy_name}.y
+	\$(BISON) -v -Wmidrule-value -Wno-other --debug --report=states,lookaheads --report-file=states.report --graph=automaton.dot -d ${yy_name}.y
 
 ${yy_name}.tab.o: \$(BUILD_DEPS)  \\
     ${yy_name}.tab.c
@@ -113,7 +113,7 @@ cat <<END >> Makefile
 
 .PHONY:clean
 clean:
-	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h stat.report automaton.dot automaton.svg *.output
+	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h states.report automaton.dot automaton.svg *.output
 END
 
 make clean
