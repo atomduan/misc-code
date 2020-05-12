@@ -10,7 +10,7 @@ if exists("b:current_syntax")
 endif
 
 let b:current_syntax = "todo"
-syn             match           todoKeyWord         "\c^[ ]*\(info:\|sub:\|branch:\|system:\|desc:\|tip:\)" 
+syn             match           todoKeyWord         "\c^[ ]*\(info:\|sub:\|branch:\|system:\|desc:\|tip:\|tips:\)" 
 syn             match           todoTitle           "\(COMPLETED TASK:\|CURRENT TASK:\|BACK_LOG TASKS:\|INFO ENTRY:\)"
 syn             match           todoWeek            "\c^\(week:\)"
 syn             match           todoTaskInfo        "\c^[ ]*\(product:\|staging:\|[^ ]\+user:\|[^ ]\+password:\|user:\|password:\|database:\|table:\|sql:\)"
