@@ -55,8 +55,8 @@ void trace_token(enum yytokentype token, YYLTYPE loc);
 /* --------------------------------------------------------------------- */
 %code {
 void print_token(FILE *file, int token, YYSTYPE val);
-int yylex(YYSTYPE *yylval, YYLTYPE *yylloc);
-void yyerror(YYLTYPE *locp, char const *msg);
+int yylex(YYSTYPE *lvalp, YYLTYPE *llocp);
+void yyerror(YYLTYPE *yylsp, char const *msg);
 void init_table();
 }
 
@@ -65,7 +65,9 @@ void init_table();
 /* Declarations Section */
 %defines "misc_yy_gen.h"
 %define api.value.type {union YYSTYPE}
-%define api.pure true
+
+/*pure option not compatitable with %glr-parser */
+%define api.pure full 
 
 %token  <DNUM>        NUM
 %token  <FUNC_PTR>    VAR FNCT
@@ -82,11 +84,9 @@ void init_table();
 %destructor { free($$); } <*>
 %destructor { printf("Discarding tagless symbol.\n"); } <>
 
-%printer { printf("FUNC_PTR, name:%s\n", $$->name); } <FUNC_PTR>
 %printer { /*do nothing*/ } <*>
 %printer { /*do nothing*/ } <>
-
-%glr-parser
+%printer { printf("FUNC_PTR, name:%s\n", $$->name); } <FUNC_PTR>
 
 /* --------------------------------------------------------------------- */
 /* Grammar Rules Section */ 
@@ -109,7 +109,7 @@ exp:
                                             $$ = $[var]->value.var; 
                                         } else {
                                             printf("use uninit VAR name %s\n", $[var]->name);
-                                            yyerror(yylocp,"use uninit VAR error\n");
+                                            yyerror(yylsp,"use uninit VAR error\n");
                                         }
                                     }
 |   VAR[var] '=' exp                { 
@@ -129,7 +129,7 @@ exp:
                                             fprintf(stderr,"(%d,%d)-(%d,%d): division bu zero\n",
                                                     @[right].first_line,@[right].first_column,
                                                     @[right].last_line,@[right].last_column);
-                                            yyerror(yylocp,"zero error\n");
+                                            yyerror(yylsp,"zero error\n");
                                         }
                                     }
 |   '-' exp %prec NEG               { $$ = -$2; }
@@ -200,7 +200,7 @@ void print_token(FILE *file, int token, YYSTYPE val)
  * whose definition is the appropriate number. 
  * In this example, therefore, NUM becomes a macro for yylex to use.
  */
-int yylex(YYSTYPE *yylval, YYLTYPE *yylloc)
+int yylex(YYSTYPE *lvalp, YYLTYPE *llocp)
 {
     USE(yylloc);
     int c;
@@ -211,7 +211,7 @@ int yylex(YYSTYPE *yylval, YYLTYPE *yylloc)
     /* Char starts a number => parse the number. */
     if (c == '.' || isdigit(c)) {
         ungetc(c, stdin);
-        scanf("%lf", &yylval->DNUM);
+        scanf("%lf", &lvalp->DNUM);
         return NUM;
     }
     /* Char starts an identifier => read the name. */
@@ -243,16 +243,16 @@ int yylex(YYSTYPE *yylval, YYLTYPE *yylloc)
         s = getsym(symbuf);
         /* If s is not NULL, it is inited to a FNCT already in init_table() */
         if (s == 0) s = putsym(symbuf,VAR);
-        *((symrec**) &yylval) = s;
+        lvalp->FUNC_PTR = s;
         return s->type;
     }
     /* Any other character is a token by itself. */
     return c;
 }
 
-void yyerror(YYLTYPE *locp, char const *msg)
+void yyerror(YYLTYPE *yylsp, char const *msg)
 {
-    USE(locp);
+    USE(yylsp);
     fprintf(stderr,"%s\n",msg);
 }
 
