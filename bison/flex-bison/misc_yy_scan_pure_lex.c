@@ -1,13 +1,14 @@
 #include <misc_parser.h>
 #include <misc_yy_gen.h>
 
+/* --------------------------------------------------------------------- */
 /* The symbol table: a chain of 'struct symrec'.  */
 symrec *sym_table;
 static symrec *putsym(char const *, int);
 static symrec *getsym(char const *);
 
-/* --------------------------------------------------------------------- */
 
+/* --------------------------------------------------------------------- */
 typedef struct init_fnct_s init_fnct;
 struct init_fnct_s {
     char const *fname;
@@ -25,8 +26,8 @@ static const init_fnct arith_fncts[] =
     { 0, 0 },
 };
 
-/* --------------------------------------------------------------------- */
 
+/* --------------------------------------------------------------------- */
 static symrec * putsym(const char *sym_name, int sym_type)
 {
     symrec *ptr = (symrec*) malloc(sizeof(symrec));
@@ -51,13 +52,16 @@ static symrec * getsym(const char *sym_name)
     return 0;
 }
 
-void init_lexer(void)
+
+/* --------------------------------------------------------------------- */
+int init_lexer(void)
 {
     int i;
     for (i=0; arith_fncts[i].fname != 0; i++) {
         symrec *ptr = putsym(arith_fncts[i].fname,FNCT);
         ptr->value.fnctptr = arith_fncts[i].fnct;
     }
+    return 0;
 }
 
 /**
@@ -120,4 +124,3 @@ int yylex(YYSTYPE *lvalp, YYLTYPE *llocp)
     /* Any other character is a token by itself. */
     return c;
 }
-

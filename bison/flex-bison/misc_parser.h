@@ -4,5 +4,4 @@
 
 #define USE(VALUE) /*empty*/
 
-int process_yy(int argc,char **argv);
-#endif
+#endif/*MISC_YY_PARSER END*/

@@ -2,9 +2,7 @@
 %code top {
 #include <misc_parser.h>
 #define YYDEBUG 1
-}
-
-/* --------------------------------------------------------------------- */
+}/*code top end*/
 /** 
  * writing dependency code for YYSTYPE and YYLTYPE, 
  * should prefer %code requires over %code top
@@ -12,7 +10,6 @@
 %code requires {
 /* Function type.  */
 typedef double (*func_t)(double);
-
 /* Data type for links in the chain of symbols.  */
 typedef struct symrec_s symrec;
 struct symrec_s {
@@ -25,7 +22,6 @@ struct symrec_s {
     } value;
     symrec *next;  /* link field */
 };
-
 #define YYLTYPE YYLTYPE
 typedef struct YYLTYPE {
     int first_line; 
@@ -34,26 +30,24 @@ typedef struct YYLTYPE {
     int last_column; 
     char *filename;
 } YYLTYPE; 
-
 union YYSTYPE {
     double  DNUM;    
     symrec *FUNC_PTR;
 };
-}
-
-/* --------------------------------------------------------------------- */
+int init_lexer();
+}/*code requires end*/
 %code {
-void init_lexer();
 int yylex(YYSTYPE *lvalp, YYLTYPE *llocp);
 void yyerror(YYLTYPE *yylsp, char const *msg);
-}
+}/*code end*/
+
+
+
 
 /* --------------------------------------------------------------------- */
-
 /* Declarations Section */
 %defines "misc_yy_gen.h"
 %define api.value.type {union YYSTYPE}
-
 /*pure option not compatitable with %glr-parser */
 %define api.pure full 
 
@@ -75,6 +69,9 @@ void yyerror(YYLTYPE *yylsp, char const *msg);
 %printer { /*do nothing*/ } <*>
 %printer { /*do nothing*/ } <>
 %printer { printf("FUNC_PTR, name:%s\n", $$->name); } <FUNC_PTR>
+
+
+
 
 /* --------------------------------------------------------------------- */
 /* Grammar Rules Section */ 
@@ -126,21 +123,13 @@ exp:
 ;
 %%
 
+
+
+
 /* --------------------------------------------------------------------- */
 /* Epilogue Begin */
 void yyerror(YYLTYPE *yylsp, char const *msg)
 {
     USE(yylsp);
     fprintf(stderr,"%s\n",msg);
-}
-
-int process_yy(int argc,char **argv)
-{
-    int i;
-    /* Enable parse traces on option -x.  */
-    for (i = 1; i < argc; ++i)
-        if (strcmp(argv[i],"-x") == 0)
-            yydebug = 1;
-    init_lexer();
-    return yyparse();
 }
