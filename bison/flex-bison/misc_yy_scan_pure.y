@@ -27,8 +27,6 @@ void yyerror(YYLTYPE *yylsp, char const *msg);
 }/*code end*/
 
 
-
-
 /* --------------------------------------------------------------------- */
 /* Declarations Section */
 %defines "misc_yy_gen.h"
@@ -54,8 +52,6 @@ void yyerror(YYLTYPE *yylsp, char const *msg);
 %printer { /*do nothing*/ } <*>
 %printer { /*do nothing*/ } <>
 %printer { printf("FUNC_PTR, name:%s\n", $$->name); } <FUNC_PTR>
-
-
 
 
 /* --------------------------------------------------------------------- */
@@ -107,8 +103,6 @@ exp:
 |   '(' exp ')'                     { $$ =  $2; }
 ;
 %%
-
-
 
 
 /* --------------------------------------------------------------------- */
