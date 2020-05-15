@@ -8,20 +8,6 @@
  * should prefer %code requires over %code top
  */
 %code requires {
-/* Function type.  */
-typedef double (*func_t)(double);
-/* Data type for links in the chain of symbols.  */
-typedef struct symrec_s symrec;
-struct symrec_s {
-    char *name;  /* name of symbol */
-    int type;    /* type of symbol: either VAR or FNCT */
-    int has_init;
-    union {
-        double var;      /* value of a VAR */
-        func_t fnctptr;  /* value of a FNCT */
-    } value;
-    symrec *next;  /* link field */
-};
 #define YYLTYPE YYLTYPE
 typedef struct YYLTYPE {
     int first_line; 
@@ -34,7 +20,6 @@ union YYSTYPE {
     double  DNUM;    
     symrec *FUNC_PTR;
 };
-int init_lexer();
 }/*code requires end*/
 %code {
 int yylex(YYSTYPE *lvalp, YYLTYPE *llocp);

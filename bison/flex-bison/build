@@ -63,6 +63,7 @@ cat <<END >> Makefile
 END
 fi
 cat <<END >> Makefile
+	lex.yy.o \\
 	misc_parser.o
 	\$(LINK) -o misc_parser.bin ${yy_name}.tab.o \\
 END
@@ -78,15 +79,23 @@ cat <<END >> Makefile
 END
 fi
 cat <<END >> Makefile
+	lex.yy.o \\
 	misc_parser.o \\
 	-ldl -lpthread -lm -Wl \$(LDFLAGS)
 
 ${yy_name}.tab.c:
 	\$(BISON) -v -Wmidrule-value -Wno-other --debug --report=states,lookaheads --report-file=states.report --graph=automaton.dot -d ${yy_name}.y
 
+lex.yy.c:
+	flex ${yy_name}.l
+
 ${yy_name}.tab.o: \$(BUILD_DEPS)  \\
     ${yy_name}.tab.c
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${yy_name}.tab.o ${yy_name}.tab.c
+
+lex.yy.o: \$(BUILD_DEPS)  \\
+    lex.yy.c
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o lex.yy.o lex.yy.c
 END
 if [ -f "${yy_name}.c" ]; then
 cat <<END >> Makefile
@@ -113,7 +122,7 @@ cat <<END >> Makefile
 
 .PHONY:clean
 clean:
-	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h states.report automaton.dot automaton.svg *.output
+	rm -rf *.o *.bin core *.tab.* misc_yy_gen.h states.report automaton.dot automaton.svg *.output lex.yy.c
 
 clean-build:
 	rm -rf *.o *.bin
