@@ -14,18 +14,16 @@
  * that identifier is defined by Bison as a C macro 
  * whose definition is the appropriate number. 
  * In this example, therefore, NUM becomes a macro for yylex to use.
- *
- * TODO VAR need implemented
- *
  */
 #define YY_DECL int yylex(YYSTYPE *lvalp, YYLTYPE *llocp)
 %}
 
 FUNC_NAME       (atan|cos|exp|ln|sin|sqrt)
+VAR_NAME	    ([[:alpha:]_][[:alnum:]_-]*)
 ANY_OTHER       .|\n
 
 %%
-[ \t]	;// ignore all whitespace
+[ \t]           {   ;/* ignore all whitespace*/    }
 [0-9]+\.[0-9]+ 	{   lvalp->DNUM = atof(yytext); return NUM; }
 [0-9]+		    {   lvalp->DNUM = atof(yytext); return NUM; }
 {FUNC_NAME}     {
@@ -39,5 +37,11 @@ ANY_OTHER       .|\n
 "/"             {   return (int)*yytext;    }
 "("             {   return (int)*yytext;    }
 ")"             {   return (int)*yytext;    }
+"="             {   return (int)*yytext;    }
+"^"             {   return (int)*yytext;    }
+{VAR_NAME}      {   
+                    symrec *s = putsym(yytext,VAR);
+                    return s->type;
+                }
 {ANY_OTHER}     {   return (int)*yytext;    }
 %%
