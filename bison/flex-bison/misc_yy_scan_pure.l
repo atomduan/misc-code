@@ -14,6 +14,9 @@
  * that identifier is defined by Bison as a C macro 
  * whose definition is the appropriate number. 
  * In this example, therefore, NUM becomes a macro for yylex to use.
+ *
+ * TODO VAR need implemented
+ *
  */
 #define YY_DECL int yylex(YYSTYPE *lvalp, YYLTYPE *llocp)
 %}
