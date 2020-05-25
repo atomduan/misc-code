@@ -29,6 +29,7 @@ hi Search term=reverse ctermfg=Black guifg=Yellow
 hi StatusLine term=reverse ctermbg=0 ctermfg=30
 
 nnoremap <F4> :NERDTree<cr>
+"<shift>+b open bookmark; <shift>+d remove bookmark; <leader>+b add bookemark
 nnoremap <leader>b :Bookmark<cr>
 nnoremap <leader>z :nohl<cr>
 nnoremap <leader>x :NERDTreeFind<cr>*0n
