@@ -225,3 +225,13 @@ all in src/java.base/share/native/libjli/java.c --> JavaMain(...)
     make/autoconf/jdk-version.m4, 需要重新config
     VERSION_PRE="atomduan" #类似这样的修改，但是需要满足jdk比较严格的版本格式要求
     bash ./configure --with-boot-jdk=/home/ni/Binary/boot-jdk/jdk-13
+
+*) java 线程创建过程linux:
+Thread.java --> start() --> jni start0();
+        --> /src/java.base/share/native/libjava/Thread.c start0 --> JVM_StartThread
+            --> ./src/hotspot/share/prims/jvm.cpp   JVM_StartThread macro
+                --> native_thread = new JavaThread(&thread_entry, sz); ...
+                    --> src/hotspot/share/runtime/thread.cpp JavaThread::JavaThread(...)
+                        -->  os::create_thread(this, thr_type, stack_sz); ...
+                            --> "src/hotspot/os/linux/os_linux.cpp" bool os::create_thread(...)
+                                --> int ret = pthread_create(&tid, &attr, (void* (*)(void*)) thread_native_entry, thread);
