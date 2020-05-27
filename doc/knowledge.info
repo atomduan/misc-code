@@ -56,12 +56,12 @@
         中断管理: (GDT,EPOLL,NIO,REACTOR) --> 相同的基于时间响应的模式一直在各个层面迭代,驱动服务运行
                 (not while loop but event listening and handling)
             中断事件响应: (LIDT,SIDT,GDT) instruction
-                细粒度:每个指令执行完都会检查中断阵脚电平(指令粒度抢占, 主频2.5GHz粗略表示执行上限是1秒25亿条指令)
+                颗粒度: 每个指令执行完都会检查中断阵脚电平(指令粒度抢占,主频2.5GHz粗略表示执行上限是1秒25亿条指令)
                 1. 针脚触发触发:
                     top half: 涉及中断向量表
                     1. 硬中断:
                 2. Tick中断周期触发: 
-                    细粒度:每个时钟中断周期都会因时钟中断而被触发(时钟周期粒度抢占)
+                    颗粒度: 每个时钟中断周期都会因时钟中断而被触发(时钟周期粒度抢占)
                     bottom half: 操作系统通过指令控制
                     1. 软中断:
                     2. 异常:
@@ -71,12 +71,13 @@
             mod管理: modprobe,lsmod 
         设备管理: 
             /dev/*
+        interactive/non-interactive:
 
     进程系统:
         生命周期:
-            进程创建:fork(),exec()
+            进程创建: fork(),exec()
             进程调度(状态迁移):
-            进程销毁:exit(),waitpid()
+            进程销毁: exit(),waitpid()
         进程表:
         内存分配: ld,ldd,ELF文件结构,栈空间结构
         IPC: signo,pipe,shm
