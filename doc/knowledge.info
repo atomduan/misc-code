@@ -53,19 +53,23 @@
 
 *) 操作系统(软件):
     硬件管理:
-        中断管理: (GDT,EPOLL,NIO,REACTOR) --> 相同的基于时间响应的模式一直在各个层面迭代,驱动服务运行
+        硬件中断管理: (GDT,EPOLL,NIO,REACTOR) --> 相同的基于时间响应的模式一直在各个层面迭代,驱动服务运行
                 (not while loop but event listening and handling)
-            中断事件响应: (LIDT,SIDT,GDT) instruction
+                hardware <---> bus <---> cpu pin <---> cpu(interrupt controller <---> internal bus <---> logic unit)
+                    pin level --> ack --> async LIDT handle
+            硬件中断事件响应: (LIDT,SIDT,GDT) instruction
                 颗粒度: 每个指令执行完都会检查中断阵脚电平(指令粒度抢占,主频2.5GHz粗略表示执行上限是1秒25亿条指令)
-                1. 针脚触发触发:
+                1. 随机硬件IO事件触发发(interrupt context):
                     top half: 涉及中断向量表
                     1. 硬中断:
-                2. Tick中断周期触发: 
+                    2. interrupt context
+                2. 周期时钟Tick触发(process context): TODO 应存在一个特定routine做统一路由,需确认具体逻辑 
                     颗粒度: 每个时钟中断周期都会因时钟中断而被触发(时钟周期粒度抢占)
                     bottom half: 操作系统通过指令控制
                     1. 软中断:
                     2. 异常:
                     3. TRAP: "user_mod/sys_mod" 转换
+                    4. (softirq,tasklet,work queues)
                 TIP: 1. 中断管理即不属于user_mod也不属于sys_mod,而是控制着几种上下文的切换，属于更底层的机制
                      2. 中断切换安全的基础是，所有相关的上下文信息均以数据的形式进行了描述，并在主存进行了持久保存. 
                      3. 中断的切换实际上是主存中所要处理的数据的切换.
@@ -82,8 +86,8 @@
         进程表:
         内存分配: ld,ldd,ELF文件结构,栈空间结构
         IPC: signo,pipe,shm
-        系统调用: sys_mod进程同user_mod进程无关,堆栈的创建位置也不一样.
-                  sys_mod进程用于:
+        系统调用: (kernel stack)sys_mod进程同user_mod进程无关,堆栈的创建位置也不一样.
+                  (kernel stack)sys_mod进程用于:
                     1. 系统调用处理(每个系统调用应带有user_mod的进程PID)
                     2. 驱动相关bootom half的处理
                     3. sys_mod下deamon服务
