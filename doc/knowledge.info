@@ -66,9 +66,8 @@
                     1. 软中断:
                     2. 异常:
                     3. TRAP: "user_mod/sys_mod" 转换
-        驱动管理: 
-            驱动注册:
-            mod管理: modprobe,lsmod 
+                TIP: 中断管理即不属于user_mod也不属于sys_mod,而是控制着几种上下文的切换，属于更底层的机制
+        驱动管理: modprobe,lsmod,mismanger,demsg 
         设备管理: 
             /dev/*
         interactive/non-interactive:
@@ -81,6 +80,11 @@
         进程表:
         内存分配: ld,ldd,ELF文件结构,栈空间结构
         IPC: signo,pipe,shm
+        系统调用: sys_mod进程同user_mod进程无关,堆栈的创建位置也不一样.
+                  sys_mod进程用于:
+                    1. 系统调用处理(每个系统调用应带有user_mod的进程PID)
+                    2. 驱动相关bootom half的处理
+                    3. sys_mod下deamon服务
 
     内存系统:
         vitrual memory:
