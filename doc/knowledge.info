@@ -194,3 +194,9 @@
 *) NGINX:
 *) JAVA应用系统:
 *) FLEX-BSION:
+
+-------------------------------------------
+*) 边缘触发(edge)，水平触发(level)原始含义是说的针脚的电压水平:
+    IO-APIC-edge - The voltage signal on this interrupt transitions from low to high.
+    IO-APIC-level - Generates interrupts when its voltage signal is high until the signal is low again.
+    info: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-interrupts
