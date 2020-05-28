@@ -61,19 +61,19 @@
             2. 中断处理:
                 HARDWARE 中断信号发出
                     --> BUS
-                    --> CPU Pin
                     --> CPU (
-                             --> PIC gen vactor i (中断号)
+                             --> PIC PIN (INTR,NMI) level up (PIC is a module of CPU)
+                             --> CPU check PIC pin and ACK (after every instruction) 
+                             --> PIC request vactor i from BUS(中断号)
                              --> internal bus
-                             --> ACK PIC
-                             --> auto invoke (
-                                              --> vector i (中断号查询) IDT,IDTR,GDTR,GDT
+                             --> auto invoke INT(n) instruction (
+                                              --> vector i (中断号查询中断向量表) IDT,IDTR,GDTR,GDT
                                               --> selector
                                               --> IRQ-handler
                                              )
                             )
 
-            硬件中断事件响应: 
+            3. 硬件中断事件响应: 
                 颗粒度: 每个指令执行完都会检查中断阵脚电平(指令粒度抢占,主频2.5GHz粗略表示执行上限是1秒25亿条指令)
                 1. 随机硬件IO事件触发发(interrupt context):
                     top half: 涉及中断向量表
@@ -83,18 +83,29 @@
                 2. 周期时钟Tick触发(process context): TODO 应存在一个特定routine做统一路由,需确认具体逻辑 
                     颗粒度: 每个时钟中断周期都会因时钟中断而被触发(时钟周期粒度抢占)
                     bottom half: 操作系统通过指令控制
-                    1. 软中断:
-                    2. 异常:
-                    3. TRAP: "user_mod/sys_mod" 转换
-                    4. (softirq,tasklet,work queues)
+
+                3. 软中断(程序触发INT(n) instruction)
+                    1. 异常:
+                    2. TRAP: "user_mod/sys_mod" 转换
+                    3. (softirq,tasklet,work queues)
 
                 TIP: 1. 中断管理即不属于user_mod也不属于sys_mod,而是控制着几种上下文的切换，属于更底层的机制
                      2. 中断切换安全的基础是，所有相关的上下文信息均以数据的形式进行了描述，并在主存进行了持久保存. 
                      3. 中断的切换实际上是主存中所要处理的数据的切换.
 
-        驱动管理: modprobe,lsmod,mismanger,demsg 
+            4. 中断号自动检测:
+                1. 基于中断头部数据指纹有驱动进行匹配,需要一个通用的前置handler
+                2. 有PCI接口规范保证硬件设备在接入时提供相关中断号的声明到BIOS(启动自检阶段,BIOS程序执行)
+                    info: https://www.oreilly.com/library/view/linux-device-drivers/0596005903/ch12.html
+                3. 理想情况下OS可以在初始化阶段通过BIOS拿到设备和中断号的对应关系
+
+        驱动管理: modprobe,lsmod,mismanger,demsg,insmod (insmod *.ko -req=xxx; #手工指定驱动的设备中断号)
+
         设备管理: /dev/*
         interactive/non-interactive:
+
+    内存系统:
+        vitrual memory:
 
     进程系统:
         生命周期:
@@ -110,8 +121,6 @@
                     2. 驱动相关bootom half的处理
                     3. sys_mod下deamon服务
 
-    内存系统:
-        vitrual memory:
     文件系统:
     网络系统:
     用户权限:
