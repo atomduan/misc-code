@@ -21,6 +21,7 @@ set scrolloff=6
 set incsearch
 set ruler
 set background=dark
+set nofoldenable
 
 "set foldmethod=syntax
 "set cursorline
