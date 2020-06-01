@@ -20,6 +20,8 @@ set nowrap
 set scrolloff=6
 set incsearch
 set ruler
+set background=dark
+
 "set foldmethod=syntax
 "set cursorline
 
