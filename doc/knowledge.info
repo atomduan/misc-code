@@ -134,7 +134,9 @@
             DMA-controller, DMA-interrupt, DMA-channel
 
     文件系统:
-        SECTOR : 4KB
+        vfs: file,dir hierarchy,vnode,inode,FD,FILE
+        interface: open(),read(),write(),close(),seek(),lseek(),poll(),select(),dup() 
+        fs: ext4,ntfs,overlay,mount,block,stat
 
     网络系统:
     用户权限:
