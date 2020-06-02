@@ -2,7 +2,7 @@ set nocompatible
 syntax on
 filetype on
 
-colorscheme default
+colorscheme peachpuff
 set syntax=on
 set filetype=on
 set copyindent
