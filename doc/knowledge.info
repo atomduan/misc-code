@@ -64,7 +64,7 @@
                     --> CPU (
                              --> PIC PIN (INTR,NMI) level up (PIC is a module of CPU)
                              --> CPU check PIC pin and ACK (after every instruction) 
-                             --> Interrupt Mask
+                             --> interrupt mask
                              --> PIC request vactor i from BUS(中断号)
                              --> internal bus
                              --> auto invoke INT(n) instruction (
@@ -72,7 +72,7 @@
                                               --> selector
                                               --> IRQ-handler
                                              )
-                             --> Interrupt Unmask
+                             --> interrupt unmask
                             )
 
             3. 硬件中断事件响应: 
