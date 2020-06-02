@@ -214,8 +214,3 @@
     IO-APIC-edge - The voltage signal on this interrupt transitions from low to high.
     IO-APIC-level - Generates interrupts when its voltage signal is high until the signal is low again.
     info: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-interrupts
-
-
-
-
-
