@@ -3,3 +3,13 @@ git log --pretty=format:"%h %s" --graph
 
 #export git project
 git archive master | tar -x -C /somewhere/else/exsited/dir
+
+#add color to remote server git
+vi ~/.gitconfig #add content below
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+    interactive = auto
+    ui = true
+    pager = true
