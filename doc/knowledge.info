@@ -64,6 +64,7 @@
                     --> CPU (
                              --> PIC PIN (INTR,NMI) level up (PIC is a module of CPU)
                              --> CPU check PIC pin and ACK (after every instruction) 
+                             --> Interrupt Mask
                              --> PIC request vactor i from BUS(中断号)
                              --> internal bus
                              --> auto invoke INT(n) instruction (
@@ -71,6 +72,7 @@
                                               --> selector
                                               --> IRQ-handler
                                              )
+                             --> Interrupt Unmask
                             )
 
             3. 硬件中断事件响应: 
@@ -105,7 +107,6 @@
                 3. 理想情况下OS可以在初始化阶段通过BIOS拿到设备和中断号的对应关系
 
         驱动管理: modprobe,lsmod,mismanger,demsg,insmod (insmod *.ko -req=xxx; #手工指定驱动的设备中断号)
-
         设备管理: /dev/*
         interactive/non-interactive:
 
@@ -124,9 +125,17 @@
                     3. sys_mod下deamon服务
 
     内存系统:
-        vitrual memory:
+        CPU寻址: 
+            实模式模式(2^20,20针脚,1M数据, 2^10=1024)
+            保护模式(2^64,64针脚)
+        OS寻址:
+            vitrual memory --> segment,page,offset --> real memory
+        DMA: 
+            DMA-controller, DMA-interrupt, DMA-channel
 
     文件系统:
+        SECTOR : 4KB
+
     网络系统:
     用户权限:
 
