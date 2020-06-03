@@ -229,6 +229,6 @@
     info: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-interrupts
 
 *) environment:
-    dev context: tools, architech
-    debug context: tools, scaffold, config and routine
+    develop context: tools, architech
+    debug context: tools, scaffold, config and routine(isolate, reproduce)
     running context: tools, audit, monitoring, logging and data
