@@ -27,7 +27,7 @@
     --> 完成特定信息含义的数据处理过程,包含三个步骤(输入,数据处理,输出)
 
 *) 什么是系统?
-    --> 特定上下文下,数据存储,传输,处理过程的结构化功能集合
+    --> 特定上下文,数据存储,传输,处理过程的结构化功能集合
 
 *) 什么是结构化功能集合?
     --> 处理过程间是存在相互协作,包括如下方面:
@@ -57,6 +57,18 @@
             1. 中断初始化:
                 中断号注册 
                 -->IDT,IDTR,GDTR,GDT,selector,IRQ-handler
+                1. Linux中断IDT注册:
+                    Gate的概念: Interrupt Gate; System Gate; Trap Gate
+                    初始化过程:
+                        1. interrupt gate --> interrupt handlers can only be accessed by SYS_MOD
+                        2. trap gate   --> exception handler
+                                1. system gate: 1. a sub kind of trap gate can be trigger by USER_MOD
+                                                2. has 4 exception handler: "int3", "into", "bound", "int $0x80"
+                                2. normal trap gate: exception handlers can only be accessed by SYS_MOD
+                        3. 接口:
+                            1. set_intr_gate(n,addr);
+                            2. set_system_gate(n,addr); //TODO, linux源码没有找到
+                            3. set_trap_gate(n,addr); //TODO, linux源码没有找到
 
             2. 中断处理:
                 HARDWARE 中断信号发出
@@ -104,16 +116,6 @@
                     info: https://www.oreilly.com/library/view/linux-device-drivers/0596005903/ch12.html
                 3. 理想情况下OS可以在初始化阶段通过BIOS拿到设备和中断号的对应关系
 
-            5. 中断IDT注册, Gate的概念:Interrupt Gate; System Gate; Trap Gate
-                1. interrupt gate --> interrupt handlers can only be accessed by SYS_MOD
-                2. trap gate   --> exception handler
-                        1. system gate: 1. a sub kind of trap gate can be trigger by USER_MOD
-                                        2. has 4 exception handler: "int3", "into", "bound", "int $0x80"
-                        2. normal trap gate: exception handlers can only be accessed by SYS_MOD
-                3. 接口:
-                    1. set_intr_gate(n,addr);
-                    2. set_system_gate(n,addr); //TODO, linux源码没有找到
-                    3. set_trap_gate(n,addr); //TODO, linux源码没有找到
 
         驱动管理: modprobe,lsmod,mismanger,demsg,insmod (insmod *.ko -req=xxx; #手工指定驱动的设备中断号)
         设备管理: /dev/*
@@ -225,3 +227,8 @@
     IO-APIC-edge - The voltage signal on this interrupt transitions from low to high.
     IO-APIC-level - Generates interrupts when its voltage signal is high until the signal is low again.
     info: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-interrupts
+
+*) environment:
+    dev context: tools, architech
+    debug context: tools, scaffold, config and routine
+    running context: tools, audit, monitoring, logging and data
