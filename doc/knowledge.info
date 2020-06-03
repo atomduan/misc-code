@@ -92,9 +92,7 @@
                     bottom half: 操作系统通过指令控制
 
                 3. 软中断(程序触发INT(n) instruction)
-                    1. 异常:
-                    2. TRAP: "user_mod/sys_mod" 转换
-                    3. (softirq,tasklet,work queues)
+                    1.  (softirq,tasklet,work queues)
 
                 TIP: 1. 中断管理即不属于user_mod也不属于sys_mod,而是控制着几种上下文的切换，属于更底层的机制
                      2. 中断切换安全的基础是，所有相关的上下文信息均以数据的形式进行了描述，并在主存进行了持久保存. 
@@ -105,6 +103,17 @@
                 2. 有PCI接口规范保证硬件设备在接入时提供相关中断号的声明到BIOS(启动自检阶段,BIOS程序执行)
                     info: https://www.oreilly.com/library/view/linux-device-drivers/0596005903/ch12.html
                 3. 理想情况下OS可以在初始化阶段通过BIOS拿到设备和中断号的对应关系
+
+            5. 中断IDT注册, Gate的概念:Interrupt Gate; System Gate; Trap Gate
+                1. interrupt gate --> interrupt handlers can only be accessed by SYS_MOD
+                2. trap gate   --> exception handler
+                        1. system gate: 1. a sub kind of trap gate can be trigger by USER_MOD
+                                        2. has 4 exception handler: "int3", "into", "bound", "int $0x80"
+                        2. normal trap gate: exception handlers can only be accessed by SYS_MOD
+                3. 接口:
+                    1. set_intr_gate(n,addr);
+                    2. set_system_gate(n,addr); //TODO, linux源码没有找到
+                    3. set_trap_gate(n,addr); //TODO, linux源码没有找到
 
         驱动管理: modprobe,lsmod,mismanger,demsg,insmod (insmod *.ko -req=xxx; #手工指定驱动的设备中断号)
         设备管理: /dev/*
