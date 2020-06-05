@@ -117,14 +117,14 @@
         生命周期:
             进程创建: fork(),exec()
             进程调度(状态迁移):
-                fork() --> RUNNABLE(必须先进RUNNABLE状态，否则fork的完成不了逻辑创建进程的逻辑就完成不了)
+                fork() --> RUNNABLE
                 RUNNABLE(on the run queue structure)
                     --yield,schedule,signo-->SLEEP
-                    --SIGSTOP-->STOP
+                    --SIGSTOP-->STOPPED(TODO clearify)
                     --exit-->ZOMBIE(DEFUNCT)
                 SLEEP --> UNINTERRUPTBLE_SLEEP  --wakeup--> RUNNABLE
                           INTERRUPTBLE_SLEEP    --wakeup--> RUNNABLE
-                STOPPED --SIGCONT-->RUNNABLE
+                STOPPED(TODO clearify) --SIGCONT-->RUNNABLE
                 ZOMBIE(DEFUNCT)  --parent process waitpid--> TERMINATED
             进程销毁: exit(),waitpid()
         进程表:
