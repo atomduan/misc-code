@@ -111,9 +111,9 @@
 
     进程系统:
         进程分类:
-            user process
-            deamon process
-            kernel process
+            user process: task oriented
+            deamon process: service oriented
+            kernel process: service oriented
         生命周期:
             进程创建: fork(),exec()
             进程调度(状态迁移):
@@ -135,6 +135,8 @@
                     1. 系统调用处理(每个系统调用应带有user_mod的进程PID)
                     2. 驱动相关bootom half的处理
                     3. sys_mod下deamon服务
+        信号与中断:
+            区别和联系
 
     内存系统:
         CPU寻址: 
