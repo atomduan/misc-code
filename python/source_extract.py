@@ -17,7 +17,8 @@ repo_path = repo_path_prefix
 #package_filter = ['unirest-java'];
 #package_filter = ['thrift'];
 #package_filter = ['cache-api'];
-package_filter = ['netty-all'];
+#package_filter = ['netty-all'];
+package_filter = ['json-lib'];
 
 
 def extract_src_jar(jar_path):
