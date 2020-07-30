@@ -1,0 +1,85 @@
+#!/bin/bash -
+word="$1"
+shift
+opt="$1"
+shift
+
+if [ "$opt" = "x" ]; then
+    set -x
+fi
+
+function query_dict_cn() {
+w="$1"
+en_chk=`echo $w | gsed 's/[a-zA-Z]\+/ENG/g'`
+
+
+if [ "$en_chk" = "ENG" ]; then
+curl "https://dict.cn/search?q=$w" \
+  -H 'authority: dict.cn' \
+  -H 'upgrade-insecure-requests: 1' \
+  -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36' \
+  -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'sec-fetch-mode: navigate' \
+  -H 'sec-fetch-user: ?1' \
+  -H 'sec-fetch-dest: document' \
+  -H 'referer: https://dict.cn/' \
+  -H 'accept-language: en-US,en;q=0.9' \
+  -H 'cookie: __utmz=7761447.1584433867.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utmc=7761447; Hm_lvt_c02099862d294e963ee04d8f8a6f204f=1593686163; dicthc=1K4c9iu2996aUa9EXl89dp779pW269ME689NPB79pYp791bDa9%2F%25E6%258F%2590%25E7%258E%25B0%2F%25E8%25AF%2586%25E5%2588%25AB%2F%25E8%25AF%2581%25E6%258D%25AE%2F%25E6%259A%2596%25E5%2592%258C%2F%25E7%25BC%2593%25E5%2592%258C; __gads=ID=3b97ae230fb82df1:T=1594721573:S=ALNI_MYFsA1Nycdi18pPvJD8wm64LOxaFg; dicthe=N1NJ4BKXz40gLy4pq5C4w3Ex4QcOz4cVDB4Cguz48Mzy4UeDB4oT7D4kVLy4cLxy47IoC4nowA4LDyB4ie0D47yGA4FN9D4QAzz4%2Fmoby%2Fidiomatic%2Fdement%2Fsmear%2Fabduct; Hm_lpvt_c02099862d294e963ee04d8f8a6f204f=1594869907; __utma=7761447.93196949.1584433866.1594784153.1594869907.87; __utmt=1; __utmb=7761447.1.10.1594869907' \
+  --compressed  2>/dev/null \
+  | gsed -nE '/双解释义/,/英英释义/p' \
+  | gsed 's/\t//g' \
+  | gsed 's/<[a-z0-9\/"\= ]*>//g' \
+  | gsed 's/\(双解释义\)//g' \
+  | gsed 's/\(英英释义\)//g' \
+  | awk 'NF'
+else
+curl "https://dict.cn/search?q=$w" \
+  -H 'authority: dict.cn' \
+  -H 'upgrade-insecure-requests: 1' \
+  -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36' \
+  -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'sec-fetch-mode: navigate' \
+  -H 'sec-fetch-user: ?1' \
+  -H 'sec-fetch-dest: document' \
+  -H 'referer: https://dict.cn/' \
+  -H 'accept-language: en-US,en;q=0.9' \
+  -H 'cookie: __utmz=7761447.1584433867.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utmc=7761447; Hm_lvt_c02099862d294e963ee04d8f8a6f204f=1593686163; dicthc=1K4c9iu2996aUa9EXl89dp779pW269ME689NPB79pYp791bDa9%2F%25E6%258F%2590%25E7%258E%25B0%2F%25E8%25AF%2586%25E5%2588%25AB%2F%25E8%25AF%2581%25E6%258D%25AE%2F%25E6%259A%2596%25E5%2592%258C%2F%25E7%25BC%2593%25E5%2592%258C; __gads=ID=3b97ae230fb82df1:T=1594721573:S=ALNI_MYFsA1Nycdi18pPvJD8wm64LOxaFg; dicthe=N1NJ4BKXz40gLy4pq5C4w3Ex4QcOz4cVDB4Cguz48Mzy4UeDB4oT7D4kVLy4cLxy47IoC4nowA4LDyB4ie0D47yGA4FN9D4QAzz4%2Fmoby%2Fidiomatic%2Fdement%2Fsmear%2Fabduct; Hm_lpvt_c02099862d294e963ee04d8f8a6f204f=1594869907; __utma=7761447.93196949.1584433866.1594784153.1594869907.87; __utmt=1; __utmb=7761447.1.10.1594869907' \
+  --compressed  2>/dev/null \
+  | gsed -nE '/基本释义/,/<\/div>/p' \
+  | gsed 's/\t//g' \
+  | grep -v 'https:' \
+  | gsed 's/<[a-z0-9\/"\= ]*>//g' \
+  | gsed 's/\(基本释义\)//g' \
+  | gsed 's/\(<\/div>\)//g' \
+  | awk 'NF'
+fi
+}
+
+prefix="$word>>>"
+
+cache_chk=`cat ~/.dict_cache | grep "$prefix" | wc -l | awk '{print $1}'`
+if [ $cache_chk -gt 0 ]; then
+    echo "(result from local cache ~/.dict_cache):"
+    cat ~/.dict_cache | grep "$prefix" | gsed "s/$prefix//g" | awk 'NF'
+    exit 0
+fi
+
+TMPFILE=`mktemp -q /tmp/${tempfoo}.XXXXXX`
+if [ $? -ne 0 ]; then
+    echo "$0: Can't create temp file, exiting..."
+    exit 1
+fi
+
+echo "$prefix" >> $TMPFILE 
+query_dict_cn $word | tee >(awk "{print \"$prefix\"\$0}" >> $TMPFILE)
+echo "$prefix" >> $TMPFILE
+
+tmpwc=`wc -l $TMPFILE | awk '{print $1}'`
+if [ $tmpwc -gt 2 ]; then
+    cat $TMPFILE >> ~/.dict_cache
+    echo "-----------" >> ~/.dict_cache
+else
+    echo "can not get content from remote"
+fi
