@@ -17,7 +17,7 @@ set hlsearch
 set encoding=utf-8
 set nu 
 set nowrap
-set scrolloff=6
+set scrolloff=8
 set incsearch
 set ruler
 set nofoldenable
