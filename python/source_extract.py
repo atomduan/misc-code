@@ -10,7 +10,7 @@ source_path_prefix = m2_repo+'/repository_source'
 #specified you repo source.jar path 
 repo_path = repo_path_prefix
 
-#package_filter = [];
+package_filter = [];
 #package_filter = ['hadoop'];
 #package_filter = ['antlr'];
 #package_filter = ['unirest-java'];
@@ -18,7 +18,7 @@ repo_path = repo_path_prefix
 #package_filter = ['thrift'];
 #package_filter = ['cache-api'];
 #package_filter = ['netty-all'];
-package_filter = ['json-lib'];
+#package_filter = ['json-lib'];
 
 
 def extract_src_jar(jar_path):

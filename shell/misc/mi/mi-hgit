@@ -35,4 +35,14 @@ p) 删除一个tag: git tag -d v20171017-1100
 
 q) 显示一个tag对应的版本信息: git show v20171017-1100
 
+r) 显示所有tag: git tag --list
+
+s) 删除远端tag: git push origin -d v1.0.9
+
+t) 撤销历史合并: 1.相关分支推送远端, 2. 相关分支reset --hard到开发起点版本, 3. 导出工程, 4. 相关分支pull. 
+                 5.导出工程覆盖(讲导出的工程拷贝至工程目录，直接解压)
+                 6.开发分支提交合并覆盖后版本
+
+u) 导出当前工程: git archive --format=tar.gz --output=~/arch.tar.gz HEAD
+
 EOF
