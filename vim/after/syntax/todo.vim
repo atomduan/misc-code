@@ -15,6 +15,7 @@ syn             match           todoTitle           "\(COMPLETED TASK:\|CURRENT 
 syn             match           todoWeek            "\c^\(week:\)"
 syn             match           todoTaskInfo        "\c^[ ]*\(product:\|staging:\|[^ ]\+user:\|[^ ]\+password:\|user:\|password:\|database:\|table:\|sql:\)"
 syn             match           todoTaskTitle       "^\*)[ ]*[^ ]*" 
+syn             match           todoTaskElement     "^[ ]*\.[ ][^ ]*" 
 syn             match           todoTaskTODO        "\c\(-->\)\(TODO\)"
 syn             match           todoTaskDelimit     "^[ ]*-\+[ ]*$"
 syn             match           todoTaskDone        "\c\(-->\)\(DONE\|FORK\)"
@@ -27,6 +28,7 @@ hi def link todoTitle           Comment
 hi def link todoWeek            String 
 hi def link todoTaskInfo        Function
 hi def link todoTaskTitle       Comment
+hi def link todoTaskElement     Comment
 hi def link todoTaskTODO        Function 
 hi def link todoTaskDelimit     Delimiter 
 hi def link todoTaskDone        Type 
