@@ -10,6 +10,7 @@ if exists("b:current_syntax")
 endif
 
 let b:current_syntax = "todo"
+
 syn             match           todoKeyWord         "\c^[ ]*\(info:\|sub:\|branch:\|system:\|desc:\|tip:\|tips:\)" 
 syn             match           todoTitle           "\(COMPLETED TASK:\|CURRENT TASK:\|BACK_LOG TASKS:\|INFO ENTRY:\|QUESTIONS:\)"
 syn             match           todoWeek            "\c^\(week:\)"
@@ -20,7 +21,7 @@ syn             match           todoTaskTODO        "\c\(-->\)\(TODO\)"
 syn             match           todoTaskDelimit     "^[ ]*-\+[ ]*$"
 syn             match           todoTaskDone        "\c\(-->\)\(DONE\|FORK\)"
 syn             match           todoTaskInvalid     "\c\(-->\)\(INVALID\)"
-syn             match           todoTaskDing        "\c\(-->\)\(PENDING\|SCHEDULE\)"
+syn             match           todoTaskYield       "\c\(-->\)\(PENDING\|SCHEDULE\)"
 syn             match           todoTaskDOING       "\c\(-->\)\(DOING\)"
 
 hi def link todoKeyWord         Special 
@@ -33,5 +34,5 @@ hi def link todoTaskTODO        Function
 hi def link todoTaskDelimit     Delimiter 
 hi def link todoTaskDone        Type 
 hi def link todoTaskInvalid     Special 
-hi def link todoTaskDing        String 
+hi def link todoTaskYield       String 
 hi def link todoTaskDOING       Todo 
