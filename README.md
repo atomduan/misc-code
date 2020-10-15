@@ -12,3 +12,6 @@ ctrl+shift+left, ctrl+shift+right
 
 # del blink line
 :g/^$/d
+
+# print word in vertical direction
+echo abc | fold -1
