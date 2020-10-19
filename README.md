@@ -15,3 +15,6 @@ ctrl+shift+left, ctrl+shift+right
 
 # print word in vertical direction
 echo abc | fold -1
+
+# print pedding number in vim command line '%' need to be escaped
+:r !seq 1 20 | xargs -I{} bash -c "printf '\%02d\n' {}"
