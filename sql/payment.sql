@@ -22,25 +22,4 @@ alter table user_deduct_info add CONSTRAINT `uk_mi_id_channel` UNIQUE (`mi_id`, 
 alter table user_deduct_info drop index uk_mi_id;
 
 use mofi_instra_payment;
-update deduct_trade_detail set channel=4 where channel=0 and id>0 and id<4999;
 update deduct_trade_detail set channel=4 where channel=0 and id>4998 and id<9999;
-update deduct_trade_detail set channel=4 where channel=0 and id>9998 and id<14999;
-update deduct_trade_detail set channel=4 where channel=0 and id>14998 and id<19999;
-update deduct_trade_detail set channel=4 where channel=0 and id>19998 and id<24999;
-update deduct_trade_detail set channel=4 where channel=0 and id>24998 and id<29999;
-update deduct_trade_detail set channel=4 where channel=0 and id>29998 and id<34999;
-update deduct_trade_detail set channel=4 where channel=0 and id>34998 and id<39999;
-update deduct_trade_detail set channel=4 where channel=0 and id>39998 and id<44999;
-update deduct_trade_detail set channel=4 where channel=0 and id>44998 and id<49999;
-update deduct_trade_detail set channel=4 where channel=0 and id>49998 and id<54999;
-update deduct_trade_detail set channel=4 where channel=0 and id>54998 and id<59999;
-update deduct_trade_detail set channel=4 where channel=0 and id>59998 and id<64999;
-update deduct_trade_detail set channel=4 where channel=0 and id>64998 and id<69999;
-update deduct_trade_detail set channel=4 where channel=0 and id>69998 and id<74999;
-update deduct_trade_detail set channel=4 where channel=0 and id>74998 and id<79999;
-update deduct_trade_detail set channel=4 where channel=0 and id>79998 and id<84999;
-update deduct_trade_detail set channel=4 where channel=0 and id>84998 and id<89999;
-update deduct_trade_detail set channel=4 where channel=0 and id>89998 and id<94999;
-update deduct_trade_detail set channel=4 where channel=0 and id>94998 and id<99999;
-update deduct_trade_detail set channel=4 where channel=0 and id>99998 and id<104999;
-update deduct_trade_detail set channel=4 where channel=0 and id>104998 and id<109999;
