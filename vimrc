@@ -124,15 +124,6 @@ if has("cscope")
 	set csverb
 endif
 
-"nnoremap <leader>fs :cs find s <C-R>=expand("<cword>")<CR><CR>
-"nnoremap <leader>fg :cs find g <C-R>=expand("<cword>")<CR><CR>
-"nnoremap <leader>fc :cs find c <C-R>=expand("<cword>")<CR><CR>
-"nnoremap <leader>ft :cs find t <C-R>=expand("<cword>")<CR><CR>
-"nnoremap <leader>fe :cs find e <C-R>=expand("<cword>")<CR><CR>
-"nnoremap <leader>ff :cs find f <C-R>=expand("<cfile>")<CR><CR>
-"nnoremap <leader>fi :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-"nnoremap <leader>fd :cs find d <C-R>=expand("<cword>")<CR><CR>
-"nnoremap <leader>fa :cs find a <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fs :vert scs find s <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fg :vert scs find g <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fc :vert scs find c <C-R>=expand("<cword>")<CR><CR>
