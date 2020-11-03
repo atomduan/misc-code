@@ -36,7 +36,9 @@ nnoremap <leader>b :Bookmark<cr>
 nnoremap <leader>z :nohl<cr>
 nnoremap <leader>x :NERDTreeFind<cr>*0n
 nnoremap <leader>j 12j
+vnoremap <leader>j 12j
 nnoremap <leader>k 12k
+vnoremap <leader>k 12k
 
 "let NERDTreeShowHidden=1
 
