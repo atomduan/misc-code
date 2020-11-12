@@ -1,9 +1,9 @@
 #!/bin/bash -
 dest="$@"
 
-passwd="Duan@1234"
+passwd="kkandls"
 expect -c "
-	spawn ssh -t duanjuntao@relay.xm.com
+	spawn ssh -t kfces@relay.xd.com
 	expect {
 	    \"password:\"	{ send -- \"${passwd}\r\";}
 	}

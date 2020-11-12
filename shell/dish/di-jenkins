@@ -7,6 +7,6 @@ export PATH=$JAVA_HOME/bin:$PATH
 export MAVEN_HOME=/opt/maven/current
 export PATH=$MAVEN_HOME/bin:$PATH
 
-cd /home/mi/LocEnv/tomcat-jenkins/current/bin
+cd /home/di/LocEnv/tomcat-jenkins/current/bin
 echo $JAVA_HOME
 ./startup.sh
