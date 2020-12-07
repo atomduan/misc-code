@@ -30,5 +30,3 @@ cat ${runscript}
 hive -f "${runscript}"
 
 echo "===================${yesterday} end at `date '+%Y-%m-%d %H:%M:%S'`===================" #>> ${logfile}
-
-

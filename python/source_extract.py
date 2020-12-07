@@ -11,6 +11,7 @@ source_path_prefix = m2_repo+'/repository_source'
 repo_path = repo_path_prefix
 
 package_filter = [];
+#package_filter = ['flink'];
 #package_filter = ['hadoop'];
 #package_filter = ['antlr'];
 #package_filter = ['unirest-java'];
