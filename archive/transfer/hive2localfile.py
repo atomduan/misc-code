@@ -55,8 +55,6 @@ def generateMd5(srcfile,md5destfile):
 
 # copy hdfs files of hive table to local files
 def execExportHiveData2LocalFiles(params):
-
-
     path = params[0]
     date = params[1]
     sys = params[2]
