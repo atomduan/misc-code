@@ -34,12 +34,11 @@ hi Visual term=reverse ctermbg=0
 nnoremap <F4> :NERDTree<cr>
 
 ""
-""<shift>+b open bookmark;
-""<shift>+d remove bookmark;
-""<leader>+b add bookemark
-""
-
+""<shift>+b --> open bookmark
+""<shift>+d --> remove bookmark
+""add bookmark:
 nnoremap <leader>b :Bookmark<cr>
+
 nnoremap <leader>z :nohl<cr>
 nnoremap <leader>x :NERDTreeFind<cr>*0n
 nnoremap <leader>j 12j
@@ -48,10 +47,9 @@ nnoremap <leader>k 12k
 vnoremap <leader>j 12j
 vnoremap <leader>k 12k
 
-"let NERDTreeShowHidden=1
-
 let NERDTreeWinSize=28
 let NERDTreeIgnore=['\.o$','\.bin$', '\.swp$', '\.pyc$', '\.jar$']
+"let NERDTreeShowHidden=1
 "let NERDTreeShowBookmarks=1
 
 filetype plugin indent on
@@ -70,14 +68,13 @@ Plugin 'python.vim'
 Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
-"Plugin 'atom-java.vim'
 
-""Need more learning
+"Plugin 'atom-java.vim'
 "Plugin 'session.vim'
-"Plugin 'vimwiki'
-"Plugin 'FencView.vim'
-"let g:fencview_autodetect = 1  
-"let g:fencview_checklines = 10
+
+Plugin 'FencView.vim'
+let g:fencview_autodetect = 1  
+let g:fencview_checklines = 10
 
 let g:bufExplorerDefaultHelp=0       " Do not show default help.
 let g:bufExplorerShowRelativePath=1  " Show relative paths.
