@@ -65,10 +65,10 @@ Plugin 'lrvick/Conque-Shell'
 Plugin 'snipMate'
 Plugin 'ctrlp.vim'
 Plugin 'python.vim'
-Plugin 'EasyGrep'
 Plugin 'Markdown'
 Plugin 'c.vim'
 
+"Plugin 'EasyGrep'
 "Plugin 'atom-java.vim'
 "Plugin 'session.vim'
 
@@ -91,9 +91,13 @@ let g:ctrlp_custom_ignore = {
             \ 'file': '\v\.(exe|so|dll|class|bin|jar|o)$',
             \ }
 let g:ctrlp_follow_symlinks = 1
+let g:ctrlp_switch_buffer = 'Et'
 
-let EasyGrepRecursive = 1
-let EasyGrepFilesToExclude = '*.class,target,*tar.gz,*.jar,*.war, .git/**.*,target/**.*'
+"let EasyGrepCommand = 1
+"let EasyGrepRecursive = 1
+"let EasyGrepOpenWindowOnMatch = 1
+"let EasyGrepJumpToMatch = 0
+"let EasyGrepFilesToExclude = '*.class,target,*tar.gz,*.jar,*.war, .git/**.*,target/**.*'
 
 let g:go_highlight_structs = 1 
 let g:go_highlight_methods = 1
@@ -112,6 +116,13 @@ nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
 nnoremap <leader>cw "+yiw
 nnoremap <leader>cy "+yy
 
+"print register
+nnoremap <leader>p0 "0P
+nnoremap <leader>p1 "1P
+nnoremap <leader>p2 "2P
+nnoremap <leader>p3 "3P
+nnoremap <leader>p4 "4P
+nnoremap <leader>p5 "5P
 
 "cscope config
 if has("cscope")
@@ -139,3 +150,8 @@ nnoremap <leader>fd :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fa :vert scs find a <C-R>=expand("<cword>")<CR><CR>
 
 au BufRead,BufNewFile todo set filetype=todo
+
+if executable("/usr/local/bin/rg")
+    set grepprg=/usr/local/bin/rg\ --vimgrep\ --no-heading
+    set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
