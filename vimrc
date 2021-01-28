@@ -58,21 +58,17 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#rc()
 
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'matrix.vim--Yang'
-Plugin 'bufexplorer.zip'
+
 Plugin 'The-NERD-tree'
-Plugin 'lrvick/Conque-Shell'
-Plugin 'snipMate'
 Plugin 'ctrlp.vim'
+Plugin 'lrvick/Conque-Shell'
+Plugin 'bufexplorer.zip'
 Plugin 'python.vim'
-Plugin 'Markdown'
 Plugin 'c.vim'
-
-"Plugin 'EasyGrep'
-"Plugin 'atom-java.vim'
-"Plugin 'session.vim'
-
 Plugin 'FencView.vim'
+
+"Plugin 'atom-java.vim'
+
 let g:fencview_autodetect = 1  
 let g:fencview_checklines = 10
 
@@ -92,12 +88,6 @@ let g:ctrlp_custom_ignore = {
             \ }
 let g:ctrlp_follow_symlinks = 1
 let g:ctrlp_switch_buffer = 'Et'
-
-"let EasyGrepCommand = 1
-"let EasyGrepRecursive = 1
-"let EasyGrepOpenWindowOnMatch = 1
-"let EasyGrepJumpToMatch = 0
-"let EasyGrepFilesToExclude = '*.class,target,*tar.gz,*.jar,*.war, .git/**.*,target/**.*'
 
 let g:go_highlight_structs = 1 
 let g:go_highlight_methods = 1
