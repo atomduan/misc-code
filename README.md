@@ -18,3 +18,6 @@ echo abc | fold -1
 
 # print pedding number in vim command line '%' need to be escaped
 :r !seq 1 20 | xargs -I{} bash -c "printf '\%02d\n' {}"
+
+# print out each log's size
+cat foolog | awk '{print $11, length($0)}' | awk '{stat[$1] += $2} END {for(i in stat){print i":"stat[i]}}' | sort -t':' -n -k3,3
