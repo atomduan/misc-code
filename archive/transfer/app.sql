@@ -1,6 +1,6 @@
 insert overwrite table app.wx__user__contract__info partition (data__date=$data__date)
 SELECT T3.Id WX__USER__ID ,
-       -- Œ¢–≈”√ªßID
+       -- ÂæÆ‰ø°Áî®Êà∑ID
        concat(T3.Id, COALESCE(T5.CONTRACTNO, '')) ID,
        COALESCE(T8.Brcname, T9.BRCNAME, T10.BRCNAME, '') BRC__NAME,
        T5.CHANNETIME CHANNNE__TIME,
@@ -24,11 +24,11 @@ SELECT T3.Id WX__USER__ID ,
        '' SYSTEM__NO,
        '' SERIAL__NUMBER,
        '' MESSAGE__KEYWORDS,
-       COALESCE(T4.public__user__id, '') PUBLIC__USER__ID --π´÷⁄∫≈id
+       COALESCE(T4.public__user__id, '') PUBLIC__USER__ID --ÂÖ¨‰ºóÂè∑id
       ,
-       COALESCE(T5.CONTRACTNO, '') CONTRACTNO --∫œÕ¨∫≈
+       COALESCE(T5.CONTRACTNO, '') CONTRACTNO --ÂêàÂêåÂè∑
       ,
-       '0' YN --”––ß
+       '0' YN --ÊúâÊïà
       ,
        COALESCE(T3.OPEN__ID, '') WX__USER__OPEN__ID --openid
       ,

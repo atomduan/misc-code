@@ -10,7 +10,7 @@ happy coding and have fun
 # move your cursor on vim command line
 ctrl+shift+left, ctrl+shift+right
 
-# del blink line
+# del blank line
 :g/^$/d
 
 # print word in vertical direction
