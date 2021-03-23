@@ -235,3 +235,6 @@ Thread.java --> start() --> jni start0();
                         -->  os::create_thread(this, thr_type, stack_sz); ...
                             --> "src/hotspot/os/linux/os_linux.cpp" bool os::create_thread(...)
                                 --> int ret = pthread_create(&tid, &attr, (void* (*)(void*)) thread_native_entry, thread);
+
+*) jvmci技术背景: https://openjdk.java.net/jeps/243
+    所有jeps(road map)的地址: https://openjdk.java.net/jeps/0
