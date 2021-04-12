@@ -21,7 +21,7 @@ syn match todoTaskTODO      "\c\(-->\)\(TODO\)"
 syn match todoTaskDelimit   "^[ ]*-\+[ ]*$"
 syn match todoTaskDone      "\c\(-->\)\(DONE\|FORK\|MergeDone\)"
 syn match todoTaskInvalid   "\c\(-->\)\(INVALID\)"
-syn match todoTaskYield     "\c\(-->\)\(PENDING\|SCHEDULE\)"
+syn match todoTaskYield     "\c\(-->\)\(PENDING\|SCHEDULE\|HEDGING\)"
 syn match todoTaskDOING     "\c\(-->\)\(DOING\)"
 
 hi def link todoKeyWord     Special 
