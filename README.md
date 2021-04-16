@@ -21,3 +21,9 @@ echo abc | fold -1
 
 # print out each log's size
 cat foolog | awk '{print $11, length($0)}' | awk '{stat[$1] += $2} END {for(i in stat){print i":"stat[i]}}' | sort -t':' -n -k3,3
+
+# print params in multi lines
+cat foo.log | sed -n '/getloginappaccount.v2/,/^2021-04-/p' |
+    sed "s/^2021-04.\+/AAAAA/g" | uniq |
+        grep -E '(^imei:|^oaid:|AAAAA)' |
+            awk 'BEGIN{buf=""}{if($1=="AAAAA") print buf, buf=""; if($1!="AAAAA") buf = buf" "$0;}'
