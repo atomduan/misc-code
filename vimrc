@@ -58,7 +58,6 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#rc()
 
 Plugin 'VundleVim/Vundle.vim'
-
 Plugin 'The-NERD-tree'
 Plugin 'ctrlp.vim'
 Plugin 'lrvick/Conque-Shell'
