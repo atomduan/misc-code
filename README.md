@@ -27,3 +27,6 @@ cat foo.log | sed -n '/getloginappaccount.v2/,/^2021-04-/p' |
     sed "s/^2021-04.\+/AAAAA/g" | uniq |
         grep -E '(^imei:|^oaid:|AAAAA)' |
             awk 'BEGIN{buf=""}{if($1=="AAAAA") print buf, buf=""; if($1!="AAAAA") buf = buf" "$0;}'
+
+# conditional awk
+seq 1 100 | awk 'BEGIN {mat = 0}{ if ($1~/^1/) { if (mat == 0) {print $0;mat = 1;} } else { print $0} } '
