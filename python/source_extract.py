@@ -2,8 +2,8 @@
 import os
 import shutil
 
-#m2_repo = '/home/mi/.m2'
-m2_repo = '/Users/juntaoduan/.m2'
+#m2_repo = '/Users/juntaoduan/.m2'
+m2_repo = '/home/juntaoduan/.m2'
 repo_path_prefix = m2_repo+'/repository'
 source_path_prefix = m2_repo+'/repository_source'
 
