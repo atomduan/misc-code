@@ -21,6 +21,7 @@ set scrolloff=8
 set incsearch
 set ruler
 set nofoldenable
+set clipboard=unnamedplus
 
 "set foldmethod=syntax
 "set cursorline
@@ -100,11 +101,6 @@ nnoremap * *N
 "auto open nertree
 autocmd VimEnter * NERDTree
 
-nnoremap <leader>ev :vsplit ~/.vimrc<cr>
-nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
-nnoremap <leader>cw "+yiw
-nnoremap <leader>cy "+yy
-
 "print register
 nnoremap <leader>p0 "0P
 nnoremap <leader>p1 "1P
@@ -129,6 +125,7 @@ if has("cscope")
 	set csverb
 endif
 
+nnoremap <leader>fi :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nnoremap <leader>fs :vert scs find s <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fg :vert scs find g <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fc :vert scs find c <C-R>=expand("<cword>")<CR><CR>
@@ -136,7 +133,6 @@ nnoremap <leader>ft :vert scs find t <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fe :vert scs find e <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fd :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fa :vert scs find a <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>fi :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
 au BufRead,BufNewFile todo set filetype=todo
 
@@ -144,3 +140,26 @@ if executable("/usr/local/bin/rg")
     set grepprg=/usr/local/bin/rg\ --vimgrep\ --no-heading
     set grepformat=%f:%l:%c:%m,%f:%l:%m
 endif
+
+nnoremap <leader>ev :vsplit ~/.vimrc<cr>
+nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
+
+" for mac os clipboard support
+" nnoremap <leader>cw "+yiw
+" nnoremap <leader>cy "+yy
+
+" for linux clipboard support
+" 1. sudo apt-get install xsel
+" 2. define functions below
+" 3. nnoremapping shortcut to function
+" 4.  set clipboard=unnamedplus
+function! CopyWord()
+  normal "+yiw
+  :call system('xsel -ib', getreg('+'))
+endfunction
+function! CopyLine()
+  normal "+yy
+  :call system('xsel -ib', getreg('+'))
+endfunction
+nnoremap <leader>cw :call CopyWord()<cr>
+nnoremap <leader>cy :call CopyLine()<cr>
