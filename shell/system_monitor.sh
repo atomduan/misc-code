@@ -44,7 +44,7 @@ if [ $# -eq 0 ]; then
     internalip=$(hostname -I | awk '{print $1}')
     echo -e "\033[32;40m 内网ip：$internalip \033[0m"
     # check external ip $NF 最后一行 以空格作为分隔符
-    externalip=$(hostname -I | awk '{print $NF}')
+    externalip=$(curl cip.cc 2>/dev/null | head -1 | awk '{print $3}')
     echo -e "\033[32;40m 公网ip：$externalip \033[0m"
     # check dns
     # dns 输出dns -E 边界控制符 awk筛选 以空格输出最后一段
