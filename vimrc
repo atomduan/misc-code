@@ -1,6 +1,7 @@
 set nocompatible
-syntax on
-filetype on
+
+syntax enable
+filetype plugin indent on
 
 colorscheme peachpuff
 set syntax=on
@@ -66,6 +67,7 @@ Plugin 'bufexplorer.zip'
 Plugin 'python.vim'
 Plugin 'c.vim'
 Plugin 'FencView.vim'
+Plugin 'rust-lang/rust.vim'
 
 "Plugin 'atom-java.vim'
 
