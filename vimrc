@@ -43,11 +43,11 @@ nnoremap <leader>b :Bookmark<cr>
 
 nnoremap <leader>z :nohl<cr>
 nnoremap <leader>x :NERDTreeFind<cr>*0n
-nnoremap <leader>j 12j
-nnoremap <leader>k 12k
+nnoremap <leader>j 16j
+nnoremap <leader>k 16k
 
-vnoremap <leader>j 12j
-vnoremap <leader>k 12k
+vnoremap <leader>j 16j
+vnoremap <leader>k 16k
 
 let NERDTreeWinSize=28
 let NERDTreeIgnore=['\.o$','\.bin$', '\.swp$', '\.pyc$', '\.jar$']
@@ -69,7 +69,7 @@ Plugin 'c.vim'
 Plugin 'FencView.vim'
 Plugin 'rust-lang/rust.vim'
 
-"Plugin 'atom-java.vim'
+Plugin 'zelda.vim'
 
 let g:fencview_autodetect = 1  
 let g:fencview_checklines = 10
@@ -90,12 +90,6 @@ let g:ctrlp_custom_ignore = {
             \ }
 let g:ctrlp_follow_symlinks = 1
 let g:ctrlp_switch_buffer = 'Et'
-
-let g:go_highlight_structs = 1 
-let g:go_highlight_methods = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_build_constraints = 1
 
 nnoremap <F3> :ConqueTermVSplit bash<cr>
 nnoremap * *N
