@@ -148,7 +148,7 @@ nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
 " 1. sudo apt-get install xsel
 " 2. define functions below
 " 3. nnoremapping shortcut to function
-" 4.  set clipboard=unnamedplus
+" 4. set clipboard=unnamedplus
 function! CopyWord()
   normal "+yiw
   :call system('xsel -ib', getreg('+'))
