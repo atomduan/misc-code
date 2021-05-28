@@ -24,7 +24,7 @@ cp -a /lib/x86_64-linux-gnu/{libtinfo.so.5,libdl.so.2,libc.so.6,ld-2.27.so} \
 cp -a /lib/x86_64-linux-gnu/{libselinux.so.1,libpcre.so.3,libpthread.so.0} \
     container-demo/lib
 
-# Copy all linked libraries.
+# Copy all linked libraries. TODO djt, has some problem?
 for x in container-demo/lib
 do
     cp -a /lib/x86_64-linux-gnu/$(readlink $x) container-demo/lib
