@@ -33,3 +33,6 @@ seq 1 100 | awk 'BEGIN {mat = 0}{ if ($1~/^1/) { if (mat == 0) {print $0;mat = 1
 
 # conditianl print first word of '1' headed, other line print normally
 seq 100 | sed -n '/^1/bx ; p; D; :x; {x; /^$/bz; D; :z; g; p;};'
+
+# g global match, and delete empty lines
+1,%g/^$/ d
