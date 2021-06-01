@@ -36,3 +36,6 @@ seq 100 | sed -n '/^1/bx ; p; D; :x; {x; /^$/bz; D; :z; g; p;};'
 
 # g global match, and delete empty lines
 1,%g/^$/ d
+
+# check the first match and quit
+cat cheat.list | awk '{print $2}' | xargs -I{} bash -c "cat foo_*.list | sed -n '/{}/bx;D; :x; p;q;'"
