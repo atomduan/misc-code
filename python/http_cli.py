@@ -14,11 +14,8 @@ def foo_fetch():
         'Accept-Language': 'en-US,en;q=0.9',
         'Cookie': 'JSESSIONID=aaay0dAOL165Pde_JCVNx',
     }
-    try:
-        r = requests.get(url, headers=headers, verify=False, timeout=3)
-        print(r.text())
-    except Exception as e:
-        return e
+    r = requests.get(url, headers=headers, verify=False, timeout=3)
+    print(r.text)
 
 if __name__ == '__main__':
     foo_fetch()
