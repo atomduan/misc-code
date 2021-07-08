@@ -12,3 +12,5 @@ while getopts :help:hp:f: opt ; do
             ;;
     esac
 done
+
+echo "NONE_E --> : ${NONE_E:-XXX}"
