@@ -55,4 +55,4 @@ cat << EOF
 EOF
 fi
 
-make clean 2>/dev/null
+#make clean 2>/dev/null
