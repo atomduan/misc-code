@@ -3,14 +3,17 @@
 
 int main(int argc, char **argv)
 {
-    static int user_id = -1;
-    char *userspec = "juntaoduan";
+    printf("hello kit unit case......\n");
     struct passwd *pw;
-
-    printf("hello pwdspec unit case......\n");
+    char *userspec = "tcpdump";
 
     pw = getpwnam(userspec);
-    user_id = pw->pw_uid;
-    printf("user_id is %d\n", user_id);
+    printf("pw_uid is %d\n", pw->pw_uid);
+    printf("pw_gid is %d\n", pw->pw_gid);
+    printf("pw_name is %s\n",pw->pw_name);
+    printf("pw_passwd is %s\n", pw->pw_passwd);
+    printf("pw_gecos is %s\n", pw->pw_gecos);
+    printf("pw_dir is %s\n", pw->pw_dir);
+    printf("pw_shell is %s\n", pw->pw_shell);
     return 0;
 }
