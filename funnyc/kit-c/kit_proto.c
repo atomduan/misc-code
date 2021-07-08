@@ -1,4 +1,4 @@
-#include <kit_unit_case.h>
+#include <kit_sys.h>
 
 
 int main(int argc, char **argv)

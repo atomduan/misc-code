@@ -17,42 +17,41 @@ CFLAGS=-c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 LDFLAGS=-L/usr/local/opt/bison/lib
 
 LINK=\$(CC)
-BUILD_DEPS=./kit_unit_case.h
+BUILD_DEPS=./kit_sys.h
 BUILD_INCS=-I ./
 
-unit_case: ${name}.o
-	\$(LINK) -o unit_case.bin ${name}.o \
+${name}: ${name}.o
+	\$(LINK) -o ${name}.bin ${name}.o \
 	-ldl -lpthread -lm -Wl \$(LDFLAGS)
 
 ${name}.o:	\$(BUILD_DEPS)
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${name}.o ${name}.c
 
-show_prep:	\$(BUILD_DEPS)
+prep:	\$(BUILD_DEPS)
 	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -E ${name}.c
 
 .PHONY:clean
 clean:
-	rm -rf *.o *.bin core *.output Makefile
+	rm -rf *.o *.bin core *.output
 EOF
-make
 
-if [ -x unit_case.bin ]; then
+#make
 
-cat << EOF
-
-
----------------MISC RUN-----------------
-
-
-EOF
-    ./unit_case.bin
-cat << EOF
-
-
----------------MISC FIN-----------------
-
-
-EOF
-fi
-
-#make clean 2>/dev/null
+#if [ -x ${name}.bin ]; then
+#
+#cat << EOF
+#
+#
+#---------------MISC RUN-----------------
+#
+#
+#EOF
+#    ./${name}.bin
+#cat << EOF
+#
+#
+#---------------MISC FIN-----------------
+#
+#
+#EOF
+#fi
