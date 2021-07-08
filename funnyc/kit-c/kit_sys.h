@@ -47,5 +47,4 @@ struct foo_struct {
 };
 typedef struct foo_struct fs;
 
-//typedef struct foo_struct fs;
 #endif/*KIT_UNIT_CASE*/
