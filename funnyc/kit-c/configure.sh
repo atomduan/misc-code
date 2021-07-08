@@ -35,23 +35,16 @@ clean:
 	rm -rf *.o *.bin core *.output
 EOF
 
-#make
-
-#if [ -x ${name}.bin ]; then
-#
-#cat << EOF
-#
-#
-#---------------MISC RUN-----------------
-#
-#
-#EOF
-#    ./${name}.bin
-#cat << EOF
-#
-#
-#---------------MISC FIN-----------------
-#
-#
-#EOF
-#fi
+#TODO how to use getops to config exec?
+# make
+# if [ -x ${name}.bin ]; then
+# cat << EOF
+# 
+# ---------------MISC RUN-----------------
+# 
+# EOF
+# ./${name}.bin
+# cat << EOF
+# ---------------MISC FIN-----------------
+# EOF
+# fi
