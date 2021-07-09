@@ -11,11 +11,11 @@ eval set -- "$opt_template"
 echo "opt parse res:<< $opt_template >>"
 
 # parse option flags
-auto_build_flag="false"
+auto_build_flag="FALSE"
 while true; do
     case "$1" in
         -e|--exe|--execute)
-            auto_build_flag="true"
+            auto_build_flag="TRUE"
             shift
             ;;
         --)
@@ -68,8 +68,11 @@ clean:
 EOF
 
 # build and execute binary or not..
-if [ "x$auto_build_flag" = "xtrue" ]; then
-    echo "auto_build_flag set to ture, try make and run binary......"
+if [ "x$auto_build_flag" = "xTRUE" ]; then
+    echo "auto_build_flag set to 'TRUE', try make and run binary......"
+cat << EOF
+---------------KIT BUILD---------------
+EOF
     make
     if [ -x ${name}.bin ]; then
 cat << EOF
@@ -77,7 +80,7 @@ cat << EOF
 EOF
 ./${name}.bin
 cat << EOF
----------------KIT RUN-----------------
+---------------KIT FIN-----------------
 EOF
     else
         echo "build binary fail..."
