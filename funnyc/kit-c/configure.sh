@@ -1,10 +1,11 @@
 #!/bin/bash -
 curr=$(cd `dirname $(which $0)`; pwd)
+cmd=`basename $0`
 cd $curr
 
 # parse option
-opt_template=`getopt -o e --long exe,execute -n 'configure.sh' -- "$@"`
-if [ $? != 0 ] ; then echo "opt parse fail, terminating..." >&2 ; exit 1 ; fi
+opt_template=`getopt -o e --long exe,execute -n "$cmd" -- "$@"`
+if [ $? != 0 ]; then echo "opt parse fail, terminating..." >&2; exit 1; fi
 # shuffle args make sure '--' can delimit between opts and args
 eval set -- "$opt_template"
 echo "opt parse res:<< $opt_template >>"
@@ -36,7 +37,7 @@ for arg do
     break
 done
 if [ -z "${name}" ]; then
-    echo "./configure.sh -e|--exe <name>, name can not be empty"
+    echo "./$cmd -e|--exe <name>, name can not be empty"
     exit 1
 fi
 
