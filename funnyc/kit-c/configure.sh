@@ -33,7 +33,9 @@ done
 # parse source file name *.c
 name=""
 for arg do
-    name=`echo $arg | sed 's/\.c//g'`
+    name="$arg"
+    name=`echo $name | sed 's/\.c//g'`
+    name=`echo $name | sed 's/\.$//g'`
     break
 done
 if [ -z "${name}" ]; then
