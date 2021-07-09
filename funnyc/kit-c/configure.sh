@@ -34,8 +34,7 @@ done
 name=""
 for arg do
     name="$arg"
-    name=`echo $name | sed 's/\.c//g'`
-    name=`echo $name | sed 's/\.$//g'`
+    name=`echo $name | sed 's/\.c//g' | sed 's/\.$//g'`
     break
 done
 if [ -z "${name}" ]; then
