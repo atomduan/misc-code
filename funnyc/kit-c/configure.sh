@@ -1,16 +1,47 @@
 #!/bin/bash -
 curr=$(cd `dirname $(which $0)`; pwd)
+cd $curr
 
-name=`echo $1 | sed 's/\.c//g'`
+# parse option
+opt_template=`getopt -o e --long exe,execute -n 'configure.sh' -- "$@"`
+if [ $? != 0 ] ; then echo "opt parse fail, terminating..." >&2 ; exit 1 ; fi
+# shuffle args make sure '--' can delimit between opts and args
+eval set -- "$opt_template"
+echo "opt parse res:<< $opt_template >>"
+
+# parse option flags
+auto_build_flag="false"
+while true; do
+    case "$1" in
+        -e|--exe|--execute)
+            auto_build_flag="true"
+            shift
+            ;;
+        --)
+            # terminate mark, all opt parse finished 
+            shift 1
+            break
+            ;;
+        *)
+            echo "internal error!"
+            exit 1
+            ;;
+    esac
+done
+
+# parse source file name *.c
+name=""
+for arg do
+    name=`echo $arg | sed 's/\.c//g'`
+    break
+done
 if [ -z "${name}" ]; then
-    echo "./build.sh <name>, name can not be empty"
+    echo "./configure.sh -e|--exe <name>, name can not be empty"
     exit 1
 fi
 
-cd $curr
-
+# make file config
 make clean 2>/dev/null
-
 cat <<EOF > Makefile
 CC=clang 
 CFLAGS=-c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
@@ -35,16 +66,19 @@ clean:
 	rm -rf *.o *.bin core *.output
 EOF
 
-#TODO how to use getops to config exec?
-# make
-# if [ -x ${name}.bin ]; then
-# cat << EOF
-# 
-# ---------------MISC RUN-----------------
-# 
-# EOF
-# ./${name}.bin
-# cat << EOF
-# ---------------MISC FIN-----------------
-# EOF
-# fi
+# build and execute binary or not..
+if [ "x$auto_build_flag" = "xtrue" ]; then
+    echo "auto_build_flag set to ture, try make and run binary......"
+    make
+    if [ -x ${name}.bin ]; then
+cat << EOF
+---------------KIT RUN-----------------
+EOF
+./${name}.bin
+cat << EOF
+---------------KIT RUN-----------------
+EOF
+    else
+        echo "build binary fail..."
+    fi
+fi
