@@ -43,3 +43,5 @@ head tb.list | sed -E 's/.*(user_balance":"[^"]*").*}}([0-9]*$)/\1 \2/g'
 # check the first match and quit
 cat cheat.list | awk '{print $2}' | xargs -I{} bash -c "cat foo_*.list | sed -n '/{}/bx;D; :x; p;q;'"
 
+# print seperated columns
+echo "AAAA BBBB CCCC" | while read a b c; do echo $a; echo $b; echo $c; done

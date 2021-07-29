@@ -68,7 +68,8 @@ Plugin 'python.vim'
 Plugin 'c.vim'
 Plugin 'FencView.vim'
 Plugin 'rust-lang/rust.vim'
-Plugin 'zelda.vim'
+"Plugin 'zelda.vim'
+Plugin 'arrufat/vala.vim'
 
 let g:fencview_autodetect = 1  
 let g:fencview_checklines = 10
