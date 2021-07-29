@@ -8,7 +8,7 @@ opt_template=`getopt -o e --long exe,execute -n "$cmd" -- "$@"`
 if [ $? != 0 ]; then echo "opt parse fail, terminating..." >&2; exit 1; fi
 # shuffle args make sure '--' can delimit between opts and args
 eval set -- "$opt_template"
-echo "opt parse res:<< $opt_template >>"
+#echo "opt parse res:<< $opt_template >>"
 
 # parse option flags
 auto_build_flag="FALSE"
