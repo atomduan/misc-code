@@ -79,7 +79,7 @@ EOF
 
 	cat > autogen.sh << EOF
 #!/bin/sh
-autoreconf --force --install -I config -I m4
+autoreconf --verbose --no-recursive --force --install -I config -I m4
 EOF
 	chmod 755 autogen.sh
 
