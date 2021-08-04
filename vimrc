@@ -23,11 +23,11 @@ set incsearch
 set ruler
 set nofoldenable
 
-"for linux for mac must comment out
-"set clipboard=unnamedplus
-
 "set foldmethod=syntax
 "set cursorline
+
+"for linux for mac must comment out
+"set clipboard=unnamedplus
 
 let mapleader=","
 
@@ -107,7 +107,7 @@ nnoremap <leader>p3 "3P
 nnoremap <leader>p4 "4P
 nnoremap <leader>p5 "5P
 
-"cscope config
+"cscope config begin
 if has("cscope")
 	set csprg=/usr/local/bin/cscope
 	set csto=0
@@ -122,15 +122,15 @@ if has("cscope")
 	endif
 	set csverb
 endif
-
+nnoremap <leader>fs :vert scs find s  <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>fg :vert scs find g  <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>fc :vert scs find c  <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>ft :vert scs find t  <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>fe :vert scs find e  <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>fd :vert scs find d  <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>fa :vert scs find a  <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>fi :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-nnoremap <leader>fs :vert scs find s <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>fg :vert scs find g <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>fc :vert scs find c <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>ft :vert scs find t <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>fe :vert scs find e <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>fd :vert scs find d <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>fa :vert scs find a <C-R>=expand("<cword>")<CR><CR>
+"cscope config end
 
 au BufRead,BufNewFile todo set filetype=todo
 
@@ -146,18 +146,18 @@ nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
 nnoremap <leader>cw "+yiw
 nnoremap <leader>cy "+yy
 
-" for linux clipboard support, for mac must comment out
-" 1. sudo apt-get install xsel
-" 2. define functions below
-" 3. nnoremapping shortcut to function
-" 4. set clipboard=unnamedplus
-" function! CopyWord()
-"   normal "+yiw
-"   :call system('xsel -ib', getreg('+'))
-" endfunction
-" function! CopyLine()
-"   normal "+yy
-"   :call system('xsel -ib', getreg('+'))
-" endfunction
-" nnoremap <leader>cw :call CopyWord()<cr>
-" nnoremap <leader>cy :call CopyLine()<cr>
+""for linux clipboard support, for mac must comment out
+""1. sudo apt-get install xsel
+""2. define functions below
+""3. nnoremapping shortcut to function
+""4. set clipboard=unnamedplus
+"function! CopyWord()
+"  normal "+yiw
+"  :call system('xsel -ib', getreg('+'))
+"endfunction
+"function! CopyLine()
+"  normal "+yy
+"  :call system('xsel -ib', getreg('+'))
+"endfunction
+"nnoremap <leader>cw :call CopyWord()<cr>
+"nnoremap <leader>cy :call CopyLine()<cr>
