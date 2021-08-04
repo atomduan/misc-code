@@ -22,7 +22,9 @@ set scrolloff=8
 set incsearch
 set ruler
 set nofoldenable
-set clipboard=unnamedplus
+
+"for linux for mac must comment out
+"set clipboard=unnamedplus
 
 "set foldmethod=syntax
 "set cursorline
@@ -140,21 +142,21 @@ nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
 
 " for mac os clipboard support
-" nnoremap <leader>cw "+yiw
-" nnoremap <leader>cy "+yy
+nnoremap <leader>cw "+yiw
+nnoremap <leader>cy "+yy
 
-" for linux clipboard support
+" for linux clipboard support, for mac must comment out
 " 1. sudo apt-get install xsel
 " 2. define functions below
 " 3. nnoremapping shortcut to function
 " 4. set clipboard=unnamedplus
-function! CopyWord()
-  normal "+yiw
-  :call system('xsel -ib', getreg('+'))
-endfunction
-function! CopyLine()
-  normal "+yy
-  :call system('xsel -ib', getreg('+'))
-endfunction
-nnoremap <leader>cw :call CopyWord()<cr>
-nnoremap <leader>cy :call CopyLine()<cr>
+" function! CopyWord()
+"   normal "+yiw
+"   :call system('xsel -ib', getreg('+'))
+" endfunction
+" function! CopyLine()
+"   normal "+yy
+"   :call system('xsel -ib', getreg('+'))
+" endfunction
+" nnoremap <leader>cw :call CopyWord()<cr>
+" nnoremap <leader>cy :call CopyLine()<cr>
