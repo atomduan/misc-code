@@ -1,0 +1,35 @@
+#!/bin/bash -
+sudo apt-get install python-pip python-m2crypto
+sudo pip install shadowsocks
+sudo touch /etc/shadowsocks.json
+sudo cat <<EOF >/etc/shadowsocks.json 
+{
+"server":"your_server_ip",
+"server_port":8000,
+"local_port":1080,
+"password":"your_passwd",
+"timeout":600,
+"method":"aes-256-cfb"//encryption method, “bf-cfb”, “aes-256-cfb”, “des-cfb”, “rc4”, etc. Default is table, which is not secure. “aes-256-cfb” is recommended.
+}
+EOF
+sudo ssserver -c /etc/shadowsocks.json -d start
+#To stop shadowsocks server:
+sudo ssserver -d stop
+#Restart Shadowsocks server:
+sudo ssserver -c /etc/shadowsocks.json -d restart
+#check log
+less /var/log/shadowsocks.log
+#iptables config
+sudo iptables -I INPUT -p tcp --dport 8000 -j ACCEPT
+
+#if you want shadowsocks server to automatically start on system boot, then edit /etc/rc.local file
+sudo vi /etc/rc.local
+
+#Add the following line to the file above exit 0 line
+/usr/bin/python /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start
+
+#------------------------
+Install and Configure Shadowsocks Client on Desktop Linux Ubuntu users install it from PPA
+sudo add-apt-repository ppa:hzwhuang/ss-qt5
+sudo apt-get update
+sudo apt-get install shadowsocks-qt5
