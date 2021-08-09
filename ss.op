@@ -3,6 +3,8 @@ sudo apt-get install python-pip python-m2crypto
 sudo pip install shadowsocks
 sudo touch /etc/shadowsocks.json
 
+#Encryption method, “bf-cfb”, “aes-256-cfb”, “des-cfb”, “rc4”, etc.
+#Default is table, which is not secure. “aes-256-cfb” is recommended.
 sudo cat << EOF >/etc/shadowsocks.json 
 {
 "server":"your_server_ip",
@@ -10,7 +12,7 @@ sudo cat << EOF >/etc/shadowsocks.json
 "local_port":1080,
 "password":"your_passwd",
 "timeout":600,
-"method":"aes-256-cfb"//encryption method, “bf-cfb”, “aes-256-cfb”, “des-cfb”, “rc4”, etc. Default is table, which is not secure. “aes-256-cfb” is recommended.
+"method":"aes-256-cfb",
 }
 EOF
 
@@ -20,14 +22,12 @@ sudo ssserver -c /etc/shadowsocks.json -d start
 sudo ssserver -d stop
 #Restart Shadowsocks server:
 sudo ssserver -c /etc/shadowsocks.json -d restart
-#check log
+#Check log
 less /var/log/shadowsocks.log
-#iptables config
+#Iptables config
 sudo iptables -I INPUT -p tcp --dport 8000 -j ACCEPT
-
-#if you want shadowsocks server to automatically start on system boot, then edit /etc/rc.local file
+#If you want shadowsocks server to automatically start on system boot, then edit /etc/rc.local file
 sudo vi /etc/rc.local
-
 #Add the following line to the file above exit 0 line
 /usr/bin/python /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start
 
