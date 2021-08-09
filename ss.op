@@ -2,7 +2,8 @@
 sudo apt-get install python-pip python-m2crypto
 sudo pip install shadowsocks
 sudo touch /etc/shadowsocks.json
-sudo cat <<EOF >/etc/shadowsocks.json 
+
+sudo cat << EOF >/etc/shadowsocks.json 
 {
 "server":"your_server_ip",
 "server_port":8000,
@@ -12,6 +13,8 @@ sudo cat <<EOF >/etc/shadowsocks.json
 "method":"aes-256-cfb"//encryption method, “bf-cfb”, “aes-256-cfb”, “des-cfb”, “rc4”, etc. Default is table, which is not secure. “aes-256-cfb” is recommended.
 }
 EOF
+
+#To start shadowsocks server:
 sudo ssserver -c /etc/shadowsocks.json -d start
 #To stop shadowsocks server:
 sudo ssserver -d stop
