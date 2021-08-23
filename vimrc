@@ -142,12 +142,10 @@ nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
 " clipboard copy config
 if has('unix')
     if system('uname') =~ 'Darwin'
-        " for mac os clipboard support
         nnoremap <leader>cw "+yiw
         nnoremap <leader>cy "+yy
     elseif system('uname') =~ 'Linux'
         set clipboard=unnamedplus
-        "for linux clipboard support, for mac must comment out
         "1. sudo apt-get install xsel
         "2. define functions below
         "3. nnoremapping shortcut to function
