@@ -26,9 +26,6 @@ set nofoldenable
 "set foldmethod=syntax
 "set cursorline
 
-"for linux for mac must comment out
-"set clipboard=unnamedplus
-
 let mapleader=","
 
 hi Search term=reverse ctermfg=Black guifg=Yellow
@@ -142,22 +139,32 @@ endif
 nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>cl :1,%s/\r//g<cr><c-o>
 
-" for mac os clipboard support
-nnoremap <leader>cw "+yiw
-nnoremap <leader>cy "+yy
-
-""for linux clipboard support, for mac must comment out
-""1. sudo apt-get install xsel
-""2. define functions below
-""3. nnoremapping shortcut to function
-""4. set clipboard=unnamedplus
-"function! CopyWord()
-"  normal "+yiw
-"  :call system('xsel -ib', getreg('+'))
-"endfunction
-"function! CopyLine()
-"  normal "+yy
-"  :call system('xsel -ib', getreg('+'))
-"endfunction
-"nnoremap <leader>cw :call CopyWord()<cr>
-"nnoremap <leader>cy :call CopyLine()<cr>
+" clipboard copy config
+if has('unix')
+    if system('uname') =~ 'Darwin'
+        " for mac os clipboard support
+        nnoremap <leader>cw "+yiw
+        nnoremap <leader>cy "+yy
+    elseif system('uname') =~ 'Linux'
+        set clipboard=unnamedplus
+        "for linux clipboard support, for mac must comment out
+        "1. sudo apt-get install xsel
+        "2. define functions below
+        "3. nnoremapping shortcut to function
+        "4. set clipboard=unnamedplus
+        function! CopyWord()
+          normal "+yiw
+          :call system('xsel -ib', getreg('+'))
+        endfunction
+        function! CopyLine()
+          normal "+yy
+          :call system('xsel -ib', getreg('+'))
+        endfunction
+        nnoremap <leader>cw :call CopyWord()<cr>
+        nnoremap <leader>cy :call CopyLine()<cr>
+    else
+        echo "[WARNNING]: unrecognized platform..." 
+    endif
+else
+    echo "[WARNNING]: no os version dectected..." 
+endif
