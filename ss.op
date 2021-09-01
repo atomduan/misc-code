@@ -31,8 +31,8 @@ sudo vi /etc/rc.local
 #Add the following line to the file above exit 0 line
 /usr/bin/python /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start
 
-#------------------------
-Install and Configure Shadowsocks Client on Desktop Linux Ubuntu users install it from PPA
+#------------------------------------------------------------------------------------------------
+#Install and Configure Shadowsocks Client on Desktop Linux Ubuntu users install it from PPA
 sudo add-apt-repository ppa:hzwhuang/ss-qt5
 sudo apt-get update
 sudo apt-get install shadowsocks-qt5
