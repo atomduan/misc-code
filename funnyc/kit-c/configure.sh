@@ -1,46 +1,49 @@
-#!/bin/bash -
+#!/bin/bash -x
 curr=$(cd `dirname $(which $0)`; pwd)
 cmd=`basename $0`
 cd $curr
 
-# parse option
-opt_template=`getopt -o e --long exe,execute -n "$cmd" -- "$@"`
-if [ $? != 0 ]; then echo "opt parse fail, terminating..." >&2; exit 1; fi
-# shuffle args make sure '--' can delimit between opts and args
-eval set -- "$opt_template"
-#echo "opt parse res:<< $opt_template >>"
-
-# parse option flags
-auto_build_flag="FALSE"
-while true; do
-    case "$1" in
-        -e|--exe|--execute)
-            auto_build_flag="TRUE"
-            shift
-            ;;
-        --)
-            # terminate mark, all opt parse finished 
-            shift 1
-            break
-            ;;
-        *)
-            echo "internal error!"
-            exit 1
-            ;;
-    esac
-done
+## parse option
+#opt_template=`getopt -o e --long exe,execute -n "$cmd" -- "$@"`
+#if [ $? != 0 ]; then echo "opt parse fail, terminating..." >&2; exit 1; fi
+## shuffle args make sure '--' can delimit between opts and args
+#eval set -- "$opt_template"
+##echo "opt parse res:<< $opt_template >>"
+#
+## parse option flags
+#auto_build_flag="FALSE"
+#while true; do
+#    case "$1" in
+#        -e|--exe|--execute)
+#            auto_build_flag="TRUE"
+#            shift
+#            ;;
+#        --)
+#            # terminate mark, all opt parse finished 
+#            shift 1
+#            break
+#            ;;
+#        *)
+#            echo "internal error!"
+#            exit 1
+#            ;;
+#    esac
+#done
 
 # parse source file name *.c
-name=""
-for arg do
-    name="$arg"
-    name=`echo $name | sed 's/\.c//g' | sed 's/\.$//g'`
-    break
-done
-if [ -z "${name}" ]; then
-    echo "./$cmd -e|--exe <name>, name can not be empty"
-    exit 1
-fi
+auto_build_flag="TRUE"
+name="$1"
+name=`echo $name | sed 's/\.c//g' | sed 's/\.$//g'`
+
+#for arg do
+#    name="$arg"
+#    name=`echo $name | sed 's/\.c//g' | sed 's/\.$//g'`
+#    break
+#done
+#if [ -z "${name}" ]; then
+#    echo "./$cmd -e|--exe <name>, name can not be empty"
+#    exit 1
+#fi
 
 # make file config
 make clean 2>/dev/null

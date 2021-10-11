@@ -33,6 +33,7 @@
 #include <sys/ioctl.h>
 #include <sys/queue.h>
 #include <sys/stat.h>
+#include <sys/resource.h>
 #include <sys/termios.h>
 #include <sys/time.h>
 #include <sys/types.h>

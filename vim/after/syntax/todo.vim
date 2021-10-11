@@ -12,7 +12,9 @@ endif
 let b:current_syntax = "todo"
 
 syn match todoKeyWord       "\c^[ ]*\(info:\|sub:\|branch:\|system:\|desc:\|tip:\|tips:\|anchor:\)" 
-syn match todoTitle         "\(COMPLETED TASK:\|CURRENT TASK:\|BACK_LOG TASKS:\|INFO ENTRY:\|QUESTIONS:\)"
+syn match todoTitle         "\(COMPLETED TASK:\|CURRENT TASK:\|BACK_LOG TASKS:\|INFO ENTRY:\|QUESTIONS:\|HEDGING OCCURE:\)"
+
+
 syn match todoWeek          "\c^\(week:\)"
 syn match todoTaskInfo      "\c^[ ]*\(product:\|staging:\|preview:\|ip:\|port:\|user:\|username:\|password:\|database:\|table:\|sql:\)"
 syn match todoTaskTitle     "^\*)[ ]*[^ ]*" 
