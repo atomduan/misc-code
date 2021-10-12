@@ -1,0 +1,7 @@
+#!/usr/bin/python
+import sys
+import json
+
+with open("/dev/stdin", 'r') as f:
+    data = json.dumps(json.load(f), ensure_ascii=False, indent=2).encode('utf8')
+    print(data)
