@@ -3,7 +3,7 @@ set nocompatible
 syntax enable
 filetype plugin indent on
 
-colorscheme peachpuff
+""colorscheme peachpuff
 set syntax=on
 set filetype=on
 set copyindent
@@ -16,7 +16,7 @@ set expandtab
 set autoindent
 set hlsearch
 set encoding=utf-8
-set nu 
+set nu
 set nowrap
 set scrolloff=8
 set incsearch
@@ -42,14 +42,15 @@ nnoremap <leader>b :Bookmark<cr>
 
 nnoremap <leader>z :nohl<cr>
 nnoremap <leader>x :NERDTreeFind<cr>*0n
-nnoremap <leader>j 16j
-nnoremap <leader>k 16k
 
 vnoremap <leader>j 16j
 vnoremap <leader>k 16k
 
+nnoremap <leader>j 16j
+nnoremap <leader>k 16k
+
 let NERDTreeWinSize=28
-let NERDTreeIgnore=['\.o$','\.bin$', '\.swp$', '\.pyc$', '\.jar$']
+let NERDTreeIgnore=['\.o$','\.bin$', '\.swp$', '\.pyc$', '\.jar$', '__pycache__']
 "let NERDTreeShowHidden=1
 "let NERDTreeShowBookmarks=1
 
@@ -61,17 +62,15 @@ call vundle#rc()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'The-NERD-tree'
 Plugin 'ctrlp.vim'
-Plugin 'lrvick/Conque-Shell'
 Plugin 'bufexplorer.zip'
 Plugin 'python.vim'
 Plugin 'c.vim'
-Plugin 'FencView.vim'
 Plugin 'rust-lang/rust.vim'
 
-"Plugin 'zelda.vim'
-
-let g:fencview_autodetect = 1  
-let g:fencview_checklines = 10
+if !has('nvim')
+    Plugin 'lrvick/Conque-Shell'
+    nnoremap <F3> :ConqueTermVSplit bash<cr>
+endif
 
 let g:bufExplorerDefaultHelp=0       " Do not show default help.
 let g:bufExplorerShowRelativePath=1  " Show relative paths.
@@ -84,13 +83,12 @@ let g:ctrlp_root_markers = ['pom.xml', 'Makefile', 'README', 'README.md']
 let g:ctrlp_by_filename = 1
 let g:ctrlp_working_path_mode = 'rw'
 let g:ctrlp_custom_ignore = {
-            \ 'dir':  '\v[\/](\.(git|hg|svn)$|target$)',
-            \ 'file': '\v\.(exe|so|dll|class|bin|jar|o)$',
+            \ 'dir':  '\v[\/](\.(git|hg|svn)$|target$|__pycache__$)',
+            \ 'file': '\v\.(exe|so|.pyc|dll|class|bin|jar|o)$',
             \ }
 let g:ctrlp_follow_symlinks = 1
 let g:ctrlp_switch_buffer = 'Et'
 
-nnoremap <F3> :ConqueTermVSplit bash<cr>
 nnoremap * *N
 
 "auto open nertree
@@ -130,6 +128,7 @@ nnoremap <leader>fi :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 "cscope config end
 
 au BufRead,BufNewFile todo set filetype=todo
+au BufRead,BufNewFile todo_real set filetype=todo
 
 if executable("/usr/local/bin/rg")
     set grepprg=/usr/local/bin/rg\ --vimgrep\ --no-heading
@@ -161,8 +160,10 @@ if has('unix')
         nnoremap <leader>cw :call CopyWord()<cr>
         nnoremap <leader>cy :call CopyLine()<cr>
     else
-        echo "[WARNNING]: unrecognized platform..." 
+        echo "[WARNNING]: unrecognized platform..."
     endif
 else
-    echo "[WARNNING]: no os version dectected..." 
+    echo "[WARNNING]: no os version dectected..."
 endif
+
+"!@#$%^&*()_+|~
