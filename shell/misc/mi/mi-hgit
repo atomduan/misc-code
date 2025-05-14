@@ -45,4 +45,8 @@ t) 撤销历史合并: 1.相关分支推送远端, 2. 相关分支reset --hard�
 
 u) 导出当前工程: git archive --format=tar.gz --output=~/arch.tar.gz HEAD
 
+v) 列出未被工程track的文件: git clean -dxn 
+
+w) 删除未被工程track的文件: git clean -dxf
+
 EOF
